@@ -106,6 +106,7 @@ class ICSocket extends Component {
       outputRegisters: ic.getOutputRegisters(),
       internalRegisters: ic.getInternalRegisters(),
       programCounter: ic.programCounter(),
+      instructions: ic.getInstructions(),
       instructionCount: ic.instructionCount()
     });
   }
@@ -124,6 +125,8 @@ class ICSocket extends Component {
         <h3>Program</h3>
         <textarea rows="15" cols="80" value={this.state.program} onChange={this.programChange} />
         <ProgramErrors errors={this.state.errors} />
+        <h3>Instructions</h3>
+        <Instructions instructions={this.state.instructions} programCounter={this.state.programCounter} />
         <h3>Control</h3>
         <div>Program Counter: {this.state.programCounter} Total Instructions: {this.state.instructionCount}</div>
         <div>
@@ -272,6 +275,39 @@ class ProgramError extends Component {
       default:
         return "Unknown error."
     }
+  }
+}
+
+class Instructions extends Component {
+  render() {
+    return (
+      <table className="instructions">
+        <thead>
+          <tr><th>Index</th><th>Instruction</th></tr>
+        </thead>
+        <tbody>
+          {this.renderInstructions()}
+        </tbody>
+      </table>
+    );
+  }
+
+  renderInstructions() {
+    if (this.props.instructions) {
+      return this.props.instructions.map((value, i) => <Instruction key={i} index={i} value={value} current={i === this.props.programCounter }/>);
+    }
+  }
+}
+
+class Instruction extends Component {
+  render() {
+    let arrow = this.props.current ? <span className="fas fa-angle-double-right" /> : "";
+    return (
+      <tr className={"instruction" + (this.props.current ? " active" : "")}>
+        <td>{this.props.index} {arrow}</td>
+        <td>{this.props.value.join(" ")}</td>
+      </tr>
+    );
   }
 }
 
