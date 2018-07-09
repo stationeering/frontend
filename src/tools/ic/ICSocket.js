@@ -129,6 +129,18 @@ class ICSocket extends Component {
     return (
       <div className="ICSocket">
         <Row>
+          <Col md={12}>
+            <Panel bsStyle="danger">
+              <Panel.Heading>
+                <Panel.Title componentClass="h3">Warning</Panel.Title>
+              </Panel.Heading>
+              <Panel.Body>
+                This is an implementation of a community suggestion, it is not yet in the game.
+              </Panel.Body>
+            </Panel> 
+          </Col>
+        </Row>
+        <Row>
           <Col md={4}>
             <Registers registers={this.state.inputRegisters} type="input" name="Input" setRegister={this.setRegister} labels={this.state.labels.input} />
           </Col>
