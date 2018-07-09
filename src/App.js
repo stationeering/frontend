@@ -22,7 +22,7 @@ class App extends Component {
           <Navigation />
         </Navbar>
         <Main />
-        <footer class="footer">
+        <footer className="footer">
           <small>
             stationeering.com is a fan run website about <a href="https://store.steampowered.com/app/544550/Stationeers/">Stationeers</a> run by Melair.
             Stationeers content and materials are trademarks and copyrights of RocketWerkz Ltd and its licensors.

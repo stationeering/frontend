@@ -4,11 +4,11 @@ import { Row, Col, Panel, Table, Badge, Alert } from 'react-bootstrap';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { library } from '@fortawesome/fontawesome-svg-core';
-import { faTerminal, faGamepad, faCogs, faMemory, faLongArrowAltLeft, faLongArrowAltRight, faTimes, faStepForward, faPlay, faRedo, faEye } from '@fortawesome/free-solid-svg-icons';
+import { faTerminal, faGamepad, faCogs, faMemory, faLongArrowAltLeft, faLongArrowAltRight, faTimes, faStepForward, faPlay, faRedo, faEye, faAngleDoubleRight, faBook, faLightbulb } from '@fortawesome/free-solid-svg-icons';
 
 import './ICSocket.css';
 
-library.add(faTerminal, faGamepad, faCogs, faMemory, faLongArrowAltLeft, faLongArrowAltRight, faTimes, faStepForward, faPlay, faRedo, faEye);
+library.add(faTerminal, faGamepad, faCogs, faMemory, faLongArrowAltLeft, faLongArrowAltRight, faTimes, faStepForward, faPlay, faRedo, faEye, faAngleDoubleRight, faBook, faLightbulb);
 
 class ICSocket extends Component {
   constructor(props) {
@@ -148,6 +148,9 @@ class ICSocket extends Component {
               <Panel.Body>
                 <textarea rows="15" cols="80" value={this.state.program} onChange={this.programChange} />      
                 <ProgramErrors errors={this.state.errors} />
+                <div>
+                  <small>You can share a program simply by sharing the URL in your browser.</small>
+                </div>
               </Panel.Body>
             </Panel>
           </Col>
@@ -158,15 +161,88 @@ class ICSocket extends Component {
               </Panel.Heading>
               <Panel.Body>
                 <div className="control">
-                  <FontAwesomeIcon className={inactive} icon="step-forward" size="2x" onClick={this.step} title="Step through program." />&nbsp;
-                  <FontAwesomeIcon className={inactive} icon="play" size="2x" onClick={this.run} title="Play program." />&nbsp;
-                  <FontAwesomeIcon className="interactive" icon="redo" size="2x" onClick={this.restart} title="Reset program counter." />
-                  <FontAwesomeIcon className={"interactive" + (this.state.runAfterRegisterChange ? "" : " inactive") } icon="eye" size="2x" onClick={this.toggleRunAfterRegisterChange} title="Auto run after register change." />
+                  <FontAwesomeIcon className={inactive} icon="step-forward" size="2x" onClick={this.step} aria-label="Step through program." />&nbsp;
+                  <FontAwesomeIcon className={inactive} icon="play" size="2x" onClick={this.run} aria-label="Play program." />&nbsp;
+                  <FontAwesomeIcon className="interactive" icon="redo" size="2x" onClick={this.restart} aria-label="Reset program counter." />
+                  <FontAwesomeIcon className={"interactive" + (this.state.runAfterRegisterChange ? "" : " inactive") } icon="eye" size="2x" onClick={this.toggleRunAfterRegisterChange} aria-label="Auto run after register change." />
                 </div>
               </Panel.Body>
             </Panel>
             <Instructions instructions={this.state.instructions} programCounter={this.state.programCounter} />
           </Col>
+        </Row>
+        <Row>
+          <Col md={8}>          
+           <Panel>
+              <Panel.Heading>
+                <Panel.Title componentClass="h3"><FontAwesomeIcon icon="lightbulb" /> Instructions</Panel.Title>
+              </Panel.Heading>
+              <Panel.Body>
+                <h4>Introduction</h4>
+                <p>
+                  This is an simulation of an integrated circuit suggestion by <a href="https://www.reddit.com/r/Stationeers/comments/8wfi98/the_pain_of_logic_and_the_potential_of_integrated/">Recatek</a>. See the instruction set for all options.
+                </p>                
+                <h4>Writing A Program</h4>
+                <p>
+                  Write the program code in the Program text box, it will be read and parsed automatically. Any errors will appear below the text box, once corrected the program can be run.
+                </p>
+                <h4>Running A Program</h4>
+                <p>
+                  Pressing <FontAwesomeIcon icon="step-forward" /> will step the program through one instruction at a time. Pressing <FontAwesomeIcon icon="play" /> will run it through. If you use step then <FontAwesomeIcon icon="redo" /> will reset the program to the first instruction.
+                </p>                                
+                <p>
+                  Finally <FontAwesomeIcon icon="eye" /> can be toggled, if solid then when a register at the top is changed the program will be automatically rerun.
+                </p>
+                <h4>Labelling Registers</h4>
+                <p>
+                  To make make the meaning of registers more obvious you can include a comment in your program as follows:
+                </p>
+                <pre>{`//:input:0:Base Pressure
+//:output:0:Door Open
+//:internal:0:If it's safe?`}</pre>
+              </Panel.Body>
+            </Panel>
+          </Col>
+          <Col md={4}>          
+            <Panel>
+              <Panel.Heading>
+                <Panel.Title componentClass="h3"><FontAwesomeIcon icon="book" /> Stationeers Instruction Set</Panel.Title>
+              </Panel.Heading>
+              <Panel.Body>
+              <pre>{`---Select Unit---
+SEL A B C Out    // A ? B : C -> Out
+
+---Min/Max Unit---
+MAX A B Out      // max(A, B) -> Out
+MIN A B Out      // min(A, B) -> Out
+
+---Math Unit---
+ADD A B Out      // A + B -> Out
+SUB A B Out      // A - B -> Out
+MUL A B Out      // A * B -> Out
+DIV A B Out      // A / B -> Out
+MOD A B Out      // A % B -> Out
+
+---Compare Unit---
+EQ A B Out       // A == B -> Out
+NEQ A B Out      // A != B -> Out
+GT A B Out       // A > B  -> Out
+LT A B Out       // A < B  -> Out
+
+---Unary Math Unit---
+CEIL A Out       // ceil(A)  -> Out
+FLOR A Out       // floor(A) -> Out
+ABS A Out        // abs(A)   -> Out
+LOG A Out        // log(A)   -> Out
+EXP A Out        // exp(A)   -> Out
+ROU A Out        // round(A) -> Out
+RAND A Out       // rand(A)  -> Out 
+
+---New IC Specific---
+STOR A Out       // A        -> Out`}</pre>
+              </Panel.Body>
+            </Panel>
+          </Col>  
         </Row>
       </div>
     );
@@ -329,7 +405,7 @@ class Instructions extends Component {
         </Panel.Heading>
         <Table>
         <thead>
-            <tr><th colspan="2">Index</th><th>Instruction</th></tr>
+            <tr><th colSpan="2">Index</th><th>Instruction</th></tr>
           </thead>
           <tbody>
             {this.renderInstructions()}
