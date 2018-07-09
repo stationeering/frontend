@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import IC from 'stationeers-ic';
+import { Row, Col } from 'react-bootstrap';
 import './ICSocket.css';
 
 class ICSocket extends Component {
@@ -116,26 +117,43 @@ class ICSocket extends Component {
 
     return (
       <div className="ICSocket">
-        <h3>Input Registers</h3>
-        <Registers registers={this.state.inputRegisters} type="input" setRegister={this.setRegister} labels={this.state.labels.input} />
-        <h3>Output Registers</h3>
-        <Registers registers={this.state.outputRegisters} type="output" setRegister={this.setRegister} labels={this.state.labels.output} />
-        <h3>Internal Registers</h3>
-        <Registers registers={this.state.internalRegisters} type="internal" setRegister={this.setRegister} labels={this.state.labels.internal} />
-        <h3>Program</h3>
-        <textarea rows="15" cols="80" value={this.state.program} onChange={this.programChange} />
-        <ProgramErrors errors={this.state.errors} />
-        <h3>Instructions</h3>
-        <Instructions instructions={this.state.instructions} programCounter={this.state.programCounter} />
-        <h3>Control</h3>
-        <div>Program Counter: {this.state.programCounter} Total Instructions: {this.state.instructionCount}</div>
-        <div>
-          <button onClick={this.step} disabled={canRun}>Step</button>
-          <button onClick={this.run} disabled={canRun}>Run</button>
-          <button onClick={this.restart}>Restart</button>
-          <button onClick={this.clearInternalRegisters}>Clear Internal Registers</button>
-        </div>
-        Auto Run After Register Change <input type="checkbox" checked={this.state.runAfterRegisterChange} onChange={this.toggleRunAfterRegisterChange} />
+        <Row>
+          <Col md={4}>
+            <h3>Input Registers</h3>
+            <Registers registers={this.state.inputRegisters} type="input" setRegister={this.setRegister} labels={this.state.labels.input} />
+          </Col>
+          <Col md={4}>
+            <h3>Output Registers</h3>
+            <Registers registers={this.state.outputRegisters} type="output" setRegister={this.setRegister} labels={this.state.labels.output} />
+          </Col>
+          <Col md={4}>
+            <h3>Internal Registers</h3>
+            <Registers registers={this.state.internalRegisters} type="internal" setRegister={this.setRegister} labels={this.state.labels.internal} />
+          </Col>
+        </Row>
+        <Row>
+          <Col md={8}>
+            <h3>Program</h3>
+           <textarea rows="15" cols="80" value={this.state.program} onChange={this.programChange} />      
+            <ProgramErrors errors={this.state.errors} />
+          </Col>
+          <Col md={4}>
+            <h3>Instructions</h3>
+            <Instructions instructions={this.state.instructions} programCounter={this.state.programCounter} />
+          </Col>
+        </Row>
+        <Row>
+          <Col md={12}>
+            <h3>Control</h3>
+            <div>
+              <button onClick={this.step} disabled={canRun}>Step</button>
+              <button onClick={this.run} disabled={canRun}>Run</button>
+              <button onClick={this.restart}>Restart</button>
+              <button onClick={this.clearInternalRegisters}>Clear Internal Registers</button>
+            </div>
+            Auto Run After Register Change <input type="checkbox" checked={this.state.runAfterRegisterChange} onChange={this.toggleRunAfterRegisterChange} />
+          </Col>
+        </Row>
       </div>
     );
   }
@@ -281,14 +299,16 @@ class ProgramError extends Component {
 class Instructions extends Component {
   render() {
     return (
-      <table className="instructions">
-        <thead>
-          <tr><th>Index</th><th>Instruction</th></tr>
-        </thead>
-        <tbody>
-          {this.renderInstructions()}
-        </tbody>
-      </table>
+      <div>
+        <table className="instructions">
+          <thead>
+            <tr><th>Index</th><th>Instruction</th></tr>
+          </thead>
+          <tbody>
+            {this.renderInstructions()}
+          </tbody>
+        </table>
+      </div>
     );
   }
 

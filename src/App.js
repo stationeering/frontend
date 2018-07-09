@@ -1,14 +1,17 @@
 import React, { Component } from 'react';
 import ICSocket from './tools/ic/ICSocket';
 import { NavLink, Switch, Route } from 'react-router-dom';
+import { Grid, Navbar, Nav, NavItem, NavDropdown, MenuItem } from 'react-bootstrap';
 import './App.css';
 
 class App extends Component {
   render() {
     return (
       <div className="App">
-        <Header />
-        <Navigation />
+        <Navbar>
+          <Header />
+          <Navigation />
+        </Navbar>
         <Main />
       </div>
     );
@@ -18,10 +21,11 @@ class App extends Component {
 class Header extends Component {
   render() {
     return (
-    <div className="header">
-      <h1>Stationeering</h1>
-      <p>An unoffical fan site for <a href="https://store.steampowered.com/app/544550/Stationeers/">Stationeers</a>!</p>
-    </div>
+      <Navbar.Header>
+        <Navbar.Brand>
+          <NavLink to='/'>Stationeering</NavLink>
+        </Navbar.Brand>
+      </Navbar.Header>
     );
   }
 }
@@ -29,12 +33,14 @@ class Header extends Component {
 class Navigation extends Component {
   render() {
     return (
-    <div className="navigation">
-      <ul>
-        <li><NavLink to='/'>Homepage</NavLink></li>
-        <li><NavLink to='/tools/ic'>IC Simulation</NavLink></li>
-      </ul>
-    </div>
+      <Nav>
+        <NavItem componentClass={NavLink} eventKey={1} to="/" href="/">
+          Homepage
+        </NavItem>
+        <NavDropdown eventKey={2} title="Tools" id="basic-nav-dropdown">
+          <MenuItem componentClass={NavLink} eventKey={2.1} to="/tools/ic" href="/tools/ic">IC Simulator</MenuItem>
+        </NavDropdown>
+      </Nav>
     );
   }
 }
@@ -52,10 +58,12 @@ class Home extends Component {
 class Main extends Component {
   render() {
     return (
-      <Switch>
-        <Route exact path="/" Component={Home} />
-        <Route exact path="/tools/ic" component={ICSocket} />
-      </Switch>
+      <Grid>
+        <Switch>
+          <Route exact path="/" Component={Home} />
+          <Route exact path="/tools/ic" component={ICSocket} />
+        </Switch>
+      </Grid>
     );
   }
 }
