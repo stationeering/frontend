@@ -6,6 +6,7 @@
     "react": "^16.4.1",
     "react-bootstrap": "^0.32.1",
     "react-dom": "^16.4.1",
+    "react-fontawesome": "^1.6.1",
     "react-router-dom": "^4.3.1",
     "react-scripts": "1.1.4",
     "stationeers-ic": "github:stationeering/stationeers-ic"

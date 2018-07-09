@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import IC from 'stationeers-ic';
-import { Row, Col } from 'react-bootstrap';
+import { Row, Col, Panel, Table, Badge, Alert } from 'react-bootstrap';
+import FontAwesome from 'react-fontawesome';
 import './ICSocket.css';
 
 class ICSocket extends Component {
@@ -112,46 +113,53 @@ class ICSocket extends Component {
     });
   }
 
+  canRun() {
+    return !(this.state.ic.programCounter() >= this.state.ic.instructionCount()) || (this.state.errors.length > 0);
+  }
+
   render() {
-    var canRun = this.state.ic.programCounter() >= this.state.ic.instructionCount() || this.state.errors.length > 0;
+    var inactive = !this.canRun() ? "interactive inactive" : "interactive";
 
     return (
       <div className="ICSocket">
         <Row>
           <Col md={4}>
-            <h3>Input Registers</h3>
-            <Registers registers={this.state.inputRegisters} type="input" setRegister={this.setRegister} labels={this.state.labels.input} />
+            <Registers registers={this.state.inputRegisters} type="input" name="Input" setRegister={this.setRegister} labels={this.state.labels.input} />
           </Col>
           <Col md={4}>
-            <h3>Output Registers</h3>
-            <Registers registers={this.state.outputRegisters} type="output" setRegister={this.setRegister} labels={this.state.labels.output} />
+            <Registers registers={this.state.outputRegisters} type="output" name="Output" setRegister={this.setRegister} labels={this.state.labels.output} />
           </Col>
           <Col md={4}>
-            <h3>Internal Registers</h3>
-            <Registers registers={this.state.internalRegisters} type="internal" setRegister={this.setRegister} labels={this.state.labels.internal} />
+            <Registers registers={this.state.internalRegisters} type="internal" name="Internal" setRegister={this.setRegister} clearInternalRegisters={this.clearInternalRegisters} labels={this.state.labels.internal} />
           </Col>
         </Row>
         <Row>
           <Col md={8}>
-            <h3>Program</h3>
-           <textarea rows="15" cols="80" value={this.state.program} onChange={this.programChange} />      
-            <ProgramErrors errors={this.state.errors} />
+            <Panel>
+              <Panel.Heading>
+                <Panel.Title componentClass="h3"><FontAwesome name="terminal" /> Program</Panel.Title>
+              </Panel.Heading>
+              <Panel.Body>
+                <textarea rows="15" cols="80" value={this.state.program} onChange={this.programChange} />      
+                <ProgramErrors errors={this.state.errors} />
+              </Panel.Body>
+            </Panel>
           </Col>
           <Col md={4}>
-            <h3>Instructions</h3>
+            <Panel>
+              <Panel.Heading>
+                <Panel.Title componentClass="h3"><FontAwesome name="gamepad" /> Control</Panel.Title>
+              </Panel.Heading>
+              <Panel.Body>
+                <div className="control">
+                  <FontAwesome className={inactive} name="step-forward" size="2x" onClick={this.step} title="Step through program." />&nbsp;
+                  <FontAwesome className={inactive} name="play" size="2x" onClick={this.run} title="Play program." />&nbsp;
+                  <FontAwesome className="interactive" name="redo" size="2x" onClick={this.restart} title="Reset program counter." />
+                  <FontAwesome className={"interactive" + (this.state.runAfterRegisterChange ? "" : " inactive") } name="eye" size="2x" onClick={this.toggleRunAfterRegisterChange} title="Auto run after register change." />
+                </div>
+              </Panel.Body>
+            </Panel>
             <Instructions instructions={this.state.instructions} programCounter={this.state.programCounter} />
-          </Col>
-        </Row>
-        <Row>
-          <Col md={12}>
-            <h3>Control</h3>
-            <div>
-              <button onClick={this.step} disabled={canRun}>Step</button>
-              <button onClick={this.run} disabled={canRun}>Run</button>
-              <button onClick={this.restart}>Restart</button>
-              <button onClick={this.clearInternalRegisters}>Clear Internal Registers</button>
-            </div>
-            Auto Run After Register Change <input type="checkbox" checked={this.state.runAfterRegisterChange} onChange={this.toggleRunAfterRegisterChange} />
           </Col>
         </Row>
       </div>
@@ -159,18 +167,22 @@ class ICSocket extends Component {
   }
 
   step() {
-    this.state.ic.step();
-    this.setState(this.transferICState());
+    if(this.canRun()) {
+      this.state.ic.step();
+      this.setState(this.transferICState());
+    }
   }
 
   run() {
-    var i;
+    if(this.canRun()) {
+      var i;
 
-    for (i = this.state.ic.programCounter(); i < this.state.ic.instructionCount(); i++) {
-      this.step();
+      for (i = this.state.ic.programCounter(); i < this.state.ic.instructionCount(); i++) {
+        this.step();
+      }
+
+      this.restart();
     }
-
-    this.restart();
   }
 
   restart() {
@@ -218,6 +230,7 @@ class ICSocket extends Component {
     let ic = this.state.ic;
     this.setState({ errors: ic.load(program) });
     this.setState({ instructionCount: ic.instructionCount() });
+    this.transferICState();
     this.parseLabels(program);
   }
 
@@ -242,7 +255,7 @@ class ICSocket extends Component {
   }
 
   toggleRunAfterRegisterChange(event) {
-    this.setState({ runAfterRegisterChange: event.target.checked });
+    this.setState({ runAfterRegisterChange: !this.state.runAfterRegisterChange });
   }
 }
 
@@ -250,9 +263,12 @@ class ProgramErrors extends Component {
   render() {
     if (this.props.errors.length > 0) {
       return (
-        <ul className="programErrors">
-          {this.renderErrors(this.props.errors)}
-        </ul>
+        <Alert bsStyle="danger">
+          <strong>Parsing Errors</strong>
+          <ul className="programErrors">
+            {this.renderErrors(this.props.errors)}        
+          </ul>
+        </Alert>
       );
     } else {
       return null;
@@ -298,17 +314,22 @@ class ProgramError extends Component {
 
 class Instructions extends Component {
   render() {
+    var badge = (this.props.instructions ? <Badge>{this.props.instructions.length}</Badge> : "");
+
     return (
-      <div>
-        <table className="instructions">
-          <thead>
-            <tr><th>Index</th><th>Instruction</th></tr>
+      <Panel>
+        <Panel.Heading>
+          <Panel.Title componentClass="h3"><FontAwesome name="cogs" /> Instructions {badge}</Panel.Title>
+        </Panel.Heading>
+        <Table>
+        <thead>
+            <tr><th colspan="2">Index</th><th>Instruction</th></tr>
           </thead>
           <tbody>
             {this.renderInstructions()}
           </tbody>
-        </table>
-      </div>
+        </Table>
+      </Panel>
     );
   }
 
@@ -321,10 +342,11 @@ class Instructions extends Component {
 
 class Instruction extends Component {
   render() {
-    let arrow = this.props.current ? <span className="fas fa-angle-double-right" /> : "";
+    let arrow = this.props.current ? <FontAwesome name="angle-double-right" /> : "";
     return (
       <tr className={"instruction" + (this.props.current ? " active" : "")}>
-        <td>{this.props.index} {arrow}</td>
+        <td>{this.props.index}</td>
+        <td>{arrow}</td>
         <td>{this.props.value.join(" ")}</td>
       </tr>
     );
@@ -333,15 +355,38 @@ class Instruction extends Component {
 
 class Registers extends Component {
   render() {
+    var icon;
+
+    switch(this.props.name) {
+    case "Input":
+      icon = <FontAwesome name="long-arrow-alt-right" />;
+      break;
+    case "Output":
+      icon = <FontAwesome name="long-arrow-alt-left" />;
+      break;
+    case "Internal":
+      icon = <FontAwesome name="memory" />;
+      break;
+      default:
+      icon = "default";
+    }
+
+    var clearRegisters = (this.props.name === "Internal" ? <FontAwesome name="times" className="pull-right interactive" onClick={this.props.clearInternalRegisters} title="Clear registers." /> : "")
+
     return (
-      <table className="registers">
-        <thead>
-          <tr><th>Index</th><th>Set</th><th>Value</th><th>Label</th></tr>
-        </thead>
-        <tbody>
-          {this.renderRegisters()}
-        </tbody>
-      </table>
+      <Panel>
+        <Panel.Heading>
+          <Panel.Title componentClass="h3">{icon} {this.props.name} Registers {clearRegisters}</Panel.Title>
+        </Panel.Heading>
+        <Table>
+          <thead>
+            <tr><th /><th>Set</th><th>Value</th><th>Label</th></tr>
+          </thead>
+          <tbody>
+            {this.renderRegisters()}
+          </tbody>
+        </Table>
+      </Panel>
     );
   }
 

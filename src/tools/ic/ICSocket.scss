@@ -3,3 +3,23 @@
       background-color: greenyellow;
   }
 }
+
+.interactive {
+  &:hover {
+    cursor: pointer;
+  }
+
+  &.inactive {
+    color: lightslategrey;
+  }
+}
+
+div {
+  &.control {
+    text-align: center;
+    span {
+      padding-left: 0.5em;
+      padding-right: 0.5em;
+    }
+  }
+}
