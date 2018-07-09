@@ -73,12 +73,12 @@ class Home extends Component {
   componentDidMount() {
     var versionList = this;
 
-    axios({url: 'http://api.steampowered.com/ISteamNews/GetNewsForApp/v0002/?appid=544550&count=3&maxlength=400&format=json', method: 'get', responseType: 'json'})
+    axios({url: 'https://api.steampowered.com/ISteamNews/GetNewsForApp/v0002/?appid=544550&count=3&maxlength=400&format=json', method: 'get', responseType: 'json'})
       .then(function(response) {
         versionList.setState({ news: { data: response.data.appnews.newsitems, message: null } })
       })
       .catch(function(error) {
-        versionList.setState({ news: { message: "Failed to load version list! " + error } })
+        versionList.setState({ news: { message: "Failed to load news list! " + error } })
       });
   }
 
@@ -152,8 +152,15 @@ class Home extends Component {
       </Col>);
     } else {
       return this.state.news.data.map((news) => {
-        var image = news.contents.split(" ", 1);
-        var text = news.contents.replace(image + " ", "");
+        var image = "";
+        var text = news.contents;
+
+        if (news.contents.startsWith("http")) {
+          var imageURL = news.contents.split(" ", 1);
+          // eslint-disable-next-line 
+          image = <img src={imageURL} width="100%" />;
+          text = news.contents.replace(imageURL + " ", "");      
+        }
 
         return (
         <Col md={4}>
@@ -162,7 +169,7 @@ class Home extends Component {
               <Panel.Title componentClass="h3"><a href={news.url}>{news.title}</a></Panel.Title>
             </Panel.Heading>
             <Panel.Body>
-              <img src={image} width="100%" alt="Generic news article." />
+              {image}
               <p>
                 <small><Timestamp time={news.date} /> by {news.author}</small>
               </p>
