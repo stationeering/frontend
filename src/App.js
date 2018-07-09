@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import ICSocket from './tools/ic/ICSocket';
-import { Link, Switch, Route } from 'react-router-dom';
+import { NavLink, Switch, Route } from 'react-router-dom';
 import './App.css';
 
 class App extends Component {
@@ -31,8 +31,8 @@ class Navigation extends Component {
     return (
     <div className="navigation">
       <ul>
-        <li><Link to='/'>Homepage</Link></li>
-        <li><Link to='/tools/ic'>IC Simulation</Link></li>
+        <li><NavLink to='/'>Homepage</NavLink></li>
+        <li><NavLink to='/tools/ic'>IC Simulation</NavLink></li>
       </ul>
     </div>
     );
