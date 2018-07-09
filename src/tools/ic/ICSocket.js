@@ -1,8 +1,14 @@
 import React, { Component } from 'react';
 import IC from 'stationeers-ic';
 import { Row, Col, Panel, Table, Badge, Alert } from 'react-bootstrap';
-import FontAwesome from 'react-fontawesome';
+
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { library } from '@fortawesome/fontawesome-svg-core';
+import { faTerminal, faGamepad, faCogs, faMemory, faLongArrowAltLeft, faLongArrowAltRight, faTimes, faStepForward, faPlay, faRedo, faEye } from '@fortawesome/free-solid-svg-icons';
+
 import './ICSocket.css';
+
+library.add(faTerminal, faGamepad, faCogs, faMemory, faLongArrowAltLeft, faLongArrowAltRight, faTimes, faStepForward, faPlay, faRedo, faEye);
 
 class ICSocket extends Component {
   constructor(props) {
@@ -137,7 +143,7 @@ class ICSocket extends Component {
           <Col md={8}>
             <Panel>
               <Panel.Heading>
-                <Panel.Title componentClass="h3"><FontAwesome name="terminal" /> Program</Panel.Title>
+                <Panel.Title componentClass="h3"><FontAwesomeIcon icon="terminal" /> Program</Panel.Title>
               </Panel.Heading>
               <Panel.Body>
                 <textarea rows="15" cols="80" value={this.state.program} onChange={this.programChange} />      
@@ -148,14 +154,14 @@ class ICSocket extends Component {
           <Col md={4}>
             <Panel>
               <Panel.Heading>
-                <Panel.Title componentClass="h3"><FontAwesome name="gamepad" /> Control</Panel.Title>
+                <Panel.Title componentClass="h3"><FontAwesomeIcon icon="gamepad" /> Control</Panel.Title>
               </Panel.Heading>
               <Panel.Body>
                 <div className="control">
-                  <FontAwesome className={inactive} name="step-forward" size="2x" onClick={this.step} title="Step through program." />&nbsp;
-                  <FontAwesome className={inactive} name="play" size="2x" onClick={this.run} title="Play program." />&nbsp;
-                  <FontAwesome className="interactive" name="redo" size="2x" onClick={this.restart} title="Reset program counter." />
-                  <FontAwesome className={"interactive" + (this.state.runAfterRegisterChange ? "" : " inactive") } name="eye" size="2x" onClick={this.toggleRunAfterRegisterChange} title="Auto run after register change." />
+                  <FontAwesomeIcon className={inactive} icon="step-forward" size="2x" onClick={this.step} title="Step through program." />&nbsp;
+                  <FontAwesomeIcon className={inactive} icon="play" size="2x" onClick={this.run} title="Play program." />&nbsp;
+                  <FontAwesomeIcon className="interactive" icon="redo" size="2x" onClick={this.restart} title="Reset program counter." />
+                  <FontAwesomeIcon className={"interactive" + (this.state.runAfterRegisterChange ? "" : " inactive") } icon="eye" size="2x" onClick={this.toggleRunAfterRegisterChange} title="Auto run after register change." />
                 </div>
               </Panel.Body>
             </Panel>
@@ -319,7 +325,7 @@ class Instructions extends Component {
     return (
       <Panel>
         <Panel.Heading>
-          <Panel.Title componentClass="h3"><FontAwesome name="cogs" /> Instructions {badge}</Panel.Title>
+          <Panel.Title componentClass="h3"><FontAwesomeIcon icon="cogs" /> Instructions {badge}</Panel.Title>
         </Panel.Heading>
         <Table>
         <thead>
@@ -342,7 +348,7 @@ class Instructions extends Component {
 
 class Instruction extends Component {
   render() {
-    let arrow = this.props.current ? <FontAwesome name="angle-double-right" /> : "";
+    let arrow = this.props.current ? <FontAwesomeIcon icon="angle-double-right" /> : "";
     return (
       <tr className={"instruction" + (this.props.current ? " active" : "")}>
         <td>{this.props.index}</td>
@@ -359,19 +365,19 @@ class Registers extends Component {
 
     switch(this.props.name) {
     case "Input":
-      icon = <FontAwesome name="long-arrow-alt-right" />;
+      icon = <FontAwesomeIcon icon="long-arrow-alt-right" />;
       break;
     case "Output":
-      icon = <FontAwesome name="long-arrow-alt-left" />;
+      icon = <FontAwesomeIcon icon="long-arrow-alt-left" />;
       break;
     case "Internal":
-      icon = <FontAwesome name="memory" />;
+      icon = <FontAwesomeIcon icon="memory" />;
       break;
       default:
       icon = "default";
     }
 
-    var clearRegisters = (this.props.name === "Internal" ? <FontAwesome name="times" className="pull-right interactive" onClick={this.props.clearInternalRegisters} title="Clear registers." /> : "")
+    var clearRegisters = (this.props.name === "Internal" ? <FontAwesomeIcon icon="times" className="pull-right interactive" onClick={this.props.clearInternalRegisters} title="Clear registers." /> : "")
 
     return (
       <Panel>
