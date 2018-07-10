@@ -24,8 +24,10 @@ class App extends Component {
         <Main />
         <footer className="footer">
           <small>
-            stationeering.com is a fan run website about <a href="https://store.steampowered.com/app/544550/Stationeers/">Stationeers</a> run by Melair.
-            Stationeers content and materials are trademarks and copyrights of RocketWerkz Ltd and its licensors.
+              stationeering.com is a fan website about <a href="https://store.steampowered.com/app/544550/Stationeers/">Stationeers</a> run by Melair.
+              The source code and infrastructure configuration is available for this website at <a href="https://github.com/stationeering">GitHub</a>.
+              <br />
+              Stationeers content and materials are trademarks and copyrights of RocketWerkz Ltd and its licensors.
           </small>
         </footer>
       </div>
