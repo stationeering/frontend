@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import ICSocket from './tools/ic/ICSocket';
+import Recent from './versions/Recent';
 import { NavLink, Switch, Route } from 'react-router-dom';
 import { Grid, Navbar, Nav, NavItem, NavDropdown, MenuItem, Panel, Row, Col } from 'react-bootstrap';
 import Timestamp from 'react-timestamp';
@@ -54,10 +55,13 @@ class Navigation extends Component {
         <NavItem componentClass={NavLink} eventKey={1} to="/" href="/">
           Homepage
         </NavItem>
-        <NavDropdown eventKey={2} title="Tools" id="basic-nav-dropdown">
-          <MenuItem componentClass={NavLink} eventKey={2.1} to="/tools/ic" href="/tools/ic">IC Simulator</MenuItem>
+        <NavItem componentClass={NavLink} eventKey={2} to="/versions/recent" href="/versions/recent">
+          Recent Changes
+        </NavItem>
+        <NavDropdown eventKey={3} title="Tools" id="basic-nav-dropdown">
+          <MenuItem componentClass={NavLink} eventKey={3.1} to="/tools/ic" href="/tools/ic">IC Simulator</MenuItem>
         </NavDropdown>
-        <NavItem eventKey={3} href="https://store.steampowered.com/app/544550/Stationeers/">
+        <NavItem eventKey={4} href="https://store.steampowered.com/app/544550/Stationeers/">
           <FontAwesomeIcon icon={["fab", "steam"]} />
         </NavItem>
       </Nav>
@@ -192,6 +196,7 @@ class Main extends Component {
     return (
       <Grid>
         <Switch>
+          <Route exact path="/versions/recent" component={Recent} />
           <Route exact path="/tools/ic" component={ICSocket} />
           <Route path="/" component={Home} />
         </Switch>
