@@ -87,9 +87,9 @@ class PlanetProperties extends Component {
   }
 
   formatDayLength(value) {
-    var length = ((1 / value) * 24).toFixed(1);
+    var length = ((1 / value) * 20).toFixed(1);
 
-    return length + " hours";
+    return length + " minutes";
   }
 }
 
