@@ -19,14 +19,14 @@ class Recent extends Component {
     }
 
     componentDidMount() {
-        var versionList = this;
+        var recent = this;
 
         axios({ url: 'https://data.stationeering.com/versions/recent.json', method: 'get', responseType: 'json' })
             .then(function (response) {
-                versionList.setState({ versions: { data: response.data, message: null } })
+                recent.setState({ versions: { data: response.data, message: null } })
             })
             .catch(function (error) {
-                versionList.setState({ versions: { message: "Failed to load version list! " + error } })
+                recent.setState({ versions: { message: "Failed to load version list! " + error } })
             });
     }
 
@@ -74,7 +74,7 @@ class Version extends Component {
         }       
 
         if (this.props.version.built_date) {
-            var builtEpoch = Number.parseInt(this.props.version.built_date) / 1000;
+            var builtEpoch = Number.parseInt(this.props.version.built_date, 10) / 1000;
 
             if (builtEpoch > 1) {
                 builtDate = <span>(<Timestamp time={builtEpoch} />)</span>;

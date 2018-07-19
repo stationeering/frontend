@@ -4,13 +4,13 @@ import { Panel, Row, Col } from 'react-bootstrap';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { library } from '@fortawesome/fontawesome-svg-core';
-import { faNewspaper, faHandSpock, faSitemap, faMicrochip, faCodeBranch } from '@fortawesome/free-solid-svg-icons';
+import { faNewspaper, faHandSpock, faSitemap, faMicrochip, faCodeBranch, faGlobeAsia } from '@fortawesome/free-solid-svg-icons';
 
 import SteamNews from './SteamNews';
 
 import './Home.css';
 
-library.add(faNewspaper, faHandSpock, faSitemap, faMicrochip, faCodeBranch);
+library.add(faNewspaper, faHandSpock, faSitemap, faMicrochip, faCodeBranch, faGlobeAsia );
 
 class Home extends Component { 
     render() {
@@ -31,7 +31,7 @@ class Home extends Component {
           </Row>
           <Row>
             <Col md={3}>
-              <Panel>
+              <Panel bsStyle="success">
                 <Panel.Heading>
                   <Panel.Title componentClass="h3"><FontAwesomeIcon icon="code-branch" /> Version History</Panel.Title>
                 </Panel.Heading>
@@ -46,6 +46,21 @@ class Home extends Component {
               </Panel>
             </Col>
             <Col md={3}>
+              <Panel bsStyle="success">
+                <Panel.Heading>
+                  <Panel.Title componentClass="h3"><FontAwesomeIcon icon="globe-asia" /> Scenario Info</Panel.Title>
+                </Panel.Heading>
+                <Panel.Body>
+                  <p>
+                    A display of all scenarios you can start a play in, including information on their planets and atmospheres.
+                  </p>
+                  <p>
+                  <NavLink to='/info/scenarios'>Check out the environments!</NavLink>
+                  </p>
+                </Panel.Body>
+              </Panel>
+            </Col>
+            <Col md={3}>
               <Panel bsStyle="danger">
                 <Panel.Heading>
                   <Panel.Title componentClass="h3"><FontAwesomeIcon icon="microchip" /> <NavLink to='/tools/ic'>IC Simulator</NavLink></Panel.Title>
@@ -55,7 +70,7 @@ class Home extends Component {
                     A simulation of the Integrated Circuit proposed by Recatek.
                   </p>
                   <p className="text-danger">
-                    <strong>This does not exist in game yet!</strong>
+                    <small><strong>Note: Does not exist in game yet!</strong></small>
                   </p>
                   <p>
                     <NavLink to='/tools/ic'>Try It!</NavLink>

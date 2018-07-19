@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { NavLink, Switch, Route } from 'react-router-dom';
 import { Grid, Navbar, Nav, NavItem, NavDropdown, MenuItem } from 'react-bootstrap';
 
+import Scenarios from './info/scenarios/Scenarios';
 import ICSocket from './tools/ic/ICSocket';
 import Recent from './versions/recent/Recent';
 import Home from './home/Home';
@@ -53,25 +54,28 @@ class Navigation extends Component {
   render() {
     return (
       <Nav>
-        <NavItem componentClass={NavLink} eventKey={2} to="/versions/recent" href="/versions/recent">
-          Recent Changes
+        <NavItem componentClass={NavLink} eventKey={1} to="/versions/recent" href="/versions/recent">
+          Change Log
         </NavItem>
+        <NavDropdown eventKey={2} title="Info" id="basic-nav-dropdown">
+          <MenuItem componentClass={NavLink} eventKey={2.1} to="/info/scenarios" href="/info/scenarios">Scenarios (Worlds)</MenuItem>
+        </NavDropdown>
         <NavDropdown eventKey={3} title="Tools" id="basic-nav-dropdown">
           <MenuItem componentClass={NavLink} eventKey={3.1} to="/tools/ic" href="/tools/ic">IC Simulator</MenuItem>
         </NavDropdown>
         <NavItem>
-          Stationeers on:
+          Stationeers:
         </NavItem>
         <NavItem eventKey={4} href="https://store.steampowered.com/app/544550/Stationeers/">
           <FontAwesomeIcon icon={["fab", "steam"]} /> Steam
         </NavItem>
-        <NavItem eventKey={4} href="https://stationeers.com/">
+        <NavItem eventKey={5} href="https://stationeers.com/">
           <FontAwesomeIcon icon={["fa", "globe"]} /> Web
         </NavItem>
-        <NavItem eventKey={4} href="https://twitter.com/stationeers">
+        <NavItem eventKey={6} href="https://twitter.com/stationeers">
           <FontAwesomeIcon icon={["fab", "twitter"]} /> Twitter
         </NavItem>
-        <NavItem eventKey={4} href="https://discordapp.com/invite/CxR3mRy">
+        <NavItem eventKey={7} href="https://discordapp.com/invite/CxR3mRy">
           <FontAwesomeIcon icon={["fab", "discord"]} /> Discord
         </NavItem>
       </Nav>
@@ -84,8 +88,10 @@ class Main extends Component {
     return (
       <Grid>
         <Switch>
-          <Route exact path="/versions/recent" component={Recent} />
-          <Route exact path="/tools/ic" component={ICSocket} />
+          <Route path="/info/scenarios" component={Scenarios} />
+          <Route path="/info/scenarios/:branch" component={Scenarios} />
+          <Route path="/versions/recent" component={Recent} />
+          <Route path="/tools/ic" component={ICSocket} />
           <Route path="/" component={Home} />
         </Switch>
       </Grid>

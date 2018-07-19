@@ -4,6 +4,13 @@ import { Panel, Row, Col } from 'react-bootstrap';
 import Timestamp from 'react-timestamp';
 import axios from 'axios';
 
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { library } from '@fortawesome/fontawesome-svg-core';
+import { faFileAlt } from '@fortawesome/free-solid-svg-icons';
+
+import './SteamNews.css';
+library.add(faFileAlt);
+
 class SteamNews extends Component {
     constructor(props) {
         super(props);
@@ -42,10 +49,6 @@ class SteamNews extends Component {
 }
 
 class SteamNewsItem extends Component {
-    constructor(props) {
-        super(props);
-    }
-
     render() {
         var image = "";
         var text = this.props.news.contents;
@@ -61,7 +64,7 @@ class SteamNewsItem extends Component {
             <Col md={4}>
                 <Panel>
                     <Panel.Heading>
-                        <Panel.Title componentClass="h3"><a href={this.props.news.url}>{this.props.news.title}</a></Panel.Title>
+                        <Panel.Title componentClass="h3"><FontAwesomeIcon icon="file-alt" /> <a href={this.props.news.url}>{this.props.news.title}</a></Panel.Title>
                     </Panel.Heading>
                     <Panel.Body>
                         {image}
