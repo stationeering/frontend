@@ -3,15 +3,17 @@ import { NavLink, Switch, Route } from 'react-router-dom';
 import { Grid, Navbar, Nav, NavItem, NavDropdown, MenuItem } from 'react-bootstrap';
 
 import ICSocket from './tools/ic/ICSocket';
-import Recent from './versions/Recent';
+import Recent from './versions/recent/Recent';
 import Home from './home/Home';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { library } from '@fortawesome/fontawesome-svg-core';
-import { faSteam } from '@fortawesome/free-brands-svg-icons';
+import { faSteam, faTwitter, faDiscord } from '@fortawesome/free-brands-svg-icons';
+import { faGlobe } from '@fortawesome/free-solid-svg-icons';
+
 
 import './App.css';
-library.add(faSteam);
+library.add(faSteam, faTwitter, faGlobe, faDiscord);
 
 class App extends Component {
   render() {
@@ -57,8 +59,20 @@ class Navigation extends Component {
         <NavDropdown eventKey={3} title="Tools" id="basic-nav-dropdown">
           <MenuItem componentClass={NavLink} eventKey={3.1} to="/tools/ic" href="/tools/ic">IC Simulator</MenuItem>
         </NavDropdown>
+        <NavItem>
+          Stationeers on:
+        </NavItem>
         <NavItem eventKey={4} href="https://store.steampowered.com/app/544550/Stationeers/">
-          <FontAwesomeIcon icon={["fab", "steam"]} />
+          <FontAwesomeIcon icon={["fab", "steam"]} /> Steam
+        </NavItem>
+        <NavItem eventKey={4} href="https://stationeers.com/">
+          <FontAwesomeIcon icon={["fa", "globe"]} /> Web
+        </NavItem>
+        <NavItem eventKey={4} href="https://twitter.com/stationeers">
+          <FontAwesomeIcon icon={["fab", "twitter"]} /> Twitter
+        </NavItem>
+        <NavItem eventKey={4} href="https://discordapp.com/invite/CxR3mRy">
+          <FontAwesomeIcon icon={["fab", "discord"]} /> Discord
         </NavItem>
       </Nav>
     );

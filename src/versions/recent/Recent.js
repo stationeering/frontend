@@ -1,6 +1,9 @@
 import React, { Component } from 'react';
 import { Row, Col, Panel, Badge } from 'react-bootstrap';
+
 import axios from 'axios';
+import Timestamp from 'react-timestamp';
+
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { faCodeBranch } from '@fortawesome/free-solid-svg-icons';
@@ -34,7 +37,7 @@ class Recent extends Component {
                     <Col md={12}>
                         <h3>Recent Changes</h3>
                         <p>
-                            These are the recent changes to Stationeers, extracted from the game.
+                            These are the recent changes to Stationeers, extracted from the game once an hour.
                         </p>
                     </Col>
                 </Row>
@@ -60,19 +63,30 @@ class Recent extends Component {
 class Version extends Component {
     render() {
         var style = undefined;
-        var betaBadge = undefined;
+        var badge = undefined;
+        var builtDate = undefined;
 
         if (!this.props.version.public_date) {
             style = "danger";
-            betaBadge = <Badge className="pull-right">Beta Only</Badge>;
-        }        
+            badge = <Badge className="pull-right">Beta Only</Badge>;
+        } else {
+            badge = <Badge className="pull-right">Public</Badge>;
+        }       
+
+        if (this.props.version.built_date) {
+            var builtEpoch = Number.parseInt(this.props.version.built_date) / 1000;
+
+            if (builtEpoch > 1) {
+                builtDate = <span>(<Timestamp time={builtEpoch} />)</span>;
+            }
+        }
 
         return (
             <Row>
                 <Col md={12}>
                     <Panel bsStyle={style}>
                         <Panel.Heading>
-                            <Panel.Title componentClass="h3"><FontAwesomeIcon icon="code-branch" /> {this.props.version.version} {betaBadge}</Panel.Title>
+                            <Panel.Title componentClass="h3"><FontAwesomeIcon icon="code-branch" /> {this.props.version.version} {builtDate} {badge}</Panel.Title>
                         </Panel.Heading>
                         <Panel.Body>
                             <div>
