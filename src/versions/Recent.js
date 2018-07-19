@@ -1,8 +1,12 @@
 import React, { Component } from 'react';
 import { Row, Col, Panel, Badge } from 'react-bootstrap';
 import axios from 'axios';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { library } from '@fortawesome/fontawesome-svg-core';
+import { faCodeBranch } from '@fortawesome/free-solid-svg-icons';
 
 import './Recent.css';
+library.add(faCodeBranch);
 
 class Recent extends Component {
     constructor(props) {
@@ -68,7 +72,7 @@ class Version extends Component {
                 <Col md={12}>
                     <Panel bsStyle={style}>
                         <Panel.Heading>
-                            <Panel.Title componentClass="h3">{this.props.version.version} {betaBadge}</Panel.Title>
+                            <Panel.Title componentClass="h3"><FontAwesomeIcon icon="code-branch" /> {this.props.version.version} {betaBadge}</Panel.Title>
                         </Panel.Heading>
                         <Panel.Body>
                             <div>
