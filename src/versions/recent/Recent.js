@@ -1,15 +1,15 @@
 import React, { Component } from 'react';
-import { Row, Col, Panel, Badge } from 'react-bootstrap';
+import { Row, Col, Panel, Badge, Label } from 'react-bootstrap';
 
 import axios from 'axios';
 import Timestamp from 'react-timestamp';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { library } from '@fortawesome/fontawesome-svg-core';
-import { faCodeBranch } from '@fortawesome/free-solid-svg-icons';
+import { faCodeBranch, faWrench, faFlask, faUsers } from '@fortawesome/free-solid-svg-icons';
 
 import './Recent.css';
-library.add(faCodeBranch);
+library.add(faCodeBranch, faWrench, faFlask, faUsers);
 
 class Recent extends Component {
     constructor(props) {
@@ -62,15 +62,15 @@ class Recent extends Component {
 
 class Version extends Component {
     render() {
-        var style = undefined;
-        var badge = undefined;
+        var style = "success";
+        var branchBadge = undefined;
         var builtDate = undefined;
 
         if (!this.props.version.public_date) {
             style = "danger";
-            badge = <Badge className="pull-right">Beta Only</Badge>;
+            branchBadge = <Badge className="pull-right">Beta</Badge>;
         } else {
-            badge = <Badge className="pull-right">Public</Badge>;
+            branchBadge = <Badge className="pull-right">Public</Badge>;
         }       
 
         if (this.props.version.built_date) {
@@ -86,13 +86,19 @@ class Version extends Component {
                 <Col md={12}>
                     <Panel bsStyle={style}>
                         <Panel.Heading>
-                            <Panel.Title componentClass="h3"><FontAwesomeIcon icon="code-branch" /> {this.props.version.version} {builtDate} {badge}</Panel.Title>
+                            <Panel.Title componentClass="h3"><FontAwesomeIcon icon="code-branch" /> {this.props.version.version} {builtDate} {branchBadge}</Panel.Title>
                         </Panel.Heading>
                         <Panel.Body>
                             <div>
                                 {this.renderItems()}
                             </div>
                         </Panel.Body>
+                        <Panel.Footer className="text-muted">
+                            <DateLabel icon="wrench" name="Build Time" value={this.props.version.built_date} />
+                            <DateLabel icon="flask" name="Beta Branch" value={this.props.version.beta_date} />
+                            <DateLabel icon="users" name="Public Branch" value={this.props.version.public_date} />
+                            <SteamLabel value={this.props.version.build_id} />
+                        </Panel.Footer>
                     </Panel>
                 </Col>
             </Row>
@@ -106,6 +112,26 @@ class Version extends Component {
         } else {
             return (<small>No change log for this version.</small>);
         }
+    }
+}
+
+class SteamLabel extends Component {
+    render() {
+        if (!this.props.value) {
+            return null;
+        }
+
+        return (<Label><FontAwesomeIcon icon={["fab", "steam"]} /> <abbr title="Steam Build ID">{this.props.value}</abbr></Label>);        
+    }
+}
+
+class DateLabel extends Component {
+    render() {
+        if (!this.props.value) {
+            return null;
+        }
+
+        return (<Label><FontAwesomeIcon icon={this.props.icon} /> <abbr title={this.props.name}><Timestamp time={this.props.value / 1000} format='full' twentyFourHour /></abbr></Label>);        
     }
 }
 
