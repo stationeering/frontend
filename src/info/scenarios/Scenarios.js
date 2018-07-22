@@ -6,19 +6,13 @@ class Scenarios extends Component {
   constructor(props) {
     super(props);
 
-    if (this.props.match.params.branch) {
-      this.state = { branch: this.props.match.params.branch };
-    } else {
-      this.state = { branch: "public" };
-    }
-
     this.state = { ...this.state, scenarios: { data: null, message: "Please wait loading scenarios!" } };
   }
 
   componentDidMount() {
     var scenarios = this;
 
-    axios({ url: 'https://data.stationeering.com/scenarios/' + this.state.branch + '.json', method: 'get', responseType: 'json' })
+    axios({ url: 'https://data.stationeering.com/scenarios/' + this.props.branch + '.json', method: 'get', responseType: 'json' })
       .then(function (response) {
         scenarios.setState({ scenarios: { data: response.data, message: null } })
       })
