@@ -8,6 +8,8 @@ import ICSocket from './tools/ic/ICSocket';
 import Recent from './versions/recent/Recent';
 import Home from './home/Home';
 
+import axios from 'axios';
+
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { faSteam, faTwitter, faDiscord } from '@fortawesome/free-brands-svg-icons';
@@ -21,8 +23,51 @@ class App extends Component {
   constructor(props) {
     super(props);
 
-    this.state = { beta: true };    
     this.toggleBeta = this.toggleBeta.bind(this);
+    this.languageMap = this.languageMap.bind(this);
+    
+    this.state = { beta: false, language: { mapping: {}, message: "Loading language..." } };
+  }
+
+  componentDidMount() {
+      var recent = this;
+
+      axios({ url: 'https://data.stationeering.com/languages/en/' + (this.state.beta ? "beta" : "public") + '.json', method: 'get', responseType: 'json' })
+          .then(function (response) {
+              recent.setState({ language: { mapping: recent.languageMapToLower(response.data), message: null } })
+          })
+          .catch(function (error) {
+              recent.setState({ language: { mapping: {}, message: "Failed to load language file! " + error } })
+          });
+  }
+
+  languageMapToLower(data) {
+    data.sections = Object.keys(data.sections).reduce((acc, type) => {
+      acc[type.toLowerCase()] = Object.keys(data.sections[type]).reduce((acc2, key) => {
+        acc2[key.toLowerCase()] = data.sections[type][key];
+        return acc2;
+      }, {});
+      return acc;
+    }, {});
+
+    return data;
+  }
+
+  languageMap(type, key) {
+    var lowerType = type.toLowerCase();
+    var lowerKey = key.toLowerCase();
+
+    if (this.state.language.mapping.sections.hasOwnProperty(lowerType) && this.state.language.mapping.sections[lowerType].hasOwnProperty(lowerKey)) {
+      var mapping = this.state.language.mapping.sections[lowerType][lowerKey];
+
+      if (typeof mapping === 'object') {
+        return mapping.name;
+      } else {
+        return mapping;
+      }
+    }
+
+    return key;
   }
 
   toggleBeta(event) {
@@ -34,9 +79,9 @@ class App extends Component {
       <div className="App">
         <Navbar>
           <Header />
-          <Navigation betaBranch={this.state.beta} onChange={this.toggleBeta} />
+          <Navigation betaBranch={this.state.beta} onChange={this.toggleBeta} languageLoadState={this.state.language.message} />
         </Navbar>
-        <Main beta={this.state.beta} />
+        <Main beta={this.state.beta} languageMap={this.languageMap} />
         <footer className="footer">  
           <small>
               stationeering.com is a fan website about <a href="https://store.steampowered.com/app/544550/Stationeers/">Stationeers</a> run by Melair.
@@ -64,6 +109,8 @@ class Header extends Component {
 
 class Navigation extends Component {
   render() {
+    var languageLoading = (this.props.languageLoadState ? <Nav pullRight><Navbar.Text>{this.props.languageLoadState}</Navbar.Text></Nav> : null);
+
     return (
       <div>
       <Nav>
@@ -99,6 +146,7 @@ class Navigation extends Component {
           <FontAwesomeIcon icon={["fab", "discord"]} />
         </NavItem>
       </Nav>
+      {languageLoading}
       </div>
     );
   }
@@ -107,10 +155,11 @@ class Navigation extends Component {
 class Main extends Component {
   render() {
     var branch = this.props.beta ? "beta" : "public";
+    
     return (
       <Grid>  
         <Switch>
-          <Route path="/info/items" render={() => <Items branch={branch} />} />
+          <Route path="/info/items" render={() => <Items branch={branch} languageMap={this.props.languageMap} />} />
           <Route path="/info/scenarios" render={() => <Scenarios branch={branch} />} />
           <Route path="/versions/recent" component={Recent} />
           <Route path="/tools/ic" component={ICSocket} />

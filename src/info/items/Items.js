@@ -14,6 +14,8 @@ class Items extends Component {
   constructor(props) {
     super(props);
 
+    this.manufactoryMap = this.manufactoryMap.bind(this);
+
     this.state = { ...this.state, byItem: {}, byManufactory: {}, recipes: { message: "Please wait loading recipes!" } };
   }
 
@@ -41,10 +43,37 @@ class Items extends Component {
     this.setState({ byItem, byManufactory });
   }
 
+  manufactoryMap(manufactory) {
+    const MANUFACTORY_TO_THING = {
+      "FabricatorRecipes": "StructureFabricator",
+      "ElectronicsPrinterRecipes": "StructureElectronicsPrinter",
+      "OrganicsPrinterRecipes": "StructureOrganicsPrinter",
+      "ChemistryRecipes": "ApplianceChemistryStation",
+      "MicrowaveRecipes": "ApplianceMicrowave",
+      "ToolManufactoryRecipes": "StructureToolManufactory",
+      "HydraulicPipeBenderRecipes": "StructureHydraulicPipeBender",
+      "SecurityPrinterRecipes": "StructureSecurityPrinter",
+      "FurnaceRecipes": "StructureFurnace",
+      "ArcFurnaceRecipes": "StructureArcFurnace",
+      "AutolatheRecipes": "StructureAutolathe",
+      "CentrifugeRecipes": "StructureCentrifuge"
+    }
+
+    if (MANUFACTORY_TO_THING.hasOwnProperty(manufactory)) {
+      return MANUFACTORY_TO_THING[manufactory];
+    } else {
+      return manufactory;
+    }
+  }
+
   generateByItem(recipes) {
     var items = {}
 
     for (let recipe of recipes) {
+      if (recipe.manufactory === "IngotRecipes") {
+        continue;
+      }
+
       if (!items.hasOwnProperty(recipe.item)) {
         items[recipe.item] = {};
       }
@@ -59,6 +88,10 @@ class Items extends Component {
     var items = {}
 
     for (let recipe of recipes) {
+      if (recipe.manufactory === "IngotRecipes") {
+        continue;
+      }
+
       if (!items.hasOwnProperty(recipe.manufactory)) {
         items[recipe.manufactory] = {};
       }
@@ -92,7 +125,7 @@ class Items extends Component {
   }
 
   render() {
-    return (<Search items={this.state.byItem} branch={this.props.branch} />);
+    return (<Search items={this.state.byItem} branch={this.props.branch} languageMap={this.props.languageMap} manufactoryMap={this.manufactoryMap} />);
   }
 }
 
@@ -146,7 +179,7 @@ class Search extends Component {
           </Panel.Heading>
           <Panel.Body>
             <Row>
-            {this.state.results.map((item) => <SearchResult key={item} itemName={item} item={this.props.items[item]} />)}
+            {this.state.results.map((item) => <SearchResult key={item} itemName={item} item={this.props.items[item]} languageMap={this.props.languageMap} manufactoryMap={this.props.manufactoryMap} />)}
             </Row>
           </Panel.Body>
         </Panel>
@@ -162,7 +195,8 @@ class Search extends Component {
 
     if (parts.length > 0) {
       results = Object.keys(this.props.items).filter((name) => {
-        return parts.every((partName) => name.toLowerCase().includes(partName));
+        return parts.every((partName) => name.toLowerCase().includes(partName)) ||
+          parts.every((partName) => this.props.languageMap("Things", name).toLowerCase().includes(partName));
       })
     }
 
@@ -180,13 +214,13 @@ class SearchResult extends Component {
     <Col md={6}>
         <Panel>
           <Panel.Heading>
-            <Panel.Title componentClass="h4">{this.props.itemName}</Panel.Title>
+            <Panel.Title componentClass="h4">{this.props.languageMap("Things", this.props.itemName)}</Panel.Title>
           </Panel.Heading>
           <Panel.Body>
             <strong>Made In:</strong>
           </Panel.Body>
           <ListGroup>
-            {Object.keys(this.props.item).map((manufactory) => <ListGroupItem>{manufactory}</ListGroupItem>)}
+            {Object.keys(this.props.item).map((manufactory) => <ListGroupItem key={manufactory}>{this.props.languageMap("Things", this.props.manufactoryMap(manufactory))}</ListGroupItem>)}
           </ListGroup>  
         </Panel>
     </Col>);
