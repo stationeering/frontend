@@ -25,12 +25,14 @@ class App extends Component {
 
     this.toggleBeta = this.toggleBeta.bind(this);
     this.languageMap = this.languageMap.bind(this);
-    
-    this.state = { beta: false, language: { mapping: {}, message: "Loading language..." } };
+
+    this.state = { beta: false, language: { mapping: {}, message: "" } };
   }
 
   componentDidMount() {
       var recent = this;
+
+      recent.setState( { language: { mapping: {}, message: "Loading language..." } } );
 
       axios({ url: 'https://data.stationeering.com/languages/en/' + (this.state.beta ? "beta" : "public") + '.json', method: 'get', responseType: 'json' })
           .then(function (response) {
@@ -39,6 +41,13 @@ class App extends Component {
           .catch(function (error) {
               recent.setState({ language: { mapping: {}, message: "Failed to load language file! " + error } })
           });
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    console.log(JSON.stringify(prevProps));
+    if (prevState.beta !== this.state.beta) {
+      this.componentDidMount();
+    }
   }
 
   languageMapToLower(data) {
@@ -57,7 +66,7 @@ class App extends Component {
     var lowerType = type.toLowerCase();
     var lowerKey = key.toLowerCase();
 
-    if (this.state.language.mapping.sections.hasOwnProperty(lowerType) && this.state.language.mapping.sections[lowerType].hasOwnProperty(lowerKey)) {
+    if (this.state.language.mapping.sections && this.state.language.mapping.sections.hasOwnProperty(lowerType) && this.state.language.mapping.sections[lowerType].hasOwnProperty(lowerKey)) {
       var mapping = this.state.language.mapping.sections[lowerType][lowerKey];
 
       if (typeof mapping === 'object') {
@@ -82,7 +91,7 @@ class App extends Component {
           <Navigation betaBranch={this.state.beta} onChange={this.toggleBeta} languageLoadState={this.state.language.message} />
         </Navbar>
         <Main beta={this.state.beta} languageMap={this.languageMap} />
-        <footer className="footer">  
+        <footer className="footer">
           <small>
               stationeering.com is a fan website about <a href="https://store.steampowered.com/app/544550/Stationeers/">Stationeers</a> run by Melair.
               The source code and infrastructure configuration is available for this website at <a href="https://github.com/stationeering">GitHub</a>.
@@ -151,13 +160,13 @@ class Navigation extends Component {
     );
   }
 }
-  
+
 class Main extends Component {
   render() {
     var branch = this.props.beta ? "beta" : "public";
-    
+
     return (
-      <Grid>  
+      <Grid>
         <Switch>
           <Route path="/info/items" render={() => <Items branch={branch} languageMap={this.props.languageMap} />} />
           <Route path="/info/scenarios" render={() => <Scenarios branch={branch} />} />

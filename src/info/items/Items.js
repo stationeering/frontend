@@ -19,7 +19,16 @@ class Items extends Component {
     this.state = { ...this.state, byItem: {}, byManufactory: {}, recipes: { message: "Please wait loading recipes!" } };
   }
 
-  componentDidMount() {
+  static getDerivedStateFromProps(nextProps, prevState) {
+    if (nextProps.branch !== prevState.branch) {
+      return { branchChange: true, branch: nextProps.branch }
+    }
+    return null;
+  }
+
+  loadData() {
+    this.setState({ branchChange: false });
+
     var recipes = this;
 
     axios({ url: 'https://data.stationeering.com/recipes/' + this.props.branch + '.json', method: 'get', responseType: 'json' })
@@ -34,6 +43,16 @@ class Items extends Component {
       .catch(function (error) {
         recipes.setState({ recipes: { message: "Failed to load recipe list! " + error } });
       });
+  }
+
+  componentDidMount() {
+    this.loadData();
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    if (this.state.branchChange) {
+      this.loadData();
+    }
   }
 
   processRecipeList(recipes) {
@@ -56,7 +75,8 @@ class Items extends Component {
       "FurnaceRecipes": "StructureFurnace",
       "ArcFurnaceRecipes": "StructureArcFurnace",
       "AutolatheRecipes": "StructureAutolathe",
-      "CentrifugeRecipes": "StructureCentrifuge"
+      "CentrifugeRecipes": "StructureCentrifuge",
+      "PaintMixRecipes": "AppliancePaintMixer"
     }
 
     if (MANUFACTORY_TO_THING.hasOwnProperty(manufactory)) {
@@ -185,6 +205,14 @@ class Search extends Component {
         </Panel>
       </div>
     );
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    this.search
+  }
+
+  initialSearch(event) {
+    
   }
 
   search(event) {
