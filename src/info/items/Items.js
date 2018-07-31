@@ -207,14 +207,6 @@ class Search extends Component {
     );
   }
 
-  componentDidUpdate(prevProps, prevState) {
-    this.search
-  }
-
-  initialSearch(event) {
-    
-  }
-
   search(event) {
     var searchTerm = event.target.value;
     var parts = searchTerm.split(" ").map((term) => term.trim().toLowerCase()).filter((term) => term.length > 0);

@@ -5,6 +5,7 @@ import { Grid, Navbar, Nav, NavItem, NavDropdown, MenuItem } from 'react-bootstr
 import Scenarios from './info/scenarios/Scenarios';
 import Items from './info/items/Items';
 import ICSocket from './tools/ic/ICSocket';
+import Data from './tools/data/Data';
 import Recent from './versions/recent/Recent';
 import Home from './home/Home';
 
@@ -132,6 +133,8 @@ class Navigation extends Component {
         </NavDropdown>
         <NavDropdown eventKey={3} title="Tools" id="basic-nav-dropdown">
           <MenuItem componentClass={NavLink} eventKey={3.1} to="/tools/ic" href="/tools/ic">IC Simulator</MenuItem>
+          <MenuItem divider />
+          <MenuItem componentClass={NavLink} eventKey={3.2} to="/tools/data" href="/tools/data">Data and Webhooks</MenuItem>
         </NavDropdown>
         <Navbar.Text>
             Show Beta?{' '}
@@ -172,6 +175,7 @@ class Main extends Component {
           <Route path="/info/scenarios" render={() => <Scenarios branch={branch} />} />
           <Route path="/versions/recent" component={Recent} />
           <Route path="/tools/ic" component={ICSocket} />
+          <Route path="/tools/data" component={Data} />
           <Route path="/" component={Home} />
         </Switch>
       </Grid>
