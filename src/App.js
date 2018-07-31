@@ -45,7 +45,6 @@ class App extends Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
-    console.log(JSON.stringify(prevProps));
     if (prevState.beta !== this.state.beta) {
       this.componentDidMount();
     }
