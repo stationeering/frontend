@@ -1,15 +1,15 @@
 import React, { Component } from 'react';
-import { Row, Col, Panel, Badge, Label } from 'react-bootstrap';
+import { Row, Col, Panel, Badge, Label, ListGroup, ListGroupItem } from 'react-bootstrap';
 
 import axios from 'axios';
 import Timestamp from 'react-timestamp';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { library } from '@fortawesome/fontawesome-svg-core';
-import { faCodeBranch, faWrench, faFlask, faUsers } from '@fortawesome/free-solid-svg-icons';
+import { faCodeBranch, faWrench, faFlask, faUsers, faRss } from '@fortawesome/free-solid-svg-icons';
 
 import './Recent.css';
-library.add(faCodeBranch, faWrench, faFlask, faUsers);
+library.add(faCodeBranch, faWrench, faFlask, faUsers, faRss);
 
 class Recent extends Component {
     constructor(props) {
@@ -34,14 +34,29 @@ class Recent extends Component {
         return (
             <div>
                 <Row>
-                    <Col md={12}>
+                    <Col md={8}>
                         <h3>Recent Changes</h3>
                         <p>
                             These are the recent changes to Stationeers, extracted from the game once an hour.
                         </p>
                     </Col>
                 </Row>
-                {this.renderVersions()}
+                <Row>
+                    <Col md={10}>
+                        {this.renderVersions()}
+                    </Col>
+                    <Col md={2}>
+                    <Panel bsStyle="info">
+                        <Panel.Heading>
+                            <Panel.Title componentClass="h3"><FontAwesomeIcon icon="rss" /> ATOM Feeds</Panel.Title>
+                        </Panel.Heading>
+                        <ListGroup>
+                            <ListGroupItem><a href="https://data.stationeering.com/versions/public.atom">Public Branch</a></ListGroupItem>
+                            <ListGroupItem><a href="https://data.stationeering.com/versions/beta.atom">Beta Branch</a></ListGroupItem>
+                        </ListGroup>
+                    </Panel>
+                    </Col>
+                </Row>
             </div>
         );
     }
@@ -49,13 +64,10 @@ class Recent extends Component {
     renderVersions() {
         if (this.state.versions.data === null) {
             return (
-                <Row>
-                    <Col md={12}>
-                        <small>{this.state.versions.message}</small>
-                    </Col>
-                </Row>);
+                <small>{this.state.versions.message}</small>
+            );
         } else {
-            return this.state.versions.data.map(version => <Version key={version.version} version={version} />)
+            return this.state.versions.data.map(version => <Version key={version.version} version={version} />);
         }
     }
 }
@@ -82,26 +94,22 @@ class Version extends Component {
         }
 
         return (
-            <Row>
-                <Col md={12}>
-                    <Panel bsStyle={style}>
-                        <Panel.Heading>
-                            <Panel.Title componentClass="h3"><FontAwesomeIcon icon="code-branch" /> {this.props.version.version} {builtDate} {branchBadge}</Panel.Title>
-                        </Panel.Heading>
-                        <Panel.Body>
-                            <div>
-                                {this.renderItems()}
-                            </div>
-                        </Panel.Body>
-                        <Panel.Footer className="text-muted">
-                            <DateLabel icon="wrench" name="Build Time" value={this.props.version.built_date} />
-                            <DateLabel icon="flask" name="Beta Branch" value={this.props.version.beta_date} />
-                            <DateLabel icon="users" name="Public Branch" value={this.props.version.public_date} />
-                            <SteamLabel value={this.props.version.build_id} />
-                        </Panel.Footer>
-                    </Panel>
-                </Col>
-            </Row>
+            <Panel bsStyle={style}>
+                <Panel.Heading>
+                    <Panel.Title componentClass="h3"><FontAwesomeIcon icon="code-branch" /> {this.props.version.version} {builtDate} {branchBadge}</Panel.Title>
+                </Panel.Heading>
+                <Panel.Body>
+                    <div>
+                        {this.renderItems()}
+                    </div>
+                </Panel.Body>
+                <Panel.Footer className="text-muted">
+                    <DateLabel icon="wrench" name="Build Time" value={this.props.version.built_date} />
+                    <DateLabel icon="flask" name="Beta Branch" value={this.props.version.beta_date} />
+                    <DateLabel icon="users" name="Public Branch" value={this.props.version.public_date} />
+                    <SteamLabel value={this.props.version.build_id} />
+                </Panel.Footer>
+            </Panel>
         );
     }
 

@@ -136,7 +136,7 @@ class Navigation extends Component {
           <MenuItem componentClass={NavLink} eventKey={3.2} to="/tools/data" href="/tools/data">Data and Webhooks</MenuItem>
         </NavDropdown>
         <Navbar.Text>
-            Show Beta?{' '}
+            Show Beta Branch?{' '}
             <input type="checkbox" checked={this.props.betaBranch} onChange={this.props.onChange} />
         </Navbar.Text>
       </Nav>
