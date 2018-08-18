@@ -1,15 +1,16 @@
 import React, { Component } from 'react';
 import { Row, Col, Panel, Badge, Label, ListGroup, ListGroupItem } from 'react-bootstrap';
+import { NavLink } from 'react-router-dom';
 
 import axios from 'axios';
 import Timestamp from 'react-timestamp';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { library } from '@fortawesome/fontawesome-svg-core';
-import { faCodeBranch, faWrench, faFlask, faUsers, faRss } from '@fortawesome/free-solid-svg-icons';
+import { faCodeBranch, faWrench, faFlask, faUsers, faRss, faFileCode } from '@fortawesome/free-solid-svg-icons';
 
 import './Recent.css';
-library.add(faCodeBranch, faWrench, faFlask, faUsers, faRss);
+library.add(faCodeBranch, faWrench, faFlask, faUsers, faRss, faFileCode);
 
 class Recent extends Component {
     constructor(props) {
@@ -53,6 +54,14 @@ class Recent extends Component {
                         <ListGroup>
                             <ListGroupItem><a href="https://data.stationeering.com/versions/public.atom">Public Branch</a></ListGroupItem>
                             <ListGroupItem><a href="https://data.stationeering.com/versions/beta.atom">Beta Branch</a></ListGroupItem>
+                        </ListGroup>
+                    </Panel>
+                    <Panel bsStyle="info">
+                        <Panel.Heading>
+                            <Panel.Title componentClass="h3"><FontAwesomeIcon icon="file-code" /> JSON Feed</Panel.Title>
+                        </Panel.Heading>
+                        <ListGroup>
+                            <ListGroupItem><NavLink to='/tools/data'>Recent Versions</NavLink></ListGroupItem>
                         </ListGroup>
                     </Panel>
                     </Col>
