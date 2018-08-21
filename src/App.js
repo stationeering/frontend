@@ -6,6 +6,7 @@ import Scenarios from './info/scenarios/Scenarios';
 import Items from './info/items/Items';
 import ICSocket from './tools/ic/ICSocket';
 import Data from './tools/data/Data';
+import Discord from './tools/discord/Discord';
 import Recent from './versions/recent/Recent';
 import Home from './home/Home';
 
@@ -133,7 +134,8 @@ class Navigation extends Component {
         <NavDropdown eventKey={3} title="Tools" id="basic-nav-dropdown">
           <MenuItem componentClass={NavLink} eventKey={3.1} to="/tools/ic" href="/tools/ic">IC Simulator</MenuItem>
           <MenuItem divider />
-          <MenuItem componentClass={NavLink} eventKey={3.2} to="/tools/data" href="/tools/data">Data and Webhooks</MenuItem>
+          <MenuItem componentClass={NavLink} eventKey={3.2} to="/tools/discord" href="/tools/discord">Discord Bot</MenuItem>
+          <MenuItem componentClass={NavLink} eventKey={3.3} to="/tools/data" href="/tools/data">Data and Webhooks</MenuItem>
         </NavDropdown>
         <Navbar.Text>
             Show Beta Branch?{' '}
@@ -175,6 +177,7 @@ class Main extends Component {
           <Route path="/versions/recent" component={Recent} />
           <Route path="/tools/ic" component={ICSocket} />
           <Route path="/tools/data" component={Data} />
+          <Route path="/tools/discord" component={Discord} />
           <Route path="/" component={Home} />
         </Switch>
       </Grid>
