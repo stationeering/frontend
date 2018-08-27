@@ -7,7 +7,7 @@ import Items from './info/items/Items';
 import ICSocket from './tools/ic/ICSocket';
 import Data from './tools/data/Data';
 import Discord from './tools/discord/Discord';
-import Recent from './versions/recent/Recent';
+import VersionList from './versions/VersionList';
 import Home from './home/Home';
 
 import axios from 'axios';
@@ -174,7 +174,7 @@ class Main extends Component {
         <Switch>
           <Route path="/info/items" render={() => <Items branch={branch} languageMap={this.props.languageMap} />} />
           <Route path="/info/scenarios" render={() => <Scenarios branch={branch} />} />
-          <Route path="/versions/recent" component={Recent} />
+          <Route path="/versions/:section" component={VersionList} />
           <Route path="/tools/ic" component={ICSocket} />
           <Route path="/tools/data" component={Data} />
           <Route path="/tools/discord" component={Discord} />
