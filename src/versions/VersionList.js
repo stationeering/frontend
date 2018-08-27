@@ -17,8 +17,16 @@ class VersionList extends Component {
         return (
             <div>
                 <Row>
-                    <Col md={8}>
+                    <Col md={10}>
                         <h3>Versions</h3>
+                        <Panel bsStyle="warning">
+                            <Panel.Heading>
+                                <Panel.Title componentClass="h3"><FontAwesomeIcon icon={["fab", "discord"]} /> Version Announcements in <strong>your</strong> Discord!</Panel.Title>
+                            </Panel.Heading>
+                            <Panel.Body>
+                                    Do you want version update information in your Discord? Well now you can with the Stationeering bot! <NavLink className='pull-right' to='/tools/discord'>Try the bot now!</NavLink>
+                            </Panel.Body>
+                        </Panel>
                         <p>
                             These are the recent changes to Stationeers, extracted from the game once an hour.
                         </p>
