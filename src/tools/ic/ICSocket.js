@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import IC from 'stationeers-ic';
-import { Row, Col, Panel, Table, Badge, Alert } from 'react-bootstrap';
+import { Row, Col, Panel, Table, Alert } from 'react-bootstrap';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { library } from '@fortawesome/fontawesome-svg-core';
@@ -114,13 +114,12 @@ class ICSocket extends Component {
       outputRegisters: ic.getOutputRegisters(),
       internalRegisters: ic.getInternalRegisters(),
       programCounter: ic.programCounter(),
-      instructions: ic.getInstructions(),
-      instructionCount: ic.instructionCount()
+      instructionCount: ic.getInstructionCount()
     });
   }
 
   canRun() {
-    return !(this.state.ic.programCounter() >= this.state.ic.instructionCount()) || (this.state.errors.length > 0);
+    return !(this.state.ic.programCounter() >= this.state.ic.getInstructionCount()) || (this.state.errors.length > 0);
   }
 
   render() {
@@ -128,18 +127,6 @@ class ICSocket extends Component {
 
     return (
       <div className="ICSocket">
-        <Row>
-          <Col md={12}>
-            <Panel bsStyle="danger">
-              <Panel.Heading>
-                <Panel.Title componentClass="h3">Warning</Panel.Title>
-              </Panel.Heading>
-              <Panel.Body>
-                This is an implementation of a community suggestion, it is not yet in the game.
-              </Panel.Body>
-            </Panel> 
-          </Col>
-        </Row>
         <Row>
           <Col md={4}>
             <Registers registers={this.state.inputRegisters} type="input" name="Input" setRegister={this.setRegister} labels={this.state.labels.input} />
@@ -180,11 +167,10 @@ class ICSocket extends Component {
                 </div>
               </Panel.Body>
             </Panel>
-            <Instructions instructions={this.state.instructions} programCounter={this.state.programCounter} />
           </Col>
         </Row>
         <Row>
-          <Col md={8}>          
+          <Col md={6}>          
            <Panel>
               <Panel.Heading>
                 <Panel.Title componentClass="h3"><FontAwesomeIcon icon="lightbulb" /> Instructions</Panel.Title>
@@ -192,7 +178,7 @@ class ICSocket extends Component {
               <Panel.Body>
                 <h4>Introduction</h4>
                 <p>
-                  This is an simulation of an integrated circuit suggestion by <a href="https://www.reddit.com/r/Stationeers/comments/8wfi98/the_pain_of_logic_and_the_potential_of_integrated/">Recatek</a>. See the instruction set for all options.
+                  This is a clean room implementation of the Stationeers Programable Chip. It should implement the MIPS instructions set as detailed by <a href="https://steamcommunity.com/games/544550/announcements/detail/2903022560766254057">Heightmare</a>.
                 </p>                
                 <h4>Writing A Program</h4>
                 <p>
@@ -212,46 +198,67 @@ class ICSocket extends Component {
                 <pre>{`//:input:0:Base Pressure
 //:output:0:Door Open
 //:internal:0:If it's safe?`}</pre>
+                <p><strong>Note</strong> These comments will still count as line numbers for the interpreter, so addresses for jumps needs to be adjusted.</p>
               </Panel.Body>
             </Panel>
           </Col>
-          <Col md={4}>          
+          <Col md={6}>          
             <Panel>
               <Panel.Heading>
                 <Panel.Title componentClass="h3"><FontAwesomeIcon icon="book" /> Stationeers Instruction Set</Panel.Title>
               </Panel.Heading>
               <Panel.Body>
-              <pre>{`---Select Unit---
-SEL A B C Out    // A ? B : C -> Out
+              <pre>{`// Text after a // will be ignored to the end of the line. The amount of white
+// space between arguments isn't important, but new lines start a new command.
 
----Min/Max Unit---
-MAX A B Out      // max(A, B) -> Out
-MIN A B Out      // min(A, B) -> Out
+move    d s     // stores the value of s in d
 
----Math Unit---
-ADD A B Out      // A + B -> Out
-SUB A B Out      // A - B -> Out
-MUL A B Out      // A * B -> Out
-DIV A B Out      // A / B -> Out
-MOD A B Out      // A % B -> Out
+add     d s t   // calculates s + t and stores the result in d
+sub     d s t   // calculates s - t and stores the result in d
+mul     d s t   // calculates s * t and stores the result in d
+div     d s t   // calculates s / t and stores the result in d
+mod     d s t   // calculates s mod t and stores the result in d. Note this
+                // doesn't behave like the % operator - the result will be
+                // positive even if the either of the operands are negative
 
----Compare Unit---
-EQ A B Out       // A == B -> Out
-NEQ A B Out      // A != B -> Out
-GT A B Out       // A > B  -> Out
-LT A B Out       // A < B  -> Out
+slt     d s t   // stores 1 in d if s < t, 0 otherwise
 
----Unary Math Unit---
-CEIL A Out       // ceil(A)  -> Out
-FLOR A Out       // floor(A) -> Out
-ABS A Out        // abs(A)   -> Out
-LOG A Out        // log(A)   -> Out
-EXP A Out        // exp(A)   -> Out
-ROU A Out        // round(A) -> Out
-RAND A Out       // rand(A)  -> Out 
+sqrt    d s     // calculates sqrt(s) and stores the result in d
+round   d s     // finds the rounded value of s and stores the result in d
+trunc   d s     // finds the truncated value of s and stores the result in d
+ceil    d s     // calculates the ceiling of s and stores the result in d
+floor   d s     // calculates the floor of s and stores the result in d
 
----New IC Specific---
-STOR A Out       // A        -> Out`}</pre>
+max     d s t   // calculates the maximum of s and t and stores the result in d
+min     d s t   // calculates the minimum of s and t and stores the result in d
+abs     d s     // calculates the absolute value of s and stores the result in d
+log     d s     // calculates the natural logarithm of s and stores the result
+                // in d
+exp     d s     // calculates the exponential of s and stores the result in d
+rand    d       // selects a random number uniformly at random between 0 and 1
+                // inclusive and stores the result in d
+
+// boolean arithmetic uses the C convention that 0 is false and any non-zero
+// value is true.
+and     d s t   // stores 1 in d if both s and t have non-zero values,
+                // 0 otherwise
+or      d s t   // stores 1 in d if either s or t have non-zero values,
+                // 0 otherwise
+xor     d s t   // stores 1 in d if exactly one of s and t are non-zero,
+                // 0 otherwise
+nor     d s t   // stores 1 in d if both s and t equal zero, 0 otherwise
+
+
+// Lines are numbered starting at zero
+j             a // jumps to line a.
+bltz      s   a // jumps to line a if s <  0
+blez      s   a // jumps to line a if s <= 0
+bgez      s   a // jumps to line a if s >= 0
+bgtz      s   a // jumps to line a if s >  0
+beq       s t a // jumps to line a if s == t
+bne       s t a // jumps to line a if s != t
+
+yield           // ceases code execution for this power tick`}</pre>
               </Panel.Body>
             </Panel>
           </Col>  
@@ -262,20 +269,21 @@ STOR A Out       // A        -> Out`}</pre>
 
   step() {
     if(this.canRun()) {
-      this.state.ic.step();
+      var result = this.state.ic.step();
       this.setState(this.transferICState());
+      return result;
+    } else {
+      return false;
     }
   }
 
   run() {
     if(this.canRun()) {
-      var i;
+      var total = 0;
 
-      for (i = this.state.ic.programCounter(); i < this.state.ic.instructionCount(); i++) {
-        this.step();
+      while(this.step() && total < 128) {
+        total++;        
       }
-
-      this.restart();
     }
   }
 
@@ -322,8 +330,9 @@ STOR A Out       // A        -> Out`}</pre>
 
   loadProgram(program) {
     let ic = this.state.ic;
-    this.setState({ errors: ic.load(program) });
-    this.setState({ instructionCount: ic.instructionCount() });
+    ic.load(program);
+    this.setState({ errors: ic.getProgramErrors() });
+    this.setState({ instructionCount: ic.getInstructionCount() });
     this.transferICState();
     this.parseLabels(program);
   }
@@ -378,7 +387,7 @@ class ProgramError extends Component {
   render() {
     let line = this.props.error.line;
     let error = this.props.error.error;
-    let field = this.props.error.field ? ` / Field ${this.props.error.field}` : "";
+    let field = Number.isInteger(this.props.error.field) ? ` / Field ${this.props.error.field}` : "";
     let errorDescription = this.lookUpError(error);
 
     return (
@@ -388,62 +397,21 @@ class ProgramError extends Component {
 
   lookUpError(error) {
     switch (error) {
-      case "TOO_MANY_INSTRUCTIONS":
-        return "There are too many instructions present in your program, there is a limit on the number which an IC can take.";
-      case "FIELD_COUNT_MISMATCH":
-        return "The instruction you are using requires a different number of fields then you have provided.";
-      case "READ_ONLY_REGISTER":
-        return "The register you are outputting a value to is read only (or a litteral), choose an output or internal register.";
-      case "OUT_OF_BOUND_REGISTER":
-        return "The register number you have specified does not exist.";
-      case "UNKNOWN_REGISTER":
-        return "The register prefix you have provided is unknown, use i, o or r."
+      case "INVALID_FIELD_NO_SUCH_REGISTER":
+        return "The register number you have specified does not exist.";      
+      case "INVALID_FIELD_UNKNOWN_TYPE":
+        return "The register prefix you have provided is unknown, use i, o or r.";
+      case "INVALID_FIELD_WRITEONLY":
+        return "Instruction requires a source which can be read from, you can not read from an output."
+      case "INVALID_FIELD_READONLY":
+         return "Instruction requires a destination which can be written to, change to a register or an output."
+      case "MISSING_FIELD":
+        return "Instruction requires an additional field in this position.";
       case "UNKNOWN_INSTRUCTION":
-        return "The instruction you have specified does not exist, check the spelling."
+        return "The instruction you have specified does not exist, check the spelling.";
       default:
         return "Unknown error."
     }
-  }
-}
-
-class Instructions extends Component {
-  render() {
-    var badge = (this.props.instructions ? <Badge>{this.props.instructions.length}</Badge> : "");
-
-    return (
-      <Panel>
-        <Panel.Heading>
-          <Panel.Title componentClass="h3"><FontAwesomeIcon icon="cogs" /> Instructions {badge}</Panel.Title>
-        </Panel.Heading>
-        <Table>
-        <thead>
-            <tr><th colSpan="2">Index</th><th>Instruction</th></tr>
-          </thead>
-          <tbody>
-            {this.renderInstructions()}
-          </tbody>
-        </Table>
-      </Panel>
-    );
-  }
-
-  renderInstructions() {
-    if (this.props.instructions) {
-      return this.props.instructions.map((value, i) => <Instruction key={i} index={i} value={value} current={i === this.props.programCounter }/>);
-    }
-  }
-}
-
-class Instruction extends Component {
-  render() {
-    let arrow = this.props.current ? <FontAwesomeIcon icon="angle-double-right" /> : "";
-    return (
-      <tr className={"instruction" + (this.props.current ? " active" : "")}>
-        <td>{this.props.index}</td>
-        <td>{arrow}</td>
-        <td>{this.props.value.join(" ")}</td>
-      </tr>
-    );
   }
 }
 
