@@ -211,7 +211,7 @@ class ICSocket extends Component {
           </Col>
         </Row>
         <Row>
-          <Col md={6}>          
+          <Col md={5}>          
            <Panel>
               <Panel.Heading>
                 <Panel.Title componentClass="h3"><FontAwesomeIcon icon="lightbulb" /> Instructions</Panel.Title>
@@ -243,7 +243,7 @@ class ICSocket extends Component {
               </Panel.Body>
             </Panel>
           </Col>
-          <Col md={6}>          
+          <Col md={7}>          
             <Panel>
               <Panel.Heading>
                 <Panel.Title componentClass="h3"><FontAwesomeIcon icon="book" /> Stationeers Instruction Set</Panel.Title>
