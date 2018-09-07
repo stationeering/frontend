@@ -6,6 +6,12 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { faTerminal, faGamepad, faCogs, faMemory, faLongArrowAltLeft, faLongArrowAltRight, faTimes, faStepForward, faPlay, faRedo, faEye, faAngleDoubleRight, faBook, faLightbulb, faListUl } from '@fortawesome/free-solid-svg-icons';
 
+import brace from 'brace';
+import AceEditor from 'react-ace';
+
+import 'brace/mode/mips_assembler';
+import 'brace/theme/github';
+
 import './ICSocket.css';
 
 library.add(faTerminal, faGamepad, faCogs, faMemory, faLongArrowAltLeft, faLongArrowAltRight, faTimes, faStepForward, faPlay, faRedo, faEye, faAngleDoubleRight, faBook, faLightbulb, faListUl);
@@ -149,7 +155,20 @@ class ICSocket extends Component {
                 <Panel.Title componentClass="h3"><FontAwesomeIcon icon="terminal" /> Program</Panel.Title>
               </Panel.Heading>
               <Panel.Body>
-                <textarea rows="15" cols="80" value={this.state.program} onChange={this.programChange} />      
+                <p>
+                <AceEditor
+                  mode="mips_assembler"
+                  theme="github"
+                  onChange={this.programChange}
+                  value={this.state.program}
+                  name="AceEditorMips"
+                  setOptions={{firstLineNumber: 0}}
+                  debounceChangePeriod={500}
+                  height="300px"
+                  width="600px"
+                  fontSize={16}
+                />
+                </p>
                 <ProgramErrors errors={this.state.errors} />
                 <div>
                   <small>You can share a program simply by sharing the URL in your browser.</small>
@@ -382,9 +401,9 @@ yield           // ceases code execution for this power tick`}</pre>
     }
   }
 
-  programChange(event) {
-    this.setState({ program: event.target.value });
-    this.loadProgram(event.target.value);
+  programChange(text) {
+    this.setState({ program: text });
+    this.loadProgram(text);
   }
 
   loadProgram(program) {

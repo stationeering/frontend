@@ -30,6 +30,21 @@ class Home extends Component {
             </Col>
           </Row>
           <Row>
+          <Col md={3}>
+              <Panel bsStyle="success">
+                <Panel.Heading>
+                  <Panel.Title componentClass="h3"><FontAwesomeIcon icon="microchip" /> <NavLink to='/tools/ic'>IC Simulator</NavLink></Panel.Title>
+                </Panel.Heading>
+                <Panel.Body>
+                  <p>
+                    Simulator for the Logic Programmable Chip now in Stationeers!
+                  </p>
+                  <p>
+                    <NavLink to='/tools/ic'>Try It!</NavLink>
+                  </p>
+                </Panel.Body>
+              </Panel>
+            </Col>
             <Col md={3}>
               <Panel bsStyle="success">
                 <Panel.Heading>
@@ -56,24 +71,6 @@ class Home extends Component {
                   </p>
                   <p>
                   <NavLink to='/info/scenarios'>Check out the environments!</NavLink>
-                  </p>
-                </Panel.Body>
-              </Panel>
-            </Col>
-            <Col md={3}>
-              <Panel bsStyle="danger">
-                <Panel.Heading>
-                  <Panel.Title componentClass="h3"><FontAwesomeIcon icon="microchip" /> <NavLink to='/tools/ic'>IC Simulator</NavLink></Panel.Title>
-                </Panel.Heading>
-                <Panel.Body>
-                  <p>
-                    A simulation of the Integrated Circuit proposed by Recatek.
-                  </p>
-                  <p className="text-danger">
-                    <small><strong>Note: Does not exist in game yet!</strong></small>
-                  </p>
-                  <p>
-                    <NavLink to='/tools/ic'>Try It!</NavLink>
                   </p>
                 </Panel.Body>
               </Panel>
