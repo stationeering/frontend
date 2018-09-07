@@ -1,9 +1,3 @@
-.instructions {
-  tr.active {
-      background-color: greenyellow;
-  }
-}
-
 .interactive {
   &:hover {
     cursor: pointer;
@@ -11,6 +5,11 @@
 
   &.inactive {
     color: lightslategrey;
+  }
+}
+button {
+  &.btn {
+    margin-bottom: 0.5em;
   }
 }
 

@@ -1,14 +1,14 @@
 import React, { Component } from 'react';
 import IC from 'stationeers-ic';
-import { Row, Col, Panel, Table, Alert } from 'react-bootstrap';
+import { Row, Col, Panel, Table, Alert, ButtonToolbar, Button } from 'react-bootstrap';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { library } from '@fortawesome/fontawesome-svg-core';
-import { faTerminal, faGamepad, faCogs, faMemory, faLongArrowAltLeft, faLongArrowAltRight, faTimes, faStepForward, faPlay, faRedo, faEye, faAngleDoubleRight, faBook, faLightbulb } from '@fortawesome/free-solid-svg-icons';
+import { faTerminal, faGamepad, faCogs, faMemory, faLongArrowAltLeft, faLongArrowAltRight, faTimes, faStepForward, faPlay, faRedo, faEye, faAngleDoubleRight, faBook, faLightbulb, faListUl } from '@fortawesome/free-solid-svg-icons';
 
 import './ICSocket.css';
 
-library.add(faTerminal, faGamepad, faCogs, faMemory, faLongArrowAltLeft, faLongArrowAltRight, faTimes, faStepForward, faPlay, faRedo, faEye, faAngleDoubleRight, faBook, faLightbulb);
+library.add(faTerminal, faGamepad, faCogs, faMemory, faLongArrowAltLeft, faLongArrowAltRight, faTimes, faStepForward, faPlay, faRedo, faEye, faAngleDoubleRight, faBook, faLightbulb, faListUl);
 
 class ICSocket extends Component {
   constructor(props) {
@@ -16,6 +16,7 @@ class ICSocket extends Component {
 
     this.programChange = this.programChange.bind(this);
     this.step = this.step.bind(this);
+    this.runSingle = this.runSingle.bind(this);
     this.run = this.run.bind(this);
     this.restart = this.restart.bind(this);
     this.clearInternalRegisters = this.clearInternalRegisters.bind(this);
@@ -23,7 +24,7 @@ class ICSocket extends Component {
     this.toggleRunAfterRegisterChange = this.toggleRunAfterRegisterChange.bind(this);
     this.hashChanged = this.hashChanged.bind(this);
 
-    let defaultCode = "ADD 1 r0 r0 // Increment r0.";
+    let defaultCode = "add r0 r0 1 // Increment r0.\nyield\nj 0";
 
     this.state = { ic: new IC(), program: defaultCode, errors: [], labels: { input: [], output: [], internal: [] }, runAfterRegisterChange: false, currentHash: "" };
     this.loadProgram(defaultCode);
@@ -114,7 +115,10 @@ class ICSocket extends Component {
       outputRegisters: ic.getOutputRegisters(),
       internalRegisters: ic.getInternalRegisters(),
       programCounter: ic.programCounter(),
-      instructionCount: ic.getInstructionCount()
+      instructionCount: ic.getInstructionCount(),
+      lastRunCount: 0,
+      lastStepState: "",
+      lastExecuteTime: "Not Run"
     });
   }
 
@@ -123,7 +127,7 @@ class ICSocket extends Component {
   }
 
   render() {
-    var inactive = !this.canRun() ? "interactive inactive" : "interactive";
+    var inactive = !this.canRun() ? "interactive inactive" : "interactive";    
 
     return (
       <div className="ICSocket">
@@ -159,14 +163,32 @@ class ICSocket extends Component {
                 <Panel.Title componentClass="h3"><FontAwesomeIcon icon="gamepad" /> Control</Panel.Title>
               </Panel.Heading>
               <Panel.Body>
-                <div className="control">
-                  <FontAwesomeIcon className={inactive} icon="step-forward" size="2x" onClick={this.step} aria-label="Step through program." />&nbsp;
-                  <FontAwesomeIcon className={inactive} icon="play" size="2x" onClick={this.run} aria-label="Play program." />&nbsp;
-                  <FontAwesomeIcon className="interactive" icon="redo" size="2x" onClick={this.restart} aria-label="Reset program counter." />
-                  <FontAwesomeIcon className={"interactive" + (this.state.runAfterRegisterChange ? "" : " inactive") } icon="eye" size="2x" onClick={this.toggleRunAfterRegisterChange} aria-label="Auto run after register change." />
-                </div>
+                <ButtonToolbar>
+                  <Button className={inactive} onClick={this.runSingle} ><FontAwesomeIcon icon="step-forward" /> Step</Button>
+                  <Button className={inactive} onClick={this.run} ><FontAwesomeIcon icon="play" /> Run</Button>
+                  <Button className="interactive" onClick={this.restart} ><FontAwesomeIcon icon="redo" /> Reset PC</Button>
+                  <Button className={"interactive" + (this.state.runAfterRegisterChange ? "" : " inactive") } onClick={this.toggleRunAfterRegisterChange} ><FontAwesomeIcon icon="eye" /> Watch Registers</Button>                               
+                </ButtonToolbar>
               </Panel.Body>
             </Panel>
+            <Panel>
+              <Panel.Heading>
+                <Panel.Title componentClass="h3"><FontAwesomeIcon icon="list-ul" /> Status</Panel.Title>
+              </Panel.Heading>
+              <Table>
+                <tbody>
+                  <tr>
+                    <th>Program Counter</th><td>{this.state.programCounter}</td>
+                  </tr>                    
+                  <tr>
+                    <th>Last Run Operations</th><td>{this.state.lastRunCount} ({this.state.lastExecuteTime})</td>
+                  </tr>                
+                  <tr>
+                    <th>Last State</th><td>{this.decodeStepState(this.state.lastStepState)}</td>
+                  </tr>
+                </tbody>
+              </Table>
+            </Panel>            
           </Col>
         </Row>
         <Row>
@@ -267,23 +289,60 @@ yield           // ceases code execution for this power tick`}</pre>
     );
   }
 
-  step() {
-    if(this.canRun()) {
-      var result = this.state.ic.step();
-      this.setState(this.transferICState());
-      return result;
-    } else {
-      return false;
+  decodeStepState(step) {
+    switch(step) {
+    case "INVALID_PROGRAM":
+      return "Program is invalid, solve errors first.";
+    case "OUT_OF_OPERATIONS":
+      return "IC has executed 128 operations, execution will resume on next tick.";
+    case "END_OF_PROGRAM":
+      return "IC has run out of instructions, this is will result in an IC error.";
+    case "YIELD":
+      return "IC has yielded control, execution will resume on next tick.";
+    default:
+      return "";
     }
   }
 
-  run() {
+  step() {
     if(this.canRun()) {
-      var total = 0;
-
-      while(this.step() && total < 128) {
-        total++;        
+      var result = this.state.ic.step();    
+      this.transferICState();      
+      return result;
+    } else {
+      if (this.state.ic.programCounter() >= this.state.ic.getInstructionCount()) {
+          return "END_OF_PROGRAM";
+      } else {
+          return "INVALID_PROGRAM";
       }
+    }
+  }
+
+  runSingle() {
+    var result = this.step();
+    this.setState((prevState, props) => {
+      return { lastStepState: result, lastRunCount: 1, lastExecuteTime: (new Date().toUTCString()) };
+    });
+  }
+
+  run() {
+    var total = 1;
+
+    var lastResult = this.step();
+
+    while(!lastResult && total < 128) {
+      total++;       
+      lastResult = this.step(); 
+    }
+
+    this.setState((prevState, props) => {
+      return { lastRunCount: total, lastStepState: lastResult, lastExecuteTime: (new Date().toUTCString()) };
+    });
+
+    if (total === 128) {
+      this.setState((prevState, props) => {
+        return { lastStepState: "OUT_OF_OPERATIONS" };
+      });
     }
   }
 
