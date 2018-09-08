@@ -4,7 +4,7 @@ import { Row, Col, Panel, Table, Alert, ButtonToolbar, Button } from 'react-boot
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { library } from '@fortawesome/fontawesome-svg-core';
-import { faTerminal, faGamepad, faCogs, faMemory, faLongArrowAltLeft, faLongArrowAltRight, faTimes, faStepForward, faPlay, faRedo, faEye, faAngleDoubleRight, faBook, faLightbulb, faListUl } from '@fortawesome/free-solid-svg-icons';
+import { faTerminal, faGamepad, faCogs, faMemory, faLongArrowAltLeft, faLongArrowAltRight, faTimes, faStepForward, faPlay, faRedo, faEye, faAngleDoubleRight, faBook, faLightbulb, faListUl, faPen } from '@fortawesome/free-solid-svg-icons';
 
 import brace from 'brace';
 import AceEditor from 'react-ace';
@@ -14,7 +14,7 @@ import 'brace/theme/github';
 
 import './ICSocket.css';
 
-library.add(faTerminal, faGamepad, faCogs, faMemory, faLongArrowAltLeft, faLongArrowAltRight, faTimes, faStepForward, faPlay, faRedo, faEye, faAngleDoubleRight, faBook, faLightbulb, faListUl);
+library.add(faTerminal, faGamepad, faCogs, faMemory, faLongArrowAltLeft, faLongArrowAltRight, faTimes, faStepForward, faPlay, faRedo, faEye, faAngleDoubleRight, faBook, faLightbulb, faListUl, faPen);
 
 class ICSocket extends Component {
   constructor(props) {
@@ -28,19 +28,20 @@ class ICSocket extends Component {
     this.clearInternalRegisters = this.clearInternalRegisters.bind(this);
     this.setRegister = this.setRegister.bind(this);
     this.toggleRunAfterRegisterChange = this.toggleRunAfterRegisterChange.bind(this);
-    this.hashChanged = this.hashChanged.bind(this);
+    this.toggleInputsAreWritable = this.toggleInputsAreWritable.bind(this);
+    this.hashChanged = this.hashChanged.bind(this);  
 
     let defaultCode = "add r0 r0 1 // Increment r0.\nyield\nj 0";
 
-    this.state = { ic: new IC(), program: defaultCode, errors: [], labels: { input: [], output: [], internal: [] }, runAfterRegisterChange: false, currentHash: "" };
-    this.state.ic.setInputRegistersWriteable(true);
-    this.loadProgram(defaultCode);
+    this.state = { ic: new IC(), program: defaultCode, errors: [], labels: { input: [], output: [], internal: [] }, runAfterRegisterChange: false, inputsAreWritable: true, currentHash: "" };
+    this.state.ic.setInputRegistersWriteable(this.state.inputsAreWritable);
+    this.loadProgram(defaultCode);    
   }
 
   componentDidMount() {
     this.loadStateFromHash();
     this.transferICState();
-
+    
     window.addEventListener("hashchange", this.hashChanged, false);
   }
 
@@ -71,6 +72,14 @@ class ICSocket extends Component {
     let data = JSON.parse(json);
 
     let returnData = { currentHash: rawHash };
+
+    if (data.hasOwnProperty("inputsAreWritable")) {
+      returnData["inputsAreWritable"] = data.inputsAreWritable;      
+    } else {
+      returnData["inputsAreWritable"] = true;
+    }
+
+    this.state.ic.setInputRegistersWriteable(returnData["inputsAreWritable"]);
 
     if (data.hasOwnProperty("program")) {
       returnData["program"] = data.program;
@@ -104,7 +113,7 @@ class ICSocket extends Component {
   }
 
   saveStateToHash() {
-    let data = { program: this.state.program, registers: { input: this.state.inputRegisters, output: this.state.outputRegisters, internal: this.state.internalRegisters }, runAfterRegisterChange: this.state.runAfterRegisterChange };
+    let data = { program: this.state.program, registers: { input: this.state.inputRegisters, output: this.state.outputRegisters, internal: this.state.internalRegisters }, runAfterRegisterChange: this.state.runAfterRegisterChange, inputsAreWritable: this.state.inputsAreWritable };
     let json = JSON.stringify(data);
     let base64 = btoa(json);
 
@@ -194,6 +203,7 @@ class ICSocket extends Component {
                   <Button className={inactive} onClick={this.run} ><FontAwesomeIcon icon="play" /> Run</Button>
                   <Button className="interactive" onClick={this.restart} ><FontAwesomeIcon icon="redo" /> Reset PC</Button>
                   <Button className={"interactive" + (this.state.runAfterRegisterChange ? "" : " inactive") } onClick={this.toggleRunAfterRegisterChange} ><FontAwesomeIcon icon="eye" /> Watch Registers</Button>                               
+                  <Button className={"interactive" + (this.state.inputsAreWritable ? "" : " inactive") } onClick={this.toggleInputsAreWritable} ><FontAwesomeIcon icon="pen" /> Inputs Are Writable</Button>                               
                 </ButtonToolbar>
               </Panel.Body>
             </Panel>
@@ -237,7 +247,10 @@ class ICSocket extends Component {
                   Pressing <FontAwesomeIcon icon="step-forward" /> will step the program through one instruction at a time. Pressing <FontAwesomeIcon icon="play" /> will run it through. If you use step then <FontAwesomeIcon icon="redo" /> will reset the program to the first instruction.
                 </p>                                
                 <p>
-                  Finally <FontAwesomeIcon icon="eye" /> can be toggled, if solid then when a register at the top is changed the program will be automatically rerun.
+                  <FontAwesomeIcon icon="eye" /> can be toggled, if solid then when a register at the top is changed the program will be automatically rerun.
+                </p>
+                <p>
+                  Finally <FontAwesomeIcon icon="pen" /> can be toggled, if solid then input registers can be written to.
                 </p>
                 <h4>Labelling Registers</h4>
                 <p>
@@ -444,6 +457,12 @@ yield           // ceases code execution for this power tick`}</pre>
 
   toggleRunAfterRegisterChange(event) {
     this.setState({ runAfterRegisterChange: !this.state.runAfterRegisterChange });
+  }
+
+  toggleInputsAreWritable(event) {
+    this.state.ic.setInputRegistersWriteable(!this.state.inputsAreWritable);
+    this.setState({ inputsAreWritable: !this.state.inputsAreWritable });    
+    this.setState({ errors: this.state.ic.getProgramErrors() });
   }
 }
 
