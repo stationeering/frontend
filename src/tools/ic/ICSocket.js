@@ -136,6 +136,8 @@ class ICSocket extends Component {
   render() {
     var inactive = !this.canRun() ? "interactive inactive" : "interactive";    
 
+    var markers = [{startRow: this.state.ic.programCounter(), endRow: this.state.ic.programCounter(), endCol: 20000, type: "line", className: 'currentLine'}];
+
     return (
       <div className="ICSocket">
         <Row>
@@ -169,6 +171,7 @@ class ICSocket extends Component {
                   width="600px"
                   fontSize={16}
                   ref="editor"
+                  markers={markers}
                 />
                 </p>
                 <ProgramErrors errors={this.state.errors} />
@@ -328,7 +331,7 @@ yield           // ceases code execution for this power tick`}</pre>
   step() {
     if(this.canRun()) {
       var result = this.state.ic.step();    
-      this.transferICState();      
+      this.transferICState(this.state.ic.programCounter());      
       return result;
     } else {
       if (this.state.ic.programCounter() >= this.state.ic.getInstructionCount()) {
