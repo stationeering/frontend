@@ -137,6 +137,7 @@ class ICSocket extends Component {
     var inactive = !this.canRun() ? "interactive inactive" : "interactive";    
 
     var markers = [{startRow: this.state.ic.programCounter(), endRow: this.state.ic.programCounter(), endCol: 20000, type: "line", className: 'currentLine'}];
+    var annotations = this.state.errors.map((error) => { return { row: error.line, column: 0, type: "error", "text": error.error }});
 
     return (
       <div className="ICSocket">
@@ -172,6 +173,7 @@ class ICSocket extends Component {
                   fontSize={16}
                   ref="editor"
                   markers={markers}
+                  annotations={annotations}
                 />
                 </p>
                 <ProgramErrors errors={this.state.errors} />
