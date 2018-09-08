@@ -178,7 +178,6 @@ class ICSocket extends Component {
                 <Panel.Title componentClass="h3"><FontAwesomeIcon icon="terminal" /> Program</Panel.Title>
               </Panel.Heading>
               <Panel.Body>
-                <p>
                 <AceEditor
                   mode="mips_assembler"
                   theme="github"
@@ -194,27 +193,30 @@ class ICSocket extends Component {
                   markers={markers}
                   annotations={annotations}
                 />
-                </p>
                 <ProgramErrors errors={this.state.errors} />
                 </Panel.Body>
                 <Panel.Footer>             
-                  <div>
-                    <small>You can share a program simply by sharing the URL in your browser.</small>
-                  </div>
-                  <h4>Copy to Clipboard</h4>
-                  <ButtonToolbar>                  
-                    <ButtonGroup>
-                      <CopyToClipboard text={this.state.program}>
-                        <Button><FontAwesomeIcon icon="file" /> Plain</Button>
-                      </CopyToClipboard>
-                      <CopyToClipboard text={this.formatCodeForDiscord()}>
-                        <Button><FontAwesomeIcon icon={["fab", "discord"]} /> Discord</Button>
-                      </CopyToClipboard>
-                      <CopyToClipboard text={this.formatCodeForReddit()}>
-                        <Button><FontAwesomeIcon icon={["fab", "reddit"]} /> reddit</Button>
-                      </CopyToClipboard>
-                    </ButtonGroup>
-                  </ButtonToolbar>
+                  <Row>
+                    <Col md={6}>
+                      <h4>Copy to Clipboard</h4>
+                      <ButtonToolbar>                  
+                        <ButtonGroup>
+                          <CopyToClipboard text={this.state.program}>
+                            <Button><FontAwesomeIcon icon="file" /> Plain</Button>
+                          </CopyToClipboard>
+                          <CopyToClipboard text={this.formatCodeForDiscord()}>
+                            <Button><FontAwesomeIcon icon={["fab", "discord"]} /> Discord</Button>
+                          </CopyToClipboard>
+                          <CopyToClipboard text={this.formatCodeForReddit()}>
+                            <Button><FontAwesomeIcon icon={["fab", "reddit"]} /> reddit</Button>
+                          </CopyToClipboard>
+                        </ButtonGroup>
+                      </ButtonToolbar>
+                      <div>
+                        <small>You can simply share a program simply by sharing the URL in your browser.</small>
+                      </div>
+                    </Col>
+                  </Row>
                 </Panel.Footer>             
             </Panel>
           </Col>
