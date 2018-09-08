@@ -1,10 +1,12 @@
 import React, { Component } from 'react';
 import IC from 'stationeers-ic';
-import { Row, Col, Panel, Table, Alert, ButtonToolbar, Button } from 'react-bootstrap';
+import { Row, Col, Panel, Table, Alert, ButtonToolbar, Button, ButtonGroup } from 'react-bootstrap';
+import {CopyToClipboard} from 'react-copy-to-clipboard';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { library } from '@fortawesome/fontawesome-svg-core';
-import { faTerminal, faGamepad, faCogs, faMemory, faLongArrowAltLeft, faLongArrowAltRight, faTimes, faStepForward, faPlay, faRedo, faEye, faAngleDoubleRight, faBook, faLightbulb, faListUl, faPen } from '@fortawesome/free-solid-svg-icons';
+import { faTerminal, faGamepad, faCogs, faMemory, faLongArrowAltLeft, faLongArrowAltRight, faTimes, faStepForward, faPlay, faRedo, faEye, faAngleDoubleRight, faBook, faLightbulb, faListUl, faPen, faFile } from '@fortawesome/free-solid-svg-icons';
+import { faReddit } from '@fortawesome/free-brands-svg-icons';
 
 import brace from 'brace';
 import AceEditor from 'react-ace';
@@ -14,7 +16,7 @@ import 'brace/theme/github';
 
 import './ICSocket.css';
 
-library.add(faTerminal, faGamepad, faCogs, faMemory, faLongArrowAltLeft, faLongArrowAltRight, faTimes, faStepForward, faPlay, faRedo, faEye, faAngleDoubleRight, faBook, faLightbulb, faListUl, faPen);
+library.add(faTerminal, faGamepad, faCogs, faMemory, faLongArrowAltLeft, faLongArrowAltRight, faTimes, faStepForward, faPlay, faRedo, faEye, faAngleDoubleRight, faBook, faLightbulb, faListUl, faPen, faReddit, faFile);
 
 class ICSocket extends Component {
   constructor(props) {
@@ -142,6 +144,14 @@ class ICSocket extends Component {
     return !(this.state.ic.programCounter() >= this.state.ic.getInstructionCount()) || (this.state.errors.length > 0);
   }
 
+  formatCodeForDiscord() {
+    return "```mips\n" + this.state.program + "\n```";
+  }
+
+  formatCodeForReddit() {
+    return this.state.program.trim().split("\n").map((line) => "    " + line).join("\n");
+  }
+
   render() {
     var inactive = !this.canRun() ? "interactive inactive" : "interactive";    
 
@@ -178,7 +188,7 @@ class ICSocket extends Component {
                   setOptions={{firstLineNumber: 0}}
                   debounceChangePeriod={500}
                   height="300px"
-                  width="600px"
+                  width="100%"
                   fontSize={16}
                   ref="editor"
                   markers={markers}
@@ -186,10 +196,26 @@ class ICSocket extends Component {
                 />
                 </p>
                 <ProgramErrors errors={this.state.errors} />
-                <div>
-                  <small>You can share a program simply by sharing the URL in your browser.</small>
-                </div>
-              </Panel.Body>
+                </Panel.Body>
+                <Panel.Footer>             
+                  <div>
+                    <small>You can share a program simply by sharing the URL in your browser.</small>
+                  </div>
+                  <h4>Copy to Clipboard</h4>
+                  <ButtonToolbar>                  
+                    <ButtonGroup>
+                      <CopyToClipboard text={this.state.program}>
+                        <Button><FontAwesomeIcon icon="file" /> Plain</Button>
+                      </CopyToClipboard>
+                      <CopyToClipboard text={this.formatCodeForDiscord()}>
+                        <Button><FontAwesomeIcon icon={["fab", "discord"]} /> Discord</Button>
+                      </CopyToClipboard>
+                      <CopyToClipboard text={this.formatCodeForReddit()}>
+                        <Button><FontAwesomeIcon icon={["fab", "reddit"]} /> reddit</Button>
+                      </CopyToClipboard>
+                    </ButtonGroup>
+                  </ButtonToolbar>
+                </Panel.Footer>             
             </Panel>
           </Col>
           <Col md={4}>
