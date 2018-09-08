@@ -33,6 +33,7 @@ class ICSocket extends Component {
     let defaultCode = "add r0 r0 1 // Increment r0.\nyield\nj 0";
 
     this.state = { ic: new IC(), program: defaultCode, errors: [], labels: { input: [], output: [], internal: [] }, runAfterRegisterChange: false, currentHash: "" };
+    this.state.ic.setInputRegistersWriteable(true);
     this.loadProgram(defaultCode);
   }
 
@@ -167,6 +168,7 @@ class ICSocket extends Component {
                   height="300px"
                   width="600px"
                   fontSize={16}
+                  ref="editor"
                 />
                 </p>
                 <ProgramErrors errors={this.state.errors} />
