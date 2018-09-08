@@ -211,9 +211,12 @@ class ICSocket extends Component {
                             <Button><FontAwesomeIcon icon={["fab", "reddit"]} /> reddit</Button>
                           </CopyToClipboard>
                         </ButtonGroup>
-                      </ButtonToolbar>
+                      </ButtonToolbar>                     
+                    </Col>
+                    <Col md={6}>
+                      <h4>Share Program</h4>
                       <div>
-                        <small>You can simply share a program simply by sharing the URL in your browser.</small>
+                        <small>You can share a program by sharing the URL in your browser.</small>
                       </div>
                     </Col>
                   </Row>
@@ -299,6 +302,11 @@ class ICSocket extends Component {
               <Panel.Body>
               <pre>{`// Text after a // will be ignored to the end of the line. The amount of white
 // space between arguments isn't important, but new lines start a new command.
+
+// In the instructions fields can only take certain types, these are:
+// - d is a register or output
+// - s and t are registers, inputs, or floats
+// - a is a non-negative integer value              
 
 move    d s     // stores the value of s in d
 
