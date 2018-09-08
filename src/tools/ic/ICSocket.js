@@ -548,12 +548,16 @@ class Register extends Component {
     this.onKeyPress = this.onKeyPress.bind(this);
   }
 
+  roundTo(value, decimals) {
+    return Number(Math.round(value+'e'+decimals)+'e-'+decimals);
+  }
+
   render() {
     return (
       <tr className="register">
         <td>{this.props.index}</td>
         <td><input type="text" size="5" onChange={this.onChange} onKeyPress={this.onKeyPress} value={this.state.inputValue} /> <button onClick={this.onClick}>-&gt;</button></td>
-        <td>{this.props.value}</td>
+        <td>{this.roundTo(this.props.value, 5)}</td>
         <td>{this.props.label}</td>
       </tr>
     );
