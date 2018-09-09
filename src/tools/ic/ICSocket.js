@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import IC from 'stationeers-ic';
 import { Row, Col, Panel, Table, Alert, ButtonToolbar, Button, ButtonGroup } from 'react-bootstrap';
 import {CopyToClipboard} from 'react-copy-to-clipboard';
+import ICPermalinkGenerator from './ICPermalinkGenerator';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { library } from '@fortawesome/fontawesome-svg-core';
@@ -198,7 +199,7 @@ class ICSocket extends Component {
                 <Panel.Footer>             
                   <Row>
                     <Col md={6}>
-                      <h4>Copy to Clipboard</h4>
+                      <h5>Copy to Clipboard</h5>
                       <ButtonToolbar>                  
                         <ButtonGroup>
                           <CopyToClipboard text={this.state.program}>
@@ -214,10 +215,8 @@ class ICSocket extends Component {
                       </ButtonToolbar>                     
                     </Col>
                     <Col md={6}>
-                      <h4>Share Program</h4>
-                      <div>
-                        <small>You can share a program by sharing the URL in your browser.</small>
-                      </div>
+                      <h5>Share Program</h5>
+                      <ICPermalinkGenerator currentHash={this.state.currentHash} />
                     </Col>
                   </Row>
                 </Panel.Footer>             
