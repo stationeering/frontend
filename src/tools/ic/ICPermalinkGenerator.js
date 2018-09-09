@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { FormGroup, InputGroup, Button, FormControl } from 'react-bootstrap';
+import {CopyToClipboard} from 'react-copy-to-clipboard';
 
 import axios from 'axios';
 
@@ -15,6 +16,8 @@ class ICPermalinkGenerator extends Component {
     super(props);
 
     this.state = { lastGeneratedHash: undefined, lastGeneratedPermalink: undefined };
+
+    this.beginGeneration = this.beginGeneration.bind(this);
   }
 
   render() {
@@ -23,15 +26,21 @@ class ICPermalinkGenerator extends Component {
     return (
       <FormGroup>
         <InputGroup>
-          <FormControl type="text" readOnly />
+          <FormControl type="text" value={this.state.lastGeneratedPermalink} readOnly />
           <InputGroup.Button>
-            <Button><FontAwesomeIcon icon="cogs" /></Button>
-            <Button><FontAwesomeIcon icon="copy" /></Button>
+            <Button onClick={this.beginGeneration}><FontAwesomeIcon icon="cogs" /></Button>
+            <CopyToClipboard text={this.state.lastGeneratedPermalink}>
+              <Button><FontAwesomeIcon icon="copy" /></Button>
+            </CopyToClipboard>
           </InputGroup.Button>          
         </InputGroup>
         <small>You can also share a program using the URL from the browser.</small>
       </FormGroup>
       );
+  }
+
+  beginGeneration() {
+    
   }
 }
 
