@@ -5,6 +5,8 @@ import { Grid, Navbar, Nav, NavItem, NavDropdown, MenuItem } from 'react-bootstr
 import Scenarios from './info/scenarios/Scenarios';
 import Items from './info/items/Items';
 import ICSocket from './tools/ic/ICSocket';
+import ICPermalink from './tools/ic/ICPermalink';
+
 import Data from './tools/data/Data';
 import Discord from './tools/discord/Discord';
 import VersionList from './versions/VersionList';
@@ -175,7 +177,8 @@ class Main extends Component {
           <Route path="/info/items" render={() => <Items branch={branch} languageMap={this.props.languageMap} />} />
           <Route path="/info/scenarios" render={() => <Scenarios branch={branch} />} />
           <Route path="/versions/:section" component={VersionList} />
-          <Route path="/tools/ic" component={ICSocket} />
+          <Route path="/tools/ic/:permalink" component={ICPermalink} />
+          <Route path="/tools/ic" component={ICSocket} />          
           <Route path="/tools/data" component={Data} />
           <Route path="/tools/discord" component={Discord} />
           <Route path="/" component={Home} />
