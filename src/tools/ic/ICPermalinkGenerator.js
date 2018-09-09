@@ -10,19 +10,18 @@ import { faCopy, faCog } from '@fortawesome/free-solid-svg-icons';
 
 library.add(faCopy, faCog);
 
-
 class ICPermalinkGenerator extends Component {
   constructor(props) {
     super(props);
 
-    this.state = { lastGeneratedHash: undefined, lastGeneratedPermalink: undefined };
+    this.state = { lastGeneratedHash: undefined, lastGeneratedPermalink: undefined, requestState: "idle" };
 
     this.beginGeneration = this.beginGeneration.bind(this);
   }
 
   render() {
     var permalinkUpToDate = this.props.currentHash === this.state.lastGeneratedHash;
-    var generationInProgress = false;
+    var generationInProgress = this.state.requestState !== "idle";
 
     return (
       <FormGroup>
@@ -41,7 +40,32 @@ class ICPermalinkGenerator extends Component {
   }
 
   beginGeneration() {
-    
+    if (this.state.requestState !== "idle" || this.props.currentHash === this.state.lastGeneratedHash) {
+      return;
+    }
+
+    this.setState({ requestState: "requesting" });
+
+    var currentHash = this.props.currentHash;
+    var body = { state: currentHash };
+
+    var container = this;
+
+    axios({ url: 'https://api.stationeering.com/live/permalink', method: 'post', responseType: 'json', data: body })
+      .then(function (response) {
+        if (!response.data.id) {
+          container.setState({ lastGeneratedPermalink: "https://stationeering.com/tools/ic/" + response.data.id, requestState: "idle", lastGeneratedHash: currentHash })
+        } else {
+          container.setState({ requestState: "idle" })
+        }
+      })
+      .catch(function (error) {                
+        if (error.response) {      
+          container.setState({ requestState: "idle" })
+        } else {
+          container.setState({ requestState: "idle" })
+        }
+      });
   }
 }
 
