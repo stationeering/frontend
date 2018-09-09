@@ -6,9 +6,9 @@ import axios from 'axios';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { library } from '@fortawesome/fontawesome-svg-core';
-import { faCopy, faCogs } from '@fortawesome/free-solid-svg-icons';
+import { faCopy, faCog } from '@fortawesome/free-solid-svg-icons';
 
-library.add(faCopy, faCogs);
+library.add(faCopy, faCog);
 
 
 class ICPermalinkGenerator extends Component {
@@ -22,13 +22,14 @@ class ICPermalinkGenerator extends Component {
 
   render() {
     var permalinkUpToDate = this.props.currentHash === this.state.lastGeneratedHash;
+    var generationInProgress = false;
 
     return (
       <FormGroup>
         <InputGroup>
           <FormControl type="text" value={this.state.lastGeneratedPermalink} readOnly />
           <InputGroup.Button>
-            <Button onClick={this.beginGeneration}><FontAwesomeIcon icon="cogs" /></Button>
+            <Button onClick={this.beginGeneration}><FontAwesomeIcon icon="cog" spin={generationInProgress} /></Button>
             <CopyToClipboard text={this.state.lastGeneratedPermalink}>
               <Button><FontAwesomeIcon icon="copy" /></Button>
             </CopyToClipboard>
