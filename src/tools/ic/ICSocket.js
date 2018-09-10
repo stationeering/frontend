@@ -519,7 +519,7 @@ yield           // ceases code execution for this power tick`}</pre>
     var compiledProgram = program;
 
     for (var jl of Object.keys(jumpLabel)) {
-      compiledProgram = compiledProgram.replace("$" + jl, jumpLabel[jl].toString());
+      compiledProgram = compiledProgram.replace(new RegExp("\\$" + jl, 'g'), jumpLabel[jl].toString());
     }
 
     return { labels: labels, program: compiledProgram };
