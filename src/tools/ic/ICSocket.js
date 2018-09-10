@@ -289,7 +289,7 @@ class ICSocket extends Component {
                 </p>
                 <h4>Jump Labels</h4>
                 <p>
-                  To assist the creation of larger and more complex programs, the simulator can handle jump labels. This means where you would put a jump destination you may a label.
+                  To assist the creation of larger and more complex programs, the simulator can handle jump labels. This means where you would put a jump destination you may put a label.
                 </p>
                 <p>
                   For example:                  
