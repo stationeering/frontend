@@ -294,11 +294,11 @@ class ICSocket extends Component {
                 <p>
                   For example:                  
                 </p>
-                <pre>{`move o 1 //:label:start
+                <pre>{`start: move o 1  // Label may also be on it's own line.
 yield
 j $start`}</pre>
                 <p>
-                  Use the "Stationeers (Resolve Labels)" clipboard button to copy a version which resolved labels which can be pasted into Stationeers.
+                  Use the "Stationeers (Resolve Labels)" clipboard button to copy a version with resolved labels which can be pasted into Stationeers.
                 </p>
                 <h4>Labelling Registers</h4>
                 <p>
@@ -516,7 +516,20 @@ yield           // ceases code execution for this power tick`}</pre>
       }
     });
 
-    var compiledProgram = program;
+    var newLines = lines.map((line, i) => {
+      var matched = line.match(/^\s*([a-zA-Z0-9]+):\s*.*/);
+
+      if (matched) {
+        var labelName = matched[1];
+        jumpLabel[labelName] = i;
+
+        return line.replace(/^\s*[a-zA-Z0-9]+:\s*/, "");
+      } else {
+        return line;
+      }     
+    });
+
+    var compiledProgram = newLines.join('\n');
 
     for (var jl of Object.keys(jumpLabel)) {
       compiledProgram = compiledProgram.replace(new RegExp("\\$" + jl, 'g'), jumpLabel[jl].toString());
