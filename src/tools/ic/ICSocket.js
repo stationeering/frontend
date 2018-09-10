@@ -6,7 +6,7 @@ import ICPermalinkGenerator from './ICPermalinkGenerator';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { library } from '@fortawesome/fontawesome-svg-core';
-import { faTerminal, faGamepad, faCogs, faMemory, faLongArrowAltLeft, faLongArrowAltRight, faTimes, faStepForward, faPlay, faRedo, faEye, faAngleDoubleRight, faBook, faLightbulb, faListUl, faPen, faFile } from '@fortawesome/free-solid-svg-icons';
+import { faTerminal, faGamepad, faCogs, faMemory, faLongArrowAltLeft, faLongArrowAltRight, faTimes, faStepForward, faPlay, faRedo, faEye, faAngleDoubleRight, faBook, faLightbulb, faListUl, faPen, faFile, faMicrochip } from '@fortawesome/free-solid-svg-icons';
 import { faReddit } from '@fortawesome/free-brands-svg-icons';
 
 import brace from 'brace';
@@ -17,7 +17,7 @@ import 'brace/theme/github';
 
 import './ICSocket.css';
 
-library.add(faTerminal, faGamepad, faCogs, faMemory, faLongArrowAltLeft, faLongArrowAltRight, faTimes, faStepForward, faPlay, faRedo, faEye, faAngleDoubleRight, faBook, faLightbulb, faListUl, faPen, faReddit, faFile);
+library.add(faTerminal, faGamepad, faCogs, faMemory, faLongArrowAltLeft, faLongArrowAltRight, faTimes, faStepForward, faPlay, faRedo, faEye, faAngleDoubleRight, faBook, faLightbulb, faListUl, faPen, faReddit, faFile, faMicrochip);
 
 class ICSocket extends Component {
   constructor(props) {
@@ -187,7 +187,7 @@ class ICSocket extends Component {
                   name="AceEditorMips"
                   setOptions={{firstLineNumber: 0}}
                   debounceChangePeriod={500}
-                  height="300px"
+                  height="500px"
                   width="100%"
                   fontSize={16}
                   ref="editor"
@@ -210,6 +210,11 @@ class ICSocket extends Component {
                           </CopyToClipboard>
                           <CopyToClipboard text={this.formatCodeForReddit()}>
                             <Button><FontAwesomeIcon icon={["fab", "reddit"]} /> reddit</Button>
+                          </CopyToClipboard>
+                        </ButtonGroup>
+                        <ButtonGroup>                      
+                          <CopyToClipboard text={this.parseLabels(this.state.program).program}>
+                            <Button><FontAwesomeIcon icon="microchip" /> Stationeers (Resolved Labels)</Button>
                           </CopyToClipboard>
                         </ButtonGroup>
                       </ButtonToolbar>                     
@@ -281,6 +286,19 @@ class ICSocket extends Component {
                 </p>
                 <p>
                   Finally <FontAwesomeIcon icon="pen" /> can be toggled, if solid then input registers can be written to.
+                </p>
+                <h4>Jump Labels</h4>
+                <p>
+                  To assist the creation of larger and more complex programs, the simulator can handle jump labels. This means where you would put a jump destination you may a label.
+                </p>
+                <p>
+                  For example:                  
+                </p>
+                <pre>{`move o 1 //:label:start
+yield
+j $start`}</pre>
+                <p>
+                  Use the "Stationeers (Resolve Labels)" clipboard button to copy a version which resolved labels which can be pasted into Stationeers.
                 </p>
                 <h4>Labelling Registers</h4>
                 <p>
@@ -463,31 +481,48 @@ yield           // ceases code execution for this power tick`}</pre>
 
   loadProgram(program) {
     let ic = this.state.ic;
-    ic.load(program);
+    var parsed = this.parseLabels(program);
+    ic.load(parsed.program);
+    this.setState({ labels: parsed.labels });
     this.setState({ errors: ic.getProgramErrors() });
     this.setState({ instructionCount: ic.getInstructionCount() });
     this.transferICState();
-    this.parseLabels(program);
   }
 
   parseLabels(program) {
     let labels = { input: [], output: [], internal: [] };
     let lines = program.split("\n")
 
-    lines.forEach((line, i) => {
-      if (line.startsWith("//:")) {
-        let tokens = line.split(":");
+    let jumpLabel = {}
 
-        if (tokens.length === 4) {
-          if (labels.hasOwnProperty(tokens[1])) {
-            let number = Number.parseInt(tokens[2], 10);
-            labels[tokens[1]][number] = tokens[3];
-          }
+    lines.forEach((line, i) => {
+      var lineParts = line.split("//:");
+
+      if (lineParts.length === 1) {
+        return;
+      }
+
+      let tokens = lineParts[1].split(":");
+
+      if (tokens.length === 3) {
+        if (labels.hasOwnProperty(tokens[0])) {
+          let number = Number.parseInt(tokens[1], 10);
+          labels[tokens[0]][number] = tokens[2];
         }
+      }
+
+      if (tokens[0] === "label") {
+        jumpLabel[tokens[1]] = i;
       }
     });
 
-    this.setState({ labels });
+    var compiledProgram = program;
+
+    for (var jl of Object.keys(jumpLabel)) {
+      compiledProgram = compiledProgram.replace("$" + jl, jumpLabel[jl].toString());
+    }
+
+    return { labels: labels, program: compiledProgram };
   }
 
   toggleRunAfterRegisterChange(event) {
