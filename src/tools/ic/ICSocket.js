@@ -198,7 +198,7 @@ class ICSocket extends Component {
                 </Panel.Body>
                 <Panel.Footer>             
                   <Row>
-                    <Col md={6}>
+                    <Col md={5}>
                       <h5>Copy to Clipboard</h5>
                       <ButtonToolbar>                  
                         <ButtonGroup>
@@ -214,7 +214,7 @@ class ICSocket extends Component {
                         </ButtonGroup>
                       </ButtonToolbar>                     
                     </Col>
-                    <Col md={6}>
+                    <Col md={7}>
                       <h5>Share Program</h5>
                       <ICPermalinkGenerator currentHash={this.state.currentHash} />
                     </Col>
