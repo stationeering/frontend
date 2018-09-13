@@ -1,12 +1,18 @@
 import React, { Component } from 'react';
 import IC from 'stationeers-ic';
-import { Row, Col, Panel, Table, Alert, ButtonToolbar, Button, ButtonGroup } from 'react-bootstrap';
+import { Row, Col, Panel, Table, ButtonToolbar, Button, ButtonGroup } from 'react-bootstrap';
 import {CopyToClipboard} from 'react-copy-to-clipboard';
+
 import ICPermalinkGenerator from './ICPermalinkGenerator';
+import ICInternalRegisters from './ICInternalRegisters';
+import ICIORegisters from './ICIORegisters';
+import ICInstructions from './ICInstructions';
+import ICInstructionSet from './ICInstructionSet';
+import ICProgramErrors from './ICProgramErrors';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { library } from '@fortawesome/fontawesome-svg-core';
-import { faTerminal, faGamepad, faCogs, faMemory, faLongArrowAltLeft, faLongArrowAltRight, faTimes, faStepForward, faPlay, faRedo, faEye, faAngleDoubleRight, faBook, faLightbulb, faListUl, faPen, faFile, faMicrochip } from '@fortawesome/free-solid-svg-icons';
+import { faTerminal, faGamepad, faCogs, faMemory, faLongArrowAltLeft, faLongArrowAltRight, faTimes, faStepForward, faPlay, faRedo, faEye, faAngleDoubleRight, faBook, faLightbulb, faListUl, faPen, faFile, faMicrochip, faArrowsAltH } from '@fortawesome/free-solid-svg-icons';
 import { faReddit } from '@fortawesome/free-brands-svg-icons';
 
 import brace from 'brace';
@@ -17,7 +23,7 @@ import 'brace/theme/github';
 
 import './ICSocket.css';
 
-library.add(faTerminal, faGamepad, faCogs, faMemory, faLongArrowAltLeft, faLongArrowAltRight, faTimes, faStepForward, faPlay, faRedo, faEye, faAngleDoubleRight, faBook, faLightbulb, faListUl, faPen, faReddit, faFile, faMicrochip);
+library.add(faTerminal, faGamepad, faCogs, faMemory, faLongArrowAltLeft, faLongArrowAltRight, faTimes, faStepForward, faPlay, faRedo, faEye, faAngleDoubleRight, faBook, faLightbulb, faListUl, faPen, faReddit, faFile, faMicrochip, faArrowsAltH);
 
 class ICSocket extends Component {
   constructor(props) {
@@ -31,13 +37,11 @@ class ICSocket extends Component {
     this.clearInternalRegisters = this.clearInternalRegisters.bind(this);
     this.setRegister = this.setRegister.bind(this);
     this.toggleRunAfterRegisterChange = this.toggleRunAfterRegisterChange.bind(this);
-    this.toggleInputsAreWritable = this.toggleInputsAreWritable.bind(this);
     this.hashChanged = this.hashChanged.bind(this);  
 
     let defaultCode = "add r0 r0 1 // Increment r0.\nyield\nj 0";
 
-    this.state = { ic: new IC(), program: defaultCode, errors: [], labels: { input: [], output: [], internal: [] }, runAfterRegisterChange: false, inputsAreWritable: true, currentHash: "" };
-    this.state.ic.setInputRegistersWriteable(this.state.inputsAreWritable);
+    this.state = { ic: new IC(), program: defaultCode, errors: [], labels: { io: [], internal: [] }, runAfterRegisterChange: false, currentHash: "" };
     this.loadProgram(defaultCode);    
   }
 
@@ -76,14 +80,6 @@ class ICSocket extends Component {
 
     let returnData = { currentHash: rawHash };
 
-    if (data.hasOwnProperty("inputsAreWritable")) {
-      returnData["inputsAreWritable"] = data.inputsAreWritable;      
-    } else {
-      returnData["inputsAreWritable"] = true;
-    }
-
-    this.state.ic.setInputRegistersWriteable(returnData["inputsAreWritable"]);
-
     if (data.hasOwnProperty("program")) {
       returnData["program"] = data.program;
       this.loadProgram(data.program);
@@ -97,11 +93,13 @@ class ICSocket extends Component {
       Object.keys(data.registers).forEach((key) => {
         data.registers[key].forEach((value, i) => {
           switch (key) {
-            case "input":
-              this.state.ic.setInputRegister(i, value);
-              break;
-            case "output":
-              this.state.ic.setOutputRegister(i, value);
+            case "io":
+              var deviceFields = Object.keys(value);
+
+              for (let field of deviceFields) {
+                this.state.ic.setIORegister(i, field, value[field]);
+              }
+              
               break;
             case "internal":
               this.state.ic.setInternalRegister(i, value);
@@ -116,7 +114,7 @@ class ICSocket extends Component {
   }
 
   saveStateToHash() {
-    let data = { program: this.state.program, registers: { input: this.state.inputRegisters, output: this.state.outputRegisters, internal: this.state.internalRegisters }, runAfterRegisterChange: this.state.runAfterRegisterChange, inputsAreWritable: this.state.inputsAreWritable };
+    let data = { program: this.state.program, registers: { io: this.state.inputRegisters, internal: this.state.internalRegisters }, runAfterRegisterChange: this.state.runAfterRegisterChange };
     let json = JSON.stringify(data);
     let base64 = btoa(json);
 
@@ -130,8 +128,7 @@ class ICSocket extends Component {
     let ic = this.state.ic;
 
     this.setState({
-      inputRegisters: ic.getInputRegisters(),
-      outputRegisters: ic.getOutputRegisters(),
+      ioRegisters: ic.getIORegisters(),
       internalRegisters: ic.getInternalRegisters(),
       programCounter: ic.programCounter(),
       instructionCount: ic.getInstructionCount(),
@@ -162,14 +159,11 @@ class ICSocket extends Component {
     return (
       <div className="ICSocket">
         <Row>
-          <Col md={4}>
-            <Registers registers={this.state.inputRegisters} type="input" name="Input" setRegister={this.setRegister} labels={this.state.labels.input} />
+          <Col md={8}>         
+            <ICIORegisters registers={this.state.ioRegisters} setRegister={this.setRegister} labels={this.state.labels.io} /> 
           </Col>
           <Col md={4}>
-            <Registers registers={this.state.outputRegisters} type="output" name="Output" setRegister={this.setRegister} labels={this.state.labels.output} />
-          </Col>
-          <Col md={4}>
-            <Registers registers={this.state.internalRegisters} type="internal" name="Internal" setRegister={this.setRegister} clearInternalRegisters={this.clearInternalRegisters} labels={this.state.labels.internal} />
+            <ICInternalRegisters registers={this.state.internalRegisters} setRegister={this.setRegister} clearInternalRegisters={this.clearInternalRegisters} labels={this.state.labels.internal} />
           </Col>
         </Row>
         <Row>
@@ -194,7 +188,7 @@ class ICSocket extends Component {
                   markers={markers}
                   annotations={annotations}
                 />
-                <ProgramErrors errors={this.state.errors} />
+                <ICProgramErrors errors={this.state.errors} />
                 </Panel.Body>
                 <Panel.Footer>             
                   <Row>
@@ -238,7 +232,6 @@ class ICSocket extends Component {
                   <Button className={inactive} onClick={this.run} ><FontAwesomeIcon icon="play" /> Run</Button>
                   <Button className="interactive" onClick={this.restart} ><FontAwesomeIcon icon="redo" /> Reset PC</Button>
                   <Button className={"interactive" + (this.state.runAfterRegisterChange ? "" : " inactive") } onClick={this.toggleRunAfterRegisterChange} ><FontAwesomeIcon icon="eye" /> Watch Registers</Button>                               
-                  <Button className={"interactive" + (this.state.inputsAreWritable ? "" : " inactive") } onClick={this.toggleInputsAreWritable} ><FontAwesomeIcon icon="pen" /> Inputs Are Writable</Button>                               
                 </ButtonToolbar>
               </Panel.Body>
             </Panel>
@@ -264,117 +257,10 @@ class ICSocket extends Component {
         </Row>
         <Row>
           <Col md={5}>          
-           <Panel>
-              <Panel.Heading>
-                <Panel.Title componentClass="h3"><FontAwesomeIcon icon="lightbulb" /> Instructions</Panel.Title>
-              </Panel.Heading>
-              <Panel.Body>
-                <h4>Introduction</h4>
-                <p>
-                  This is a clean room implementation of the Stationeers Programable Chip. It should implement the MIPS instructions set as detailed by <a href="https://steamcommunity.com/games/544550/announcements/detail/2903022560766254057">Heightmare</a>.
-                </p>                
-                <h4>Writing A Program</h4>
-                <p>
-                  Write the program code in the Program text box, it will be read and parsed automatically. Any errors will appear below the text box and marked along side your code, once corrected the program can be run.
-                </p>
-                <h4>Running A Program</h4>
-                <p>
-                  Pressing <FontAwesomeIcon icon="step-forward" /> will step the program through one instruction at a time. Pressing <FontAwesomeIcon icon="play" /> will run it through. If you use step then <FontAwesomeIcon icon="redo" /> will reset the program to the first instruction.
-                </p>                                
-                <p>
-                  <FontAwesomeIcon icon="eye" /> can be toggled, if solid then when a register at the top is changed the program will be automatically rerun.
-                </p>
-                <p>
-                  Finally <FontAwesomeIcon icon="pen" /> can be toggled, if solid then input registers can be written to.
-                </p>
-                <h4>Jump Labels</h4>
-                <p>
-                  To assist the creation of larger and more complex programs, the simulator can handle jump labels. This means where you would put a jump destination you may put a label.
-                </p>
-                <p>
-                  For example:                  
-                </p>
-                <pre>{`start: move o 1  // Label may also be on it's own line.
-yield
-j $start`}</pre>
-                <p>
-                  Use the "Stationeers (Resolve Labels)" clipboard button to copy a version with resolved labels which can be pasted into Stationeers.
-                </p>
-                <h4>Labelling Registers</h4>
-                <p>
-                  To make the meaning of registers more obvious you can include a comment in your program as follows:
-                </p>
-                <pre>{`//:input:0:Base Pressure
-//:output:0:Door Open
-//:internal:0:If it's safe?`}</pre>
-                <p><strong>Note</strong> These comments will still count as line numbers for the interpreter, so addresses for jumps needs to be adjusted.</p>
-              </Panel.Body>
-            </Panel>
+            <ICInstructions />
           </Col>
           <Col md={7}>          
-            <Panel>
-              <Panel.Heading>
-                <Panel.Title componentClass="h3"><FontAwesomeIcon icon="book" /> Stationeers Instruction Set</Panel.Title>
-              </Panel.Heading>
-              <Panel.Body>
-              <pre>{`// Text after a // will be ignored to the end of the line. The amount of white
-// space between arguments isn't important, but new lines start a new command.
-
-// In the instructions fields can only take certain types, these are:
-// - d is a register or output
-// - s and t are registers, inputs, or floats
-// - a is a non-negative integer value              
-
-move    d s     // stores the value of s in d
-
-add     d s t   // calculates s + t and stores the result in d
-sub     d s t   // calculates s - t and stores the result in d
-mul     d s t   // calculates s * t and stores the result in d
-div     d s t   // calculates s / t and stores the result in d
-mod     d s t   // calculates s mod t and stores the result in d. Note this
-                // doesn't behave like the % operator - the result will be
-                // positive even if the either of the operands are negative
-
-slt     d s t   // stores 1 in d if s < t, 0 otherwise
-
-sqrt    d s     // calculates sqrt(s) and stores the result in d
-round   d s     // finds the rounded value of s and stores the result in d
-trunc   d s     // finds the truncated value of s and stores the result in d
-ceil    d s     // calculates the ceiling of s and stores the result in d
-floor   d s     // calculates the floor of s and stores the result in d
-
-max     d s t   // calculates the maximum of s and t and stores the result in d
-min     d s t   // calculates the minimum of s and t and stores the result in d
-abs     d s     // calculates the absolute value of s and stores the result in d
-log     d s     // calculates the natural logarithm of s and stores the result
-                // in d
-exp     d s     // calculates the exponential of s and stores the result in d
-rand    d       // selects a random number uniformly at random between 0 and 1
-                // inclusive and stores the result in d
-
-// boolean arithmetic uses the C convention that 0 is false and any non-zero
-// value is true.
-and     d s t   // stores 1 in d if both s and t have non-zero values,
-                // 0 otherwise
-or      d s t   // stores 1 in d if either s or t have non-zero values,
-                // 0 otherwise
-xor     d s t   // stores 1 in d if exactly one of s and t are non-zero,
-                // 0 otherwise
-nor     d s t   // stores 1 in d if both s and t equal zero, 0 otherwise
-
-
-// Lines are numbered starting at zero
-j             a // jumps to line a.
-bltz      s   a // jumps to line a if s <  0
-blez      s   a // jumps to line a if s <= 0
-bgez      s   a // jumps to line a if s >= 0
-bgtz      s   a // jumps to line a if s >  0
-beq       s t a // jumps to line a if s == t
-bne       s t a // jumps to line a if s != t
-
-yield           // ceases code execution for this power tick`}</pre>
-              </Panel.Body>
-            </Panel>
+            <ICInstructionSet />
           </Col>  
         </Row>
       </div>
@@ -456,10 +342,7 @@ yield           // ceases code execution for this power tick`}</pre>
   setRegister(type, index, value) {
     switch (type) {
       case "input":
-        this.state.ic.setInputRegister(index, value);
-        break;
-      case "output":
-        this.state.ic.setOutputRegister(index, value);
+        this.state.ic.setIORegister(index, value);
         break;
       case "internal":
         this.state.ic.setInternalRegister(index, value);
@@ -490,7 +373,7 @@ yield           // ceases code execution for this power tick`}</pre>
   }
 
   parseLabels(program) {
-    let labels = { input: [], output: [], internal: [] };
+    let labels = { io: [], internal: [] };
     let lines = program.split("\n")
 
     let jumpLabel = {}
@@ -540,155 +423,6 @@ yield           // ceases code execution for this power tick`}</pre>
 
   toggleRunAfterRegisterChange(event) {
     this.setState({ runAfterRegisterChange: !this.state.runAfterRegisterChange });
-  }
-
-  toggleInputsAreWritable(event) {
-    this.state.ic.setInputRegistersWriteable(!this.state.inputsAreWritable);
-    this.setState({ inputsAreWritable: !this.state.inputsAreWritable });    
-    this.setState({ errors: this.state.ic.getProgramErrors() });
-  }
-}
-
-class ProgramErrors extends Component {
-  render() {
-    if (this.props.errors.length > 0) {
-      return (
-        <Alert bsStyle="danger">
-          <strong>Parsing Errors</strong>
-          <ul className="programErrors">
-            {this.renderErrors(this.props.errors)}        
-          </ul>
-        </Alert>
-      );
-    } else {
-      return null;
-    }
-  }
-
-  renderErrors(errors) {
-    return this.props.errors.map((error, i) => <ProgramError key={i} error={error} />)
-  }
-}
-
-class ProgramError extends Component {
-  render() {
-    let line = this.props.error.line;
-    let error = this.props.error.error;
-    let field = Number.isInteger(this.props.error.field) ? ` / Field ${this.props.error.field}` : "";
-    let errorDescription = this.lookUpError(error);
-
-    return (
-      <li className="programError">Line {line}{field}: {errorDescription} ({error}) </li>
-    );
-  }
-
-  lookUpError(error) {
-    switch (error) {
-      case "INVALID_FIELD_NO_SUCH_REGISTER":
-        return "The register number you have specified does not exist.";      
-      case "INVALID_FIELD_UNKNOWN_TYPE":
-        return "The register prefix you have provided is unknown, use i, o or r.";
-      case "INVALID_FIELD_WRITEONLY":
-        return "Instruction requires a source which can be read from, you can not read from an output."
-      case "INVALID_FIELD_READONLY":
-         return "Instruction requires a destination which can be written to, change to a register or an output."
-      case "MISSING_FIELD":
-        return "Instruction requires an additional field in this position.";
-      case "UNKNOWN_INSTRUCTION":
-        return "The instruction you have specified does not exist, check the spelling.";
-      default:
-        return "Unknown error."
-    }
-  }
-}
-
-class Registers extends Component {
-  render() {
-    var icon;
-
-    switch(this.props.name) {
-    case "Input":
-      icon = <FontAwesomeIcon icon="long-arrow-alt-right" />;
-      break;
-    case "Output":
-      icon = <FontAwesomeIcon icon="long-arrow-alt-left" />;
-      break;
-    case "Internal":
-      icon = <FontAwesomeIcon icon="memory" />;
-      break;
-      default:
-      icon = "default";
-    }
-
-    var clearRegisters = (this.props.name === "Internal" ? <FontAwesomeIcon icon="times" className="pull-right interactive" onClick={this.props.clearInternalRegisters} title="Clear registers." /> : "")
-
-    return (
-      <Panel>
-        <Panel.Heading>
-          <Panel.Title componentClass="h3">{icon} {this.props.name} Registers {clearRegisters}</Panel.Title>
-        </Panel.Heading>
-        <Table>
-          <thead>
-            <tr><th /><th>Set</th><th>Value</th><th>Label</th></tr>
-          </thead>
-          <tbody>
-            {this.renderRegisters()}
-          </tbody>
-        </Table>
-      </Panel>
-    );
-  }
-
-  renderRegisters() {
-    if (this.props.registers) {
-      return this.props.registers.map((value, i) => <Register key={i} index={i} value={value} label={this.props.labels[i]} type={this.props.type} setRegister={this.props.setRegister} />);
-    }
-  }
-}
-
-class Register extends Component {
-  constructor(props) {
-    super(props);
-
-    this.state = { inputValue: "" };
-
-    this.onClick = this.onClick.bind(this);
-    this.onChange = this.onChange.bind(this);
-    this.onKeyPress = this.onKeyPress.bind(this);
-  }
-
-  roundTo(value, decimals) {
-    return Number(Math.round(value+'e'+decimals)+'e-'+decimals);
-  }
-
-  render() {
-    return (
-      <tr className="register">
-        <td>{this.props.index}</td>
-        <td><input type="text" size="5" onChange={this.onChange} onKeyPress={this.onKeyPress} value={this.state.inputValue} /> <button onClick={this.onClick}>-&gt;</button></td>
-        <td>{this.roundTo(this.props.value, 5)}</td>
-        <td>{this.props.label}</td>
-      </tr>
-    );
-  }
-
-  onChange(event) {
-    this.setState({ inputValue: event.target.value });
-  }
-
-  onClick() {
-    var newVal = Number.parseFloat(this.state.inputValue);
-
-    if (!Number.isNaN(newVal)) {
-      this.props.setRegister(this.props.type, this.props.index, Number.parseFloat(this.state.inputValue));
-      this.setState({ inputValue: "" });
-    }
-  }
-
-  onKeyPress(event) {
-    if (event.key === "Enter") {
-      this.onClick();
-    }
   }
 }
 

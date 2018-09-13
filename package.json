@@ -19,7 +19,7 @@
     "react-router-dom": "^4.3.1",
     "react-scripts": "1.1.4",
     "react-timestamp": "^4.4.0",
-    "stationeers-ic": "github:stationeering/stationeers-ic"
+    "stationeers-ic": "github:stationeering/stationeers-ic#v2"
   },
   "scripts": {
     "build-css": "node-sass-chokidar src/ -o src/",
