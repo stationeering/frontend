@@ -114,7 +114,7 @@ class ICSocket extends Component {
   }
 
   saveStateToHash() {
-    let data = { program: this.state.program, registers: { io: this.state.inputRegisters, internal: this.state.internalRegisters }, runAfterRegisterChange: this.state.runAfterRegisterChange };
+    let data = { program: this.state.program, registers: { io: this.state.ioRegisters, internal: this.state.internalRegisters }, runAfterRegisterChange: this.state.runAfterRegisterChange };
     let json = JSON.stringify(data);
     let base64 = btoa(json);
 
@@ -158,14 +158,6 @@ class ICSocket extends Component {
 
     return (
       <div className="ICSocket">
-        <Row>
-          <Col md={8}>         
-            <ICIORegisters registers={this.state.ioRegisters} setRegister={this.setRegister} labels={this.state.labels.io} /> 
-          </Col>
-          <Col md={4}>
-            <ICInternalRegisters registers={this.state.internalRegisters} setRegister={this.setRegister} clearInternalRegisters={this.clearInternalRegisters} labels={this.state.labels.internal} />
-          </Col>
-        </Row>
         <Row>
           <Col md={8}>
             <Panel>
@@ -256,6 +248,14 @@ class ICSocket extends Component {
           </Col>
         </Row>
         <Row>
+          <Col md={8}>         
+            <ICIORegisters registers={this.state.ioRegisters} setRegister={this.setRegister} labels={this.state.labels.io} /> 
+          </Col>
+          <Col md={4}>
+            <ICInternalRegisters registers={this.state.internalRegisters} setRegister={this.setRegister} clearInternalRegisters={this.clearInternalRegisters} labels={this.state.labels.internal} />
+          </Col>
+        </Row>
+        <Row>
           <Col md={5}>          
             <ICInstructions />
           </Col>
@@ -339,10 +339,10 @@ class ICSocket extends Component {
     this.setState(this.transferICState());
   }
 
-  setRegister(type, index, value) {
+  setRegister(type, index, value, field) {
     switch (type) {
-      case "input":
-        this.state.ic.setIORegister(index, value);
+      case "io":
+        this.state.ic.setIORegister(index, field, value);
         break;
       case "internal":
         this.state.ic.setInternalRegister(index, value);

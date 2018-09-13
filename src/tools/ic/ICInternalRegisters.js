@@ -3,9 +3,9 @@ import { Panel, Table } from 'react-bootstrap';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { library } from '@fortawesome/fontawesome-svg-core';
-import { faMemory, faTimes } from '@fortawesome/free-solid-svg-icons';
+import { faMemory, faTimes, faWrench } from '@fortawesome/free-solid-svg-icons';
 
-library.add(faTimes, faMemory);
+library.add(faTimes, faMemory, faWrench);
 
 class ICInternalRegisters extends Component {
     render() {
@@ -52,7 +52,7 @@ class ICInternalRegisters extends Component {
       return (
         <tr className="register">
           <td>{this.props.index}</td>
-          <td><input type="text" size="5" onChange={this.onChange} onKeyPress={this.onKeyPress} value={this.state.inputValue} /> <button onClick={this.onClick}>-&gt;</button></td>
+          <td><input type="text" size="6" onChange={this.onChange} onKeyPress={this.onKeyPress} value={this.state.inputValue} /> <button onClick={this.onClick}><FontAwesomeIcon icon="wrench" /></button></td>
           <td>{this.roundTo(this.props.value, 5)}</td>
           <td>{this.props.label}</td>
         </tr>
@@ -67,7 +67,7 @@ class ICInternalRegisters extends Component {
       var newVal = Number.parseFloat(this.state.inputValue);
   
       if (!Number.isNaN(newVal)) {
-        this.props.setRegister(this.props.type, this.props.index, Number.parseFloat(this.state.inputValue));
+        this.props.setRegister("internal", this.props.index, Number.parseFloat(this.state.inputValue));
         this.setState({ inputValue: "" });
       }
     }
