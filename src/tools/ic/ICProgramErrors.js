@@ -39,7 +39,7 @@ class ProgramError extends Component {
             case "INVALID_FIELD_NO_SUCH_REGISTER":
                 return "The register number you have specified does not exist.";
             case "INVALID_FIELD_UNKNOWN_TYPE":
-                return "The register prefix you have provided is unknown, use i, o or r.";
+                return "The register prefix you have provided is unknown, it should begin with r.";
             case "INVALID_FIELD_WRITEONLY":
                 return "Instruction requires a source which can be read from, you can not read from an output."
             case "INVALID_FIELD_READONLY":
