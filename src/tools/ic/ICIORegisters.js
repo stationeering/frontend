@@ -40,7 +40,7 @@ class ICIORegister extends Component {
           <Panel.Heading>
             <Panel.Title componentClass="h5">d{this.props.index} {labelWithSeperator}</Panel.Title>
           </Panel.Heading>
-          <Table>
+          <Table condensed>
             <thead>
               <tr><th>Field</th><th>Set</th><th>Value</th></tr>
             </thead>

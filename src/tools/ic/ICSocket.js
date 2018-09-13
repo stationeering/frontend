@@ -159,6 +159,14 @@ class ICSocket extends Component {
     return (
       <div className="ICSocket">
         <Row>
+          <Col md={8}>         
+            <ICIORegisters registers={this.state.ioRegisters} setRegister={this.setRegister} labels={this.state.labels.io} /> 
+          </Col>
+          <Col md={4}>
+            <ICInternalRegisters registers={this.state.internalRegisters} setRegister={this.setRegister} clearInternalRegisters={this.clearInternalRegisters} labels={this.state.labels.internal} />
+          </Col>
+        </Row>      
+        <Row>
           <Col md={8}>
             <Panel>
               <Panel.Heading>
@@ -173,7 +181,7 @@ class ICSocket extends Component {
                   name="AceEditorMips"
                   setOptions={{firstLineNumber: 0}}
                   debounceChangePeriod={500}
-                  height="500px"
+                  height="400px"
                   width="100%"
                   fontSize={16}
                   ref="editor"
@@ -245,14 +253,6 @@ class ICSocket extends Component {
                 </tbody>
               </Table>
             </Panel>            
-          </Col>
-        </Row>
-        <Row>
-          <Col md={8}>         
-            <ICIORegisters registers={this.state.ioRegisters} setRegister={this.setRegister} labels={this.state.labels.io} /> 
-          </Col>
-          <Col md={4}>
-            <ICInternalRegisters registers={this.state.internalRegisters} setRegister={this.setRegister} clearInternalRegisters={this.clearInternalRegisters} labels={this.state.labels.internal} />
           </Col>
         </Row>
         <Row>
@@ -379,7 +379,7 @@ class ICSocket extends Component {
     let jumpLabel = {}
 
     lines.forEach((line, i) => {
-      var lineParts = line.split("//:");
+      var lineParts = line.split(/\/\/:|#:/);
 
       if (lineParts.length === 1) {
         return;
