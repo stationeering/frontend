@@ -20,7 +20,6 @@ class ICInstructionSet extends Component {
                     </p>
                     <ul>
                         <li><code>ls</code> instruction - load data from slot.</li>
-                        <li><code>alias</code> instruction - create an alias for a register.</li>
                         <li>Register indirection, i.e. <code>rrr0</code>.</li>
                         <li>IC Socket Access via <code>db</code> device.</li>
                     </ul>
@@ -247,7 +246,7 @@ class ICInstructionSet extends Component {
     <td><code>a</code></td>
     <td>&nbsp;</td>
     <td>&nbsp;</td>
-    <td>Jump program relative to the <code>a</code>.</td>
+    <td>Jump program relative to the <code>a + pc</code>.</td>
   </tr>
   <tr>
     <td>brltz</td>
@@ -303,7 +302,7 @@ class ICInstructionSet extends Component {
     <td><code>i</code></td>
     <td><code>f</code></td>
     <td><code>s</code></td>
-    <td>Save <code>s</code> into IO port <code>i</code>, variable <code>f</code>.</td>
+    <td>Save <code>s</code> into IO port <code>i</code>, variable <code>f</code> (from device).</td>
   </tr>
   <tr>
     <td>l</td>
@@ -311,6 +310,13 @@ class ICInstructionSet extends Component {
     <td><code>i</code></td>
     <td><code>f</code></td>
     <td>Load IO port <code>i</code>, variable <code>f</code> into <code>d</code>.</td>
+  </tr>
+  <tr>
+    <td>alias</td>
+    <td><code>f</code></td>
+    <td><code>s</code></td>
+    <td>&nbsp;</td>
+    <td>Define a register alias so that <code>f</code> can be used in place of <code>s</code>.</td>
   </tr>
 </tbody>
             </Table>
@@ -321,7 +327,7 @@ class ICInstructionSet extends Component {
                     <li><code>t</code> - An internal register (r0 - r15), a constant integer or a constant float.</li>
                     <li><code>a</code> - An address within the program, always a positive integer.</li>
                     <li><code>i</code> - Device register (d0 - d5).</li>
-                    <li><code>f</code> - String variable name available on the preceeding device.</li>
+                    <li><code>f</code> - String variable name.</li>
                     <li><code>pc</code> - Program counter, current line being executed.</li>
                 </ul>
             </Panel.Body>

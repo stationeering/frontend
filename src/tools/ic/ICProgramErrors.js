@@ -39,11 +39,13 @@ class ProgramError extends Component {
             case "INVALID_FIELD_NO_SUCH_REGISTER":
                 return "The register number you have specified does not exist.";
             case "INVALID_FIELD_UNKNOWN_TYPE":
-                return "The register prefix you have provided is unknown, it should begin with r.";
+                return "The register is invalid, or the alias has not been created.";
             case "INVALID_FIELD_WRITEONLY":
-                return "Instruction requires a source which can be read from, you can not read from an output."
+                return "Instruction requires a source which can be read from, you can not read from an device directly."
             case "INVALID_FIELD_READONLY":
-                return "Instruction requires a destination which can be written to, change to a register or an output."
+                return "Instruction requires a destination which can be written to, change to a register."
+            case "INVALID_FIELD_NOT_REGISTER":
+                return "Instruction requires the field to be a register."
             case "MISSING_FIELD":
                 return "Instruction requires an additional field in this position.";
             case "UNKNOWN_INSTRUCTION":
