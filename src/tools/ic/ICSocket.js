@@ -275,7 +275,7 @@ class ICSocket extends Component {
                 </p>                
                 <h4>Writing A Program</h4>
                 <p>
-                  Write the program code in the Program text box, it will be read and parsed automatically. Any errors will appear below the text box, once corrected the program can be run.
+                  Write the program code in the Program text box, it will be read and parsed automatically. Any errors will appear below the text box and marked along side your code, once corrected the program can be run.
                 </p>
                 <h4>Running A Program</h4>
                 <p>
@@ -302,7 +302,7 @@ j $start`}</pre>
                 </p>
                 <h4>Labelling Registers</h4>
                 <p>
-                  To make make the meaning of registers more obvious you can include a comment in your program as follows:
+                  To make the meaning of registers more obvious you can include a comment in your program as follows:
                 </p>
                 <pre>{`//:input:0:Base Pressure
 //:output:0:Door Open

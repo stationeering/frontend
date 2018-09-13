@@ -1,6 +1,6 @@
 #!/bin/bash
 npm run-script build
-AWS_PROFILE=deploy aws s3 sync build/. s3://stationeering-app/ --delete --cache-control max-age=31536000,public
+AWS_PROFILE=deploy aws s3 sync build/static/. s3://stationeering-app/static/ --cache-control max-age=31536000,public
 
 ROOT_FILES=`find build/ -maxdepth 1 -type f`
 

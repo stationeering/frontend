@@ -11,6 +11,8 @@ class UpdateManager extends Component {
         this.handleDismiss = this.handleDismiss.bind(this);
 
         this.state = { updateAvailable: false, show: true };
+
+        this.props.updateProxy.subscribe(this.notify);
     }
 
     notify() {

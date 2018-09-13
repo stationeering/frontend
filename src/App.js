@@ -6,6 +6,7 @@ import Scenarios from './info/scenarios/Scenarios';
 import Items from './info/items/Items';
 import ICSocket from './tools/ic/ICSocket';
 import ICPermalink from './tools/ic/ICPermalink';
+import UpdateManager from './UpdateManager';
 
 import Data from './tools/data/Data';
 import Discord from './tools/discord/Discord';
@@ -93,7 +94,7 @@ class App extends Component {
           <Header />
           <Navigation betaBranch={this.state.beta} onChange={this.toggleBeta} languageLoadState={this.state.language.message} />
         </Navbar>
-        <Main beta={this.state.beta} languageMap={this.languageMap} updateManager={this.props.updateManager} />
+        <Main beta={this.state.beta} languageMap={this.languageMap} updateProxy={this.props.updateProxy} />
         <footer className="footer">
           <small>
               stationeering.com is a fan website about <a href="https://store.steampowered.com/app/544550/Stationeers/">Stationeers</a> run by Melair.
@@ -173,7 +174,7 @@ class Main extends Component {
 
     return (
       <Grid>
-        {this.props.updateManager}
+        <UpdateManager updateProxy={this.props.updateProxy} />
         <Switch>
           <Route path="/info/items" render={() => <Items branch={branch} languageMap={this.props.languageMap} />} />
           <Route path="/info/scenarios" render={() => <Scenarios branch={branch} />} />
