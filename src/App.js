@@ -93,7 +93,7 @@ class App extends Component {
           <Header />
           <Navigation betaBranch={this.state.beta} onChange={this.toggleBeta} languageLoadState={this.state.language.message} />
         </Navbar>
-        <Main beta={this.state.beta} languageMap={this.languageMap} />
+        <Main beta={this.state.beta} languageMap={this.languageMap} updateManager={this.props.updateManager} />
         <footer className="footer">
           <small>
               stationeering.com is a fan website about <a href="https://store.steampowered.com/app/544550/Stationeers/">Stationeers</a> run by Melair.
@@ -173,6 +173,7 @@ class Main extends Component {
 
     return (
       <Grid>
+        {this.props.updateManager}
         <Switch>
           <Route path="/info/items" render={() => <Items branch={branch} languageMap={this.props.languageMap} />} />
           <Route path="/info/scenarios" render={() => <Scenarios branch={branch} />} />
