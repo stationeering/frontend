@@ -35,7 +35,7 @@ class ICIORegisters extends Component {
 
   renderRegisters() {
     if (this.props.registers) {
-      var registers = this.props.registers.map((register, i) => <ICIORegister key={i} index={i} values={register} label={this.props.labels[i]} setRegister={this.props.setRegister} />);
+      var registers = this.props.registers.map((register, i) => <ICIORegister key={i} index={i} name={this.props.names[i]} values={register} label={this.props.labels[i]} setRegister={this.props.setRegister} />);
 
       var chunkedRegisters = this.chunk(registers, 2);
       
@@ -54,7 +54,7 @@ class ICIORegister extends Component {
       <Col md={6}>
         <Panel>
           <Panel.Heading>
-            <Panel.Title componentClass="h5">d{this.props.index} {labelWithSeperator}</Panel.Title>
+            <Panel.Title componentClass="h5">{this.props.name} {labelWithSeperator}</Panel.Title>
           </Panel.Heading>
           <Table condensed>
             <thead>

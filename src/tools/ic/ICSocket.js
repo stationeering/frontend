@@ -129,6 +129,7 @@ class ICSocket extends Component {
     let ic = this.state.ic;
 
     this.setState({
+      ioNames: ic.getIONames(),
       ioLabels: ic.getIOLabels(),
       ioRegisters: ic.getIORegisters(),
       internalRegisters: ic.getInternalRegisters(),
@@ -162,7 +163,7 @@ class ICSocket extends Component {
       <div className="ICSocket">
         <Row>
           <Col md={8}>         
-            <ICIORegisters registers={this.state.ioRegisters} setRegister={this.setRegister} labels={this.state.ioLabels} /> 
+            <ICIORegisters registers={this.state.ioRegisters} setRegister={this.setRegister} labels={this.state.ioLabels} names={this.state.ioNames} /> 
           </Col>
           <Col md={4}>
             <ICInternalRegisters registers={this.state.internalRegisters} setRegister={this.setRegister} clearInternalRegisters={this.clearInternalRegisters} labels={this.state.labels.internal} />
