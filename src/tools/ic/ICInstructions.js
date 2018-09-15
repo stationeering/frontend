@@ -36,7 +36,7 @@ class ICInstructions extends Component {
               <p>
                 For example:                  
               </p>
-              <pre>{`start: move o 1  // Label may also be on it's own line.
+              <pre>{`start: move o 1  # Label may also be on it's own line.
 yield
 j $start`}</pre>
               <p>
