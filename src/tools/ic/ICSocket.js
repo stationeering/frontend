@@ -39,9 +39,9 @@ class ICSocket extends Component {
     this.toggleRunAfterRegisterChange = this.toggleRunAfterRegisterChange.bind(this);
     this.hashChanged = this.hashChanged.bind(this);  
 
-    let defaultCode = "add r0 r0 1 // Increment r0.\nyield\nj 0";
+    let defaultCode = "add r0 r0 1 # Increment r0.\nyield\nj 0";
 
-    this.state = { ic: new IC(), program: defaultCode, errors: [], labels: { io: [], internal: [] }, runAfterRegisterChange: false, currentHash: "" };
+    this.state = { ic: new IC(), program: defaultCode, errors: [], labels: { internal: [] }, runAfterRegisterChange: false, currentHash: "" };
     this.loadProgram(defaultCode);    
   }
 
@@ -129,6 +129,7 @@ class ICSocket extends Component {
     let ic = this.state.ic;
 
     this.setState({
+      ioLabels: ic.getIOLabels(),
       ioRegisters: ic.getIORegisters(),
       internalRegisters: ic.getInternalRegisters(),
       programCounter: ic.programCounter(),
@@ -161,7 +162,7 @@ class ICSocket extends Component {
       <div className="ICSocket">
         <Row>
           <Col md={8}>         
-            <ICIORegisters registers={this.state.ioRegisters} setRegister={this.setRegister} labels={this.state.labels.io} /> 
+            <ICIORegisters registers={this.state.ioRegisters} setRegister={this.setRegister} labels={this.state.ioLabels} /> 
           </Col>
           <Col md={4}>
             <ICInternalRegisters registers={this.state.internalRegisters} setRegister={this.setRegister} clearInternalRegisters={this.clearInternalRegisters} labels={this.state.labels.internal} />

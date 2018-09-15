@@ -25,7 +25,6 @@ class ICInstructionSet extends Component {
                         <li><code>j</code> instructions taking registers for location.</li>
                         <li>Device indirection, such as <code>dr0</code>, where <code>r0</code> is <code>5</code>, resulting in <code>d5</code> being accessed.</li>
                         <li>Device aliases, <code>alias heater d0</code> can be used <code>s heater On 1</code>.</li>
-                        <li><code>label</code> instruction - to label screws on IC socket.</li>
                     </ul>
                 </Alert>
                 <p>
@@ -321,6 +320,13 @@ class ICInstructionSet extends Component {
     <td><code>s</code></td>
     <td>&nbsp;</td>
     <td>Define a register alias so that <code>f</code> can be used in place of <code>s</code>.</td>
+  </tr>
+  <tr>
+    <td>label</td>
+    <td><code>i</code></td>
+    <td><code>f</code></td>
+    <td>&nbsp;</td>
+    <td>Define the label <code>i</code> which will be displayed on the IC base for device <code>f</code>.</td>
   </tr>
 </tbody>
             </Table>

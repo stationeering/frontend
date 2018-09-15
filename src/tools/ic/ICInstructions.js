@@ -42,13 +42,17 @@ j $start`}</pre>
               <p>
                 Use the "Stationeers (Resolve Labels)" clipboard button to copy a version with resolved labels which can be pasted into Stationeers.
               </p>
+              <h4>Labelling Devices</h4>
+              <p>
+                To label a device (in simulator and in game), use the follow instruction:
+              </p>
+              <pre>{`label d1 GasSensor`}</pre>
+              <p><strong>Note</strong> Stationeering.com's labels will no longer work for devices, use the <code>label</code> instruction.</p>
               <h4>Labelling Registers</h4>
               <p>
                 To make the meaning of registers more obvious you can include a comment in your program as follows:
               </p>
-              <pre>{`#:io:0:Inside Gas Sensor
-#:io:1:Door
-#:internal:0:If it's safe?`}</pre>
+              <pre>{`#:internal:0:If it's safe?`}</pre>
               <p><strong>Note</strong> These comments will still count as line numbers for the interpreter, so addresses for jumps needs to be adjusted.</p>
             </Panel.Body>
           </Panel>);
