@@ -40,10 +40,8 @@ class ProgramError extends Component {
                 return "The register number you have specified does not exist.";
             case "INVALID_FIELD_UNKNOWN_TYPE":
                 return "The register is invalid, or the alias has not been created.";
-            case "INVALID_FIELD_WRITEONLY":
-                return "Instruction requires a source which can be read from, you can not read from an device directly."
-            case "INVALID_FIELD_READONLY":
-                return "Instruction requires a destination which can be written to, change to a register."
+            case "INVALID_FIELD_NOT_READABLE":
+                return "Instruction requires a source which can be read from, either a register or a literal number."
             case "INVALID_FIELD_NOT_REGISTER":
                 return "Instruction requires the field to be a register."
             case "MISSING_FIELD":

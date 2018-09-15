@@ -21,9 +21,7 @@ class ICInstructionSet extends Component {
                     <ul>
                         <li><code>ls</code> instruction - load data from slot.</li>
                         <li>Register indirection, i.e. <code>rrr0</code>.</li>
-                        <li><code>j</code> instructions taking registers for location.</li>
                         <li>Device indirection, such as <code>dr0</code>, where <code>r0</code> is <code>5</code>, resulting in <code>d5</code> being accessed.</li>
-                        <li>Device aliases, <code>alias heater d0</code> can be used <code>s heater On 1</code>.</li>
                     </ul>
                 </Alert>
                 <p>

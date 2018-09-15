@@ -271,13 +271,15 @@ class ICSocket extends Component {
   }
 
   decodeStepState(step) {
-    switch(step) {
+    switch(step) {      
     case "INVALID_PROGRAM":
       return "Program is invalid, solve errors first.";
     case "OUT_OF_OPERATIONS":
       return "IC has executed 128 operations, execution will resume on next tick.";
     case "END_OF_PROGRAM":
       return "IC has run out of instructions, this is will result in an IC error.";
+    case "INVALID_PROGRAM_COUNTER":
+      return "IC has executed an instruction which has placed the program counter to an invalid location, probably negative.";
     case "YIELD":
       return "IC has yielded control, execution will resume on next tick.";
     default:
