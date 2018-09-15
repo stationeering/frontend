@@ -116,6 +116,7 @@ class ICSocket extends Component {
   saveStateToHash() {
     let data = { program: this.state.program, registers: { io: this.state.ioRegisters, internal: this.state.internalRegisters }, runAfterRegisterChange: this.state.runAfterRegisterChange };
     let json = JSON.stringify(data);
+    console.log(json);
     let base64 = btoa(json);
 
     if (this.state.currentHash !== base64) {

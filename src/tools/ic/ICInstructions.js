@@ -46,9 +46,9 @@ j $start`}</pre>
               <p>
                 To make the meaning of registers more obvious you can include a comment in your program as follows:
               </p>
-              <pre>{`//:io:0:Inside Gas Sensor
-//:io:1:Door
-//:internal:0:If it's safe?`}</pre>
+              <pre>{`#:io:0:Inside Gas Sensor
+#:io:1:Door
+#:internal:0:If it's safe?`}</pre>
               <p><strong>Note</strong> These comments will still count as line numbers for the interpreter, so addresses for jumps needs to be adjusted.</p>
             </Panel.Body>
           </Panel>);
