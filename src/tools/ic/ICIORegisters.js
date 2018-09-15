@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Panel, Table, Col } from 'react-bootstrap';
+import { Panel, Table, Col, Clearfix } from 'react-bootstrap';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { library } from '@fortawesome/fontawesome-svg-core';
@@ -8,6 +8,18 @@ import { faArrowsAltH, faTrashAlt, faPlus, faWrench } from '@fortawesome/free-so
 library.add(faArrowsAltH, faTrashAlt, faPlus, faWrench);
 
 class ICIORegisters extends Component {
+  chunk(arr, len) {
+    var chunks = [],
+        i = 0,
+        n = arr.length;
+  
+    while (i < n) {
+      chunks.push(arr.slice(i, i += len));
+    }
+  
+    return chunks;
+  }
+  
   render() {
     return (
       <Panel>
@@ -23,7 +35,11 @@ class ICIORegisters extends Component {
 
   renderRegisters() {
     if (this.props.registers) {
-      return (this.props.registers.map((register, i) => <ICIORegister key={i} index={i} values={register} label={this.props.labels[i]} setRegister={this.props.setRegister} />))
+      var registers = this.props.registers.map((register, i) => <ICIORegister key={i} index={i} values={register} label={this.props.labels[i]} setRegister={this.props.setRegister} />);
+
+      var chunkedRegisters = this.chunk(registers, 2);
+      
+      return chunkedRegisters.map((chunk) => <Clearfix>{chunk}</Clearfix>)
     } else {
       return null;
     }
