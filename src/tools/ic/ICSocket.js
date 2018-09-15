@@ -116,7 +116,6 @@ class ICSocket extends Component {
   saveStateToHash() {
     let data = { program: this.state.program, registers: { io: this.state.ioRegisters, internal: this.state.internalRegisters }, runAfterRegisterChange: this.state.runAfterRegisterChange };
     let json = JSON.stringify(data);
-    console.log(json);
     let base64 = btoa(json);
 
     if (this.state.currentHash !== base64) {
@@ -363,7 +362,8 @@ class ICSocket extends Component {
   }
 
   programChange(text) {
-    this.setState({ program: text });
+    var filteredText = text.split('').filter((c) => c.charCodeAt(0) < 128).join('');
+    this.setState({ program: filteredText });
     this.loadProgram(text);
   }
 
