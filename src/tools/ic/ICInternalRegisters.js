@@ -28,7 +28,7 @@ class ICInternalRegisters extends Component {
   
     renderRegisters() {
       if (this.props.registers) {
-        return this.props.registers.map((value, i) => <Register key={i} index={i} value={value} label={this.props.labels[i]} setRegister={this.props.setRegister} />);
+        return this.props.registers.map((value, i) => <Register key={i} index={i} value={value} label={this.props.labels[i]} alias={this.props.aliases[i]} setRegister={this.props.setRegister} />);
       }
     }
   }
@@ -49,12 +49,14 @@ class ICInternalRegisters extends Component {
     }
   
     render() {
+      var alias = [ this.props.alias, this.props.label ].filter((a) => a).join(" / ");
+
       return (
         <tr className="register">
           <td>{this.props.index}</td>
           <td><input type="text" size="6" onChange={this.onChange} onKeyPress={this.onKeyPress} value={this.state.inputValue} /> <button onClick={this.onClick}><FontAwesomeIcon icon="wrench" /></button></td>
           <td>{this.roundTo(this.props.value, 5)}</td>
-          <td>{this.props.label}</td>
+          <td>{alias}</td>
         </tr>
       );
     }

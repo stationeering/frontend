@@ -131,6 +131,7 @@ class ICSocket extends Component {
       ioNames: ic.getIONames(),
       ioLabels: ic.getIOLabels(),
       ioRegisters: ic.getIORegisters(),
+      internalLabels: ic.getInternalLabels(),
       internalRegisters: ic.getInternalRegisters(),
       programCounter: ic.programCounter(),
       instructionCount: ic.getInstructionCount(),
@@ -165,7 +166,7 @@ class ICSocket extends Component {
             <ICIORegisters registers={this.state.ioRegisters} setRegister={this.setRegister} labels={this.state.ioLabels} names={this.state.ioNames} /> 
           </Col>
           <Col md={4}>
-            <ICInternalRegisters registers={this.state.internalRegisters} setRegister={this.setRegister} clearInternalRegisters={this.clearInternalRegisters} labels={this.state.labels.internal} />
+            <ICInternalRegisters registers={this.state.internalRegisters} setRegister={this.setRegister} clearInternalRegisters={this.clearInternalRegisters} labels={this.state.labels.internal} aliases={this.state.internalLabels} />
           </Col>
         </Row>      
         <Row>
