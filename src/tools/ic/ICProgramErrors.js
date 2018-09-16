@@ -50,6 +50,10 @@ class ProgramError extends Component {
                 return "Instruction requires an additional field in this position.";
             case "UNKNOWN_INSTRUCTION":
                 return "The instruction you have specified does not exist, check the spelling.";
+            case "LINE_TOO_LONG":
+                return "The line is more than 64 characters, reduce the length.";
+            case "PROGRAM_TOO_LONG":
+                return "The program is too long, only 128 instructions/lines are permitted.";
             default:
                 return "Unknown error."
         }

@@ -279,6 +279,8 @@ class ICSocket extends Component {
       return "IC has run out of instructions, this is will result in an IC error.";
     case "INVALID_PROGRAM_COUNTER":
       return "IC has executed an instruction which has placed the program counter to an invalid location, probably negative.";
+    case "INVALID_REGISTER_LOCATION":
+      return "IC has accepted to acces a register which does not exist, likely due to indirect register access.";
     case "YIELD":
       return "IC has yielded control, execution will resume on next tick.";
     default:
