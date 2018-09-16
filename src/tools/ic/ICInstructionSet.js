@@ -332,7 +332,7 @@ class ICInstructionSet extends Component {
                     <li><code>d</code> - An internal register (r0 - r15)</li>
                     <li><code>s</code> - An internal register (r0 - r15), a constant integer or a constant float.</li>
                     <li><code>t</code> - An internal register (r0 - r15), a constant integer or a constant float.</li>
-                    <li><code>a</code> - An address within the program, may be negative if relative jump.</li>
+                    <li><code>a</code> - An address (may be negative if relative jump) or a register with a location.</li>
                     <li><code>i</code> - Device register (d0 - d5).</li>
                     <li><code>f</code> - String variable name.</li>
                     <li><code>pc</code> - Program counter, current line being executed.</li>

@@ -44,6 +44,8 @@ class ProgramError extends Component {
                 return "Instruction requires a source which can be read from, either a register or a literal number."
             case "INVALID_FIELD_NOT_REGISTER":
                 return "Instruction requires the field to be a register."
+            case "INVALID_FIELD_NOT_DEVICE":
+                return "Instruction requires the field to be a device."
             case "MISSING_FIELD":
                 return "Instruction requires an additional field in this position.";
             case "UNKNOWN_INSTRUCTION":
