@@ -20,7 +20,6 @@ class ICInstructionSet extends Component {
                     </p>
                     <ul>
                         <li><code>ls</code> instruction - load data from slot.</li>
-                        <li>Device indirection, such as <code>dr0</code>, where <code>r0</code> is <code>5</code>, resulting in <code>d5</code> being accessed.</li>
                     </ul>
                 </Alert>
                 <p>
