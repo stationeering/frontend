@@ -321,7 +321,7 @@ class ICInstructionSet extends Component {
     <td><code>i</code></td>
     <td><code>f</code></td>
     <td>&nbsp;</td>
-    <td>Define the label <code>i</code> which will be displayed on the IC base for device <code>f</code>.</td>
+    <td>Define the label <code>f</code> which will be displayed on the IC base for device <code>i</code>.</td>
   </tr>
 </tbody>
             </Table>
