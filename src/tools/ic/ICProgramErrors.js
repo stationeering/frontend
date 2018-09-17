@@ -58,6 +58,8 @@ class ProgramError extends Component {
                 return "The program is too long, only 128 instructions/lines are permitted.";
             case "INVALID_JUMP_TAG_DUPLICATE":
                 return "The jump tag has already been used above this tag in the program.";
+            case "INVALID_JUMP_TAG_CONTENT_AFTER":
+                return "There is content after the jump tag, currently not permitted.";
             default:
                 return "Unknown error."
         }
