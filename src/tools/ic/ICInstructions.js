@@ -32,19 +32,17 @@ class ICInstructions extends Component {
               <p>
                 <FontAwesomeIcon icon="bug" /> can be toggled, if solid then the simulator will allow you to run an invalid program. When it encounters an error, the instruction will be ignored and treated as a noop.
               </p>
-              <h4>Jump Labels</h4>
+              <h4>Jump Tags</h4>
               <p>
-                To assist the creation of larger and more complex programs, the simulator can handle jump labels. This means where you would put a jump destination you may put a label.
+                To assist the creation of larger and more complex programs, the simulator can handle jump tags as supported by the IC. This means where you would put a jump destination you may put a tag.
               </p>
               <p>
                 For example:                  
               </p>
-              <pre>{`start: move o 1  # Label may also be on it's own line.
+              <pre>{`start:
+move o 1
 yield
-j $start`}</pre>
-              <p>
-                Use the "Stationeers (Resolve Labels)" clipboard button to copy a version with resolved labels which can be pasted into Stationeers.
-              </p>
+j start`}</pre>
               <h4>Labelling Devices</h4>
               <p>
                 To label a device (in simulator and in game), use the follow instruction:

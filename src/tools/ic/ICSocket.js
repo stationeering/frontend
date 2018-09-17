@@ -40,7 +40,7 @@ class ICSocket extends Component {
     this.toggleRunWithErrors = this.toggleRunWithErrors.bind(this);
     this.hashChanged = this.hashChanged.bind(this);  
 
-    let defaultCode = "add r0 r0 1 # Increment r0.\nyield\nj 0";
+    let defaultCode = "start:\nadd r0 r0 1 # Increment r0.\nyield\nj start";
 
     this.state = { ic: new IC(), program: defaultCode, errors: [], labels: { internal: [] }, runAfterRegisterChange: false, runWithErrors: false, currentHash: "" };
     this.loadProgram(defaultCode);    
@@ -220,11 +220,6 @@ class ICSocket extends Component {
                             <Button><FontAwesomeIcon icon={["fab", "reddit"]} /> reddit</Button>
                           </CopyToClipboard>
                         </ButtonGroup>
-                        <ButtonGroup>                      
-                          <CopyToClipboard text={this.parseLabels(this.state.program).program}>
-                            <Button><FontAwesomeIcon icon="microchip" /> Stationeers (Resolved Labels)</Button>
-                          </CopyToClipboard>
-                        </ButtonGroup>
                       </ButtonToolbar>                     
                     </Col>
                     <Col md={7}>
@@ -384,9 +379,8 @@ class ICSocket extends Component {
 
   loadProgram(program) {
     let ic = this.state.ic;
-    var parsed = this.parseLabels(program);
-    ic.load(parsed.program);
-    this.setState({ labels: parsed.labels });
+    ic.load(program);
+    this.setState({ labels: this.parseLabels(program) });
     this.setState({ errors: ic.getProgramErrors() });
     this.setState({ instructionCount: ic.getInstructionCount() });
     this.transferICState();
@@ -419,26 +413,7 @@ class ICSocket extends Component {
       }
     });
 
-    var newLines = lines.map((line, i) => {
-      var matched = line.match(/^\s*([a-zA-Z0-9]+):\s*.*/);
-
-      if (matched) {
-        var labelName = matched[1];
-        jumpLabel[labelName] = i;
-
-        return line.replace(/^\s*[a-zA-Z0-9]+:\s*/, "");
-      } else {
-        return line;
-      }     
-    });
-
-    var compiledProgram = newLines.join('\n');
-
-    for (var jl of Object.keys(jumpLabel)) {
-      compiledProgram = compiledProgram.replace(new RegExp("\\$" + jl, 'g'), jumpLabel[jl].toString());
-    }
-
-    return { labels: labels, program: compiledProgram };
+    return labels;
   }
 
   toggleRunAfterRegisterChange(event) {
