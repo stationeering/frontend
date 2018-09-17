@@ -4,9 +4,11 @@ import { Alert } from 'react-bootstrap';
 class ICProgramErrors extends Component {
     render() {
         if (this.props.errors.length > 0) {
+            var style = this.props.errorType === "error" ? "danger" : "warning";
+
             return (
-                <Alert bsStyle="danger">
-                    <strong>Parsing Errors</strong>
+                <Alert bsStyle={style}>
+                    <strong>Parsing {this.props.errorTitle}</strong>
                     <ul className="programErrors">
                         {this.renderErrors(this.props.errors)}
                     </ul>

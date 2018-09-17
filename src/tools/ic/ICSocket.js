@@ -12,7 +12,7 @@ import ICProgramErrors from './ICProgramErrors';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { library } from '@fortawesome/fontawesome-svg-core';
-import { faTerminal, faGamepad, faCogs, faMemory, faLongArrowAltLeft, faLongArrowAltRight, faTimes, faStepForward, faPlay, faRedo, faEye, faAngleDoubleRight, faBook, faLightbulb, faListUl, faPen, faFile, faMicrochip, faArrowsAltH } from '@fortawesome/free-solid-svg-icons';
+import { faTerminal, faGamepad, faCogs, faMemory, faLongArrowAltLeft, faLongArrowAltRight, faTimes, faStepForward, faPlay, faRedo, faEye, faAngleDoubleRight, faBook, faLightbulb, faListUl, faPen, faFile, faMicrochip, faArrowsAltH, faBug } from '@fortawesome/free-solid-svg-icons';
 import { faReddit } from '@fortawesome/free-brands-svg-icons';
 
 import brace from 'brace';
@@ -23,7 +23,7 @@ import 'brace/theme/github';
 
 import './ICSocket.css';
 
-library.add(faTerminal, faGamepad, faCogs, faMemory, faLongArrowAltLeft, faLongArrowAltRight, faTimes, faStepForward, faPlay, faRedo, faEye, faAngleDoubleRight, faBook, faLightbulb, faListUl, faPen, faReddit, faFile, faMicrochip, faArrowsAltH);
+library.add(faTerminal, faGamepad, faCogs, faMemory, faLongArrowAltLeft, faLongArrowAltRight, faTimes, faStepForward, faPlay, faRedo, faEye, faAngleDoubleRight, faBook, faLightbulb, faListUl, faPen, faReddit, faFile, faMicrochip, faArrowsAltH, faBug);
 
 class ICSocket extends Component {
   constructor(props) {
@@ -37,11 +37,12 @@ class ICSocket extends Component {
     this.clearInternalRegisters = this.clearInternalRegisters.bind(this);
     this.setRegister = this.setRegister.bind(this);
     this.toggleRunAfterRegisterChange = this.toggleRunAfterRegisterChange.bind(this);
+    this.toggleRunWithErrors = this.toggleRunWithErrors.bind(this);
     this.hashChanged = this.hashChanged.bind(this);  
 
     let defaultCode = "add r0 r0 1 # Increment r0.\nyield\nj 0";
 
-    this.state = { ic: new IC(), program: defaultCode, errors: [], labels: { internal: [] }, runAfterRegisterChange: false, currentHash: "" };
+    this.state = { ic: new IC(), program: defaultCode, errors: [], labels: { internal: [] }, runAfterRegisterChange: false, runWithErrors: false, currentHash: "" };
     this.loadProgram(defaultCode);    
   }
 
@@ -89,6 +90,11 @@ class ICSocket extends Component {
       returnData["runAfterRegisterChange"] = data.runAfterRegisterChange;
     }
 
+    if (data.hasOwnProperty("runWithErrors")) {
+      returnData["runWithErrors"] = data.runWithErrors;
+      this.state.ic.setIgnoreErrors(data.runWithErrors);
+    }
+
     if (data.hasOwnProperty("registers")) {
       Object.keys(data.registers).forEach((key) => {
         data.registers[key].forEach((value, i) => {
@@ -114,7 +120,7 @@ class ICSocket extends Component {
   }
 
   saveStateToHash() {
-    let data = { program: this.state.program, registers: { io: this.state.ioRegisters, internal: this.state.internalRegisters }, runAfterRegisterChange: this.state.runAfterRegisterChange };
+    let data = { program: this.state.program, registers: { io: this.state.ioRegisters, internal: this.state.internalRegisters }, runAfterRegisterChange: this.state.runAfterRegisterChange, runWithErrors: this.state.runWithErrors };
     let json = JSON.stringify(data);
     let base64 = btoa(json);
 
@@ -157,7 +163,7 @@ class ICSocket extends Component {
     var inactive = !this.canRun() ? "interactive inactive" : "interactive";    
 
     var markers = [{startRow: this.state.ic.programCounter(), endRow: this.state.ic.programCounter(), endCol: 20000, type: "line", className: 'currentLine'}];
-    var annotations = this.state.errors.map((error) => { return { row: error.line, column: 0, type: "error", "text": error.error }});
+    var annotations = this.state.errors.map((error) => { return { row: error.line, column: 0, type: error.type, "text": error.error }});
 
     return (
       <div className="ICSocket">
@@ -176,6 +182,7 @@ class ICSocket extends Component {
                 <Panel.Title componentClass="h3"><FontAwesomeIcon icon="terminal" /> Program</Panel.Title>
               </Panel.Heading>
               <Panel.Body>
+                <p>
                 <AceEditor
                   mode="mips_assembler"
                   theme="github"
@@ -191,7 +198,11 @@ class ICSocket extends Component {
                   markers={markers}
                   annotations={annotations}
                 />
-                <ICProgramErrors errors={this.state.errors} />
+                </p>
+                <div>
+                  <ICProgramErrors key="errors" errors={this.state.errors.filter((e) => e["type"] === "error")} errorType="error" errorTitle="Errors" />
+                  <ICProgramErrors key="warnings" errors={this.state.errors.filter((e) => e["type"] !== "error")} errorType="warning" errorTitle="Warnings" />
+                </div>
                 </Panel.Body>
                 <Panel.Footer>             
                   <Row>
@@ -235,6 +246,7 @@ class ICSocket extends Component {
                   <Button className={inactive} onClick={this.run} ><FontAwesomeIcon icon="play" /> Run</Button>
                   <Button className="interactive" onClick={this.restart} ><FontAwesomeIcon icon="redo" /> Reset PC</Button>
                   <Button className={"interactive" + (this.state.runAfterRegisterChange ? "" : " inactive") } onClick={this.toggleRunAfterRegisterChange} ><FontAwesomeIcon icon="eye" /> Watch Registers</Button>                               
+                  <Button className={"interactive" + (this.state.runWithErrors ? "" : " inactive") } onClick={this.toggleRunWithErrors} ><FontAwesomeIcon icon="bug" /> Run With Errors</Button>                               
                 </ButtonToolbar>
               </Panel.Body>
             </Panel>
@@ -431,6 +443,11 @@ class ICSocket extends Component {
 
   toggleRunAfterRegisterChange(event) {
     this.setState({ runAfterRegisterChange: !this.state.runAfterRegisterChange });
+  }
+
+  toggleRunWithErrors(event) {
+    this.setState({ runWithErrors: !this.state.runWithErrors });
+    this.state.ic.setIgnoreErrors(!this.state.runWithErrors);
   }
 }
 

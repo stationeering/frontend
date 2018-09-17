@@ -29,6 +29,9 @@ class ICInstructions extends Component {
               <p>
                 <FontAwesomeIcon icon="eye" /> can be toggled, if solid then when a register at the top is changed the program will be automatically rerun.
               </p>
+              <p>
+                <FontAwesomeIcon icon="bug" /> can be toggled, if solid then the simulator will allow you to run an invalid program. When it encounters an error, the instruction will be ignored and treated as a noop.
+              </p>
               <h4>Jump Labels</h4>
               <p>
                 To assist the creation of larger and more complex programs, the simulator can handle jump labels. This means where you would put a jump destination you may put a label.
@@ -50,7 +53,15 @@ j $start`}</pre>
               <p><strong>Note</strong> Stationeering.com's labels will no longer work for devices, use the <code>label</code> instruction.</p>
               <h4>Labelling Registers</h4>
               <p>
-                To make the meaning of registers more obvious you can include a comment in your program as follows:
+                To label a register, use the following instruction:
+              </p>
+              <p>
+                <pre>{`alias CurrentPressure r1`}</pre>
+              </p>
+              <p>You will then be able to refer to the label name rather than the register in code.</p>
+              <p><strong>Note</strong> The aliases will not appear on the registers until the instruction has been executed.</p>
+              <p>
+                You can also still use Stationeering.com's legacy method of labeling registers.
               </p>
               <pre>{`#:internal:0:If it's safe?`}</pre>
               <p><strong>Note</strong> These comments will still count as line numbers for the interpreter, so addresses for jumps needs to be adjusted.</p>
