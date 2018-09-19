@@ -29,25 +29,20 @@ class ProgramError extends Component {
         let line = this.props.error.line;
         let error = this.props.error.error;
         let field = Number.isInteger(this.props.error.field) ? ` / Field ${this.props.error.field}` : "";
-        let errorDescription = this.lookUpError(error);
+        let validTypes = this.props.error.validTypes;
+        let errorDescription = this.lookUpError(error, validTypes);
 
         return (
             <li className="programError">Line {line}{field}: {errorDescription} ({error}) </li>
         );
     }
 
-    lookUpError(error) {
+    lookUpError(error, validTypes) {
         switch (error) {
             case "INVALID_FIELD_NO_SUCH_REGISTER":
                 return "The register number you have specified does not exist.";
-            case "INVALID_FIELD_UNKNOWN_TYPE":
-                return "The register is invalid, or the alias has not been created.";
-            case "INVALID_FIELD_NOT_READABLE":
-                return "Instruction requires a source which can be read from, either a register or a literal number."
-            case "INVALID_FIELD_NOT_REGISTER":
-                return "Instruction requires the field to be a register."
-            case "INVALID_FIELD_NOT_DEVICE":
-                return "Instruction requires the field to be a device."
+            case "INVALID_FIELD_INVALID_TYPE":
+                return "Field provided for instruction is invalid, it requires one of these: " + this.resolveValidTypes(validTypes)
             case "MISSING_FIELD":
                 return "Instruction requires an additional field in this position.";
             case "UNKNOWN_INSTRUCTION":
@@ -63,6 +58,11 @@ class ProgramError extends Component {
             default:
                 return "Unknown error."
         }
+    }
+
+    resolveValidTypes(validTypes) {
+        const TYPES = { r: "register", d: "device", a: "alias", j: "jump tag", i: "integer", f: "float", s: "string" };
+        return validTypes.map((type) => TYPES[type] ? TYPES[type] : type).join(", ");
     }
 }
 

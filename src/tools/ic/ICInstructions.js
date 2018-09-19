@@ -47,8 +47,8 @@ j start`}</pre>
               <p>
                 To label a device (in simulator and in game), use the follow instruction:
               </p>
-              <pre>{`label d1 GasSensor`}</pre>
-              <p><strong>Note</strong> Stationeering.com's labels will no longer work for devices, use the <code>label</code> instruction.</p>
+              <pre>{`alias GasSensor d1`}</pre>
+              <p><strong>Note</strong> Stationeering.com's labels will no longer work for devices, use the <code>alias</code> instruction.</p>
               <h4>Labelling Registers</h4>
               <p>
                 To label a register, use the following instruction:

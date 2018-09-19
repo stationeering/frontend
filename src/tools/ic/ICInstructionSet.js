@@ -316,13 +316,6 @@ class ICInstructionSet extends Component {
     <td>&nbsp;</td>
     <td>Define a register alias so that <code>f</code> can be used in place of <code>s</code>.</td>
   </tr>
-  <tr>
-    <td>label</td>
-    <td><code>i</code></td>
-    <td><code>f</code></td>
-    <td>&nbsp;</td>
-    <td>Define the label <code>f</code> which will be displayed on the IC base for device <code>i</code>.</td>
-  </tr>
 </tbody>
             </Table>
                 <h4>Key</h4>
