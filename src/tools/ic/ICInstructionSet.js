@@ -20,6 +20,11 @@ class ICInstructionSet extends Component {
                     </p>
                     <ul>
                         <li><code>ls</code> instruction - load data from slot.</li>
+                        <li><code>sgt, sle, sge, seq, sne, sap and sna</code> instructions - more select options.</li>
+                        <li><code>b[r]ap and b[r]na</code> instructions - branching on aproximate values (for floats).</li>
+                        <li><code>push, pop and peek</code> instructions - stack commands.</li>
+                        <li><code>jal</code> instruction - jump and link.</li>
+                        <li>Move <code>db</code>, <code>sp</code> and <code>ra</code> to be aliases, also suport sp and ra.</li>
                     </ul>
                 </Alert>
                 <p>
