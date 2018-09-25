@@ -6,6 +6,7 @@ import {CopyToClipboard} from 'react-copy-to-clipboard';
 import ICPermalinkGenerator from './ICPermalinkGenerator';
 import ICInternalRegisters from './ICInternalRegisters';
 import ICIORegisters from './ICIORegisters';
+import ICStack from './ICStack';
 import ICInstructions from './ICInstructions';
 import ICInstructionSet from './ICInstructionSet';
 import ICProgramErrors from './ICProgramErrors';
@@ -141,6 +142,7 @@ class ICSocket extends Component {
       internalRegisters: ic.getInternalRegisters(),
       programCounter: ic.programCounter(),
       instructionCount: ic.getInstructionCount(),
+      stack: ic.getStack(),
       lastRunCount: 0,
       lastStepState: "",
       lastExecuteTime: "Not Run"
@@ -170,6 +172,7 @@ class ICSocket extends Component {
         <Row>
           <Col md={8}>         
             <ICIORegisters registers={this.state.ioRegisters} setRegister={this.setRegister} labels={this.state.ioLabels} names={this.state.ioNames} /> 
+            <ICStack stack={this.state.stack} ptr={(this.state.internalRegisters ? this.state.internalRegisters[16] : 0)} />
           </Col>
           <Col md={4}>
             <ICInternalRegisters registers={this.state.internalRegisters} setRegister={this.setRegister} clearInternalRegisters={this.clearInternalRegisters} labels={this.state.labels.internal} aliases={this.state.internalLabels} />
@@ -289,6 +292,10 @@ class ICSocket extends Component {
       return "IC has executed an instruction which has placed the program counter to an invalid location, probably negative.";
     case "INVALID_REGISTER_LOCATION":
       return "IC has attempted to access a register which does not exist (usually due to indirect register access).";
+    case "STACK_OVERFLOW":
+      return "IC has attempted to push data into the stack beyond the limit.";
+    case "STACK_UNDERFLOW":
+      return "IC has attempted to pop or peek data from an empty stack.";
     case "YIELD":
       return "IC has yielded control, execution will resume on next tick.";
     default:

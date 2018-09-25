@@ -24,7 +24,7 @@ class ICIORegisters extends Component {
     return (
       <Panel>
         <Panel.Heading>
-          <Panel.Title componentClass="h3"><FontAwesomeIcon icon="arrows-alt-h" /> Device (IO) Registers</Panel.Title>
+          <Panel.Title componentClass="h3"><FontAwesomeIcon icon="arrows-alt-h" /> Device (IO)</Panel.Title>
         </Panel.Heading>
         <Panel.Body>
           {this.renderRegisters()}

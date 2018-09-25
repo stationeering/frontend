@@ -20,11 +20,9 @@ class ICInstructionSet extends Component {
                     </p>
                     <ul>
                         <li><code>ls</code> instruction - load data from slot.</li>
-                        <li><code>sgt, sle, sge, seq, sne, sap and sna</code> instructions - more select options.</li>
+                        <li><code>sgt, sle, sge, seq, sne, sap, sna and select</code> instructions - more select options.</li>
                         <li><code>b[r]ap and b[r]na</code> instructions - branching on aproximate values (for floats).</li>
-                        <li><code>push, pop and peek</code> instructions - stack commands.</li>
                         <li><code>jal</code> instruction - jump and link.</li>
-                        <li>Move <code>db</code>, <code>sp</code> and <code>ra</code> to be aliases, also suport sp and ra.</li>
                     </ul>
                 </Alert>
                 <p>
@@ -321,6 +319,27 @@ class ICInstructionSet extends Component {
     <td>&nbsp;</td>
     <td>Define a register alias so that <code>f</code> can be used in place of <code>s</code>.</td>
   </tr>
+  <tr>
+    <td>push</td>
+    <td><code>s</code></td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>Push <code>s</code> onto the stack, increasing <code>sp</code>.</td>
+  </tr>
+  <tr>
+    <td>pop</td>
+    <td><code>d</code></td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>Pop the top stack value into <code>d</code>, decreasing <code>sp</code>.</td>
+  </tr>
+  <tr>
+    <td>peek</td>
+    <td><code>d</code></td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>Copy the current top stack value into <code>d</code>, does not alter <code>sp</code>.</td>
+  </tr>  
 </tbody>
             </Table>
                 <h4>Key</h4>

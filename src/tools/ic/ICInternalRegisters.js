@@ -12,7 +12,7 @@ class ICInternalRegisters extends Component {
       return (
         <Panel>
           <Panel.Heading>
-            <Panel.Title componentClass="h3"><FontAwesomeIcon icon="memory" /> Internal Registers <FontAwesomeIcon icon="times" className="pull-right interactive" onClick={this.props.clearInternalRegisters} title="Clear registers." /></Panel.Title>
+            <Panel.Title componentClass="h3"><FontAwesomeIcon icon="memory" /> Registers <FontAwesomeIcon icon="times" className="pull-right interactive" onClick={this.props.clearInternalRegisters} title="Clear registers." /></Panel.Title>
           </Panel.Heading>
           <Table condensed>
             <thead>
