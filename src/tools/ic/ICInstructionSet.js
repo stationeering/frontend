@@ -20,9 +20,8 @@ class ICInstructionSet extends Component {
                     </p>
                     <ul>
                         <li><code>ls</code> instruction - load data from slot.</li>
-                        <li><code>sgt, sle, sge, seq, sne, sap, sna and select</code> instructions - more select options.</li>
-                        <li><code>b[r]ap and b[r]na</code> instructions - branching on aproximate values (for floats).</li>
-                        <li><code>jal</code> instruction - jump and link.</li>
+                        <li><code>select</code> instruction - more select options.</li>
+                        <li><code>bltzal bgezal blezal bgtzal beqal bneal</code> instructions - branch, jump and link.</li>
                     </ul>
                 </Alert>
                 <p>
@@ -32,9 +31,10 @@ class ICInstructionSet extends Component {
             <thead>
   <tr>
     <th>Instruction</th>
-    <th>Field 1</th>
-    <th>Field 2</th>
-    <th>Field 3</th>
+    <th>1</th>
+    <th>2</th>
+    <th>3</th>
+    <th>4</th>
     <th>Description</th>
   </tr>
 </thead>
@@ -44,6 +44,7 @@ class ICInstructionSet extends Component {
     <td><code>d</code></td>
     <td><code>s</code></td>
     <td>&nbsp;</td>
+    <td>&nbsp;</td>
     <td>Store the value of <code>s</code> in <code>d</code>.</td>
   </tr>
   <tr>
@@ -51,6 +52,7 @@ class ICInstructionSet extends Component {
     <td><code>d</code></td>
     <td><code>s</code></td>
     <td><code>t</code></td>
+    <td>&nbsp;</td>
     <td>Add <code>s</code> and <code>t</code> together, store in <code>d</code>.</td>
   </tr>
   <tr>
@@ -58,6 +60,7 @@ class ICInstructionSet extends Component {
     <td><code>d</code></td>
     <td><code>s</code></td>
     <td><code>t</code></td>
+    <td>&nbsp;</td>    
     <td>Subtract <code>t</code> from <code>s</code>, store in <code>d</code>.</td>
   </tr>
   <tr>
@@ -65,6 +68,7 @@ class ICInstructionSet extends Component {
     <td><code>d</code></td>
     <td><code>s</code></td>
     <td><code>t</code></td>
+    <td>&nbsp;</td>
     <td>Multiply <code>s</code> and <code>t</code>, store in <code>d</code>.</td>
   </tr>
   <tr>
@@ -72,6 +76,7 @@ class ICInstructionSet extends Component {
     <td><code>d</code></td>
     <td><code>s</code></td>
     <td><code>t</code></td>
+    <td>&nbsp;</td>
     <td>Divide <code>s</code> by <code>t</code>, store in <code>d</code>.</td>
   </tr>
   <tr>
@@ -79,6 +84,7 @@ class ICInstructionSet extends Component {
     <td><code>d</code></td>
     <td><code>s</code></td>
     <td><code>t</code></td>
+    <td>&nbsp;</td>
     <td>Modulus <code>s</code> by <code>t</code>, store in <code>d</code>.<br /><strong>Always positive value.</strong></td>
   </tr>
   <tr>
@@ -86,12 +92,72 @@ class ICInstructionSet extends Component {
     <td><code>d</code></td>
     <td><code>s</code></td>
     <td><code>t</code></td>
+    <td>&nbsp;</td>
     <td>Store <code>1</code> in <code>d</code> if <code>s</code> &lt; <code>d</code>, if not store <code>0</code> in <code>d</code>.</td>
   </tr>
+  <tr>
+    <td>sgt</td>
+    <td><code>d</code></td>
+    <td><code>s</code></td>
+    <td><code>t</code></td>
+    <td>&nbsp;</td>
+    <td>Store <code>1</code> in <code>d</code> if <code>s</code> &gt; <code>d</code>, if not store <code>0</code> in <code>d</code>.</td>
+  </tr>
+  <tr>
+    <td>sle</td>
+    <td><code>d</code></td>
+    <td><code>s</code></td>
+    <td><code>t</code></td>
+    <td>&nbsp;</td>
+    <td>Store <code>1</code> in <code>d</code> if <code>s</code> &lt;= <code>d</code>, if not store <code>0</code> in <code>d</code>.</td>
+  </tr>
+  <tr>
+    <td>sge</td>
+    <td><code>d</code></td>
+    <td><code>s</code></td>
+    <td><code>t</code></td>
+    <td>&nbsp;</td>
+    <td>Store <code>1</code> in <code>d</code> if <code>s</code> &gt;= <code>d</code>, if not store <code>0</code> in <code>d</code>.</td>
+  </tr>
+  <tr>
+    <td>seq</td>
+    <td><code>d</code></td>
+    <td><code>s</code></td>
+    <td><code>t</code></td>
+    <td>&nbsp;</td>
+    <td>Store <code>1</code> in <code>d</code> if <code>s</code> == <code>d</code>, if not store <code>0</code> in <code>d</code>.</td>
+  </tr>
+  <tr>
+    <td>sne</td>
+    <td><code>d</code></td>
+    <td><code>s</code></td>
+    <td><code>t</code></td>
+    <td>&nbsp;</td>
+    <td>Store <code>1</code> in <code>d</code> if <code>s</code> != <code>d</code>, if not store <code>0</code> in <code>d</code>.</td>
+  </tr>  
+
+  <tr>
+    <td>sap</td>
+    <td><code>d</code></td>
+    <td><code>s</code></td>
+    <td><code>t</code></td>
+    <td><code>c</code></td>
+    <td>Store <code>1</code> in <code>d</code> if <code>abs(s - t) &lt;= c * max(abs(s), abs(t))</code>.</td>
+  </tr>  
+  <tr>
+    <td>sna</td>
+    <td><code>d</code></td>
+    <td><code>s</code></td>
+    <td><code>t</code></td>
+    <td><code>c</code></td>
+    <td>Store <code>1</code> in <code>d</code> if <code>abs(s - t) &gt; c * max(abs(s), abs(t))</code>.</td>
+  </tr>  
+
   <tr>
     <td>sqrt</td>
     <td><code>d</code></td>
     <td><code>s</code></td>
+    <td>&nbsp;</td>
     <td>&nbsp;</td>
     <td>Square root <code>s</code> and store in <code>d</code>.</td>
   </tr>
@@ -100,12 +166,14 @@ class ICInstructionSet extends Component {
     <td><code>d</code></td>
     <td><code>s</code></td>
     <td>&nbsp;</td>
+    <td>&nbsp;</td>
     <td>Rounds <code>s</code> and store in <code>d</code>.</td>
   </tr>
   <tr>
     <td>trunc</td>
     <td><code>d</code></td>
     <td><code>s</code></td>
+    <td>&nbsp;</td>
     <td>&nbsp;</td>
     <td>Truncate <code>s</code> and store in <code>d</code>.</td>
   </tr>
@@ -114,12 +182,14 @@ class ICInstructionSet extends Component {
     <td><code>d</code></td>
     <td><code>s</code></td>
     <td>&nbsp;</td>
+    <td>&nbsp;</td>
     <td>Ceiling of <code>s</code> and store in <code>d</code>.</td>
   </tr>
   <tr>
     <td>floor</td>
     <td><code>d</code></td>
     <td><code>s</code></td>
+    <td>&nbsp;</td>
     <td>&nbsp;</td>
     <td>Floor of <code>s</code> and store in <code>d</code>.</td>
   </tr>
@@ -128,6 +198,7 @@ class ICInstructionSet extends Component {
     <td><code>d</code></td>
     <td><code>s</code></td>
     <td><code>t</code></td>
+    <td>&nbsp;</td>
     <td>Find the higher value of <code>s</code> and <code>t</code>, store in <code>d</code>.</td>
   </tr>
   <tr>
@@ -135,12 +206,14 @@ class ICInstructionSet extends Component {
     <td><code>d</code></td>
     <td><code>s</code></td>
     <td><code>t</code></td>
+    <td>&nbsp;</td>
     <td>Find the lower value of <code>s</code> and <code>t</code>, store in <code>d</code>.</td>
   </tr>
   <tr>
     <td>abs</td>
     <td><code>d</code></td>
     <td><code>s</code></td>
+    <td>&nbsp;</td>
     <td>&nbsp;</td>
     <td>Calculate absolute value of <code>s</code>, store in <code>d</code>.</td>
   </tr>
@@ -149,6 +222,7 @@ class ICInstructionSet extends Component {
     <td><code>d</code></td>
     <td><code>s</code></td>
     <td>&nbsp;</td>
+    <td>&nbsp;</td>
     <td>Calculate natural log of <code>s</code>, store in <code>d</code>.</td>
   </tr>
   <tr>
@@ -156,11 +230,13 @@ class ICInstructionSet extends Component {
     <td><code>d</code></td>
     <td><code>s</code></td>
     <td>&nbsp;</td>
+    <td>&nbsp;</td>
     <td>Calculate exponential of <code>s</code>, store in <code>d</code>.</td>
   </tr>
   <tr>
     <td>rand</td>
     <td><code>d</code></td>
+    <td>&nbsp;</td>
     <td>&nbsp;</td>
     <td>&nbsp;</td>
     <td>Random number between <code>0.0</code> - <code>1.0</code>, store in <code>d</code>.</td>
@@ -170,6 +246,7 @@ class ICInstructionSet extends Component {
     <td><code>d</code></td>
     <td><code>s</code></td>
     <td><code>t</code></td>
+    <td>&nbsp;</td>
     <td>Store <code>1</code> in <code>d</code>, if both <code>s</code> and <code>t</code> are non zero.</td>
   </tr>
   <tr>
@@ -177,6 +254,7 @@ class ICInstructionSet extends Component {
     <td><code>d</code></td>
     <td><code>s</code></td>
     <td><code>t</code></td>
+    <td>&nbsp;</td>
     <td>Store <code>1</code> in <code>d</code>, if either <code>s</code> or <code>t</code> are non zero.</td>
   </tr>
   <tr>
@@ -184,6 +262,7 @@ class ICInstructionSet extends Component {
     <td><code>d</code></td>
     <td><code>s</code></td>
     <td><code>t</code></td>
+    <td>&nbsp;</td>
     <td>Store <code>1</code> in <code>d</code>, if only one of <code>s</code> or <code>t</code> is non zero.</td>
   </tr>
   <tr>
@@ -191,11 +270,13 @@ class ICInstructionSet extends Component {
     <td><code>d</code></td>
     <td><code>s</code></td>
     <td><code>t</code></td>
+    <td>&nbsp;</td>
     <td>Store <code>1</code> in <code>d</code>, if both <code>s</code> and <code>t</code> are both zero.</td>
   </tr>
   <tr>
     <td>j</td>
     <td><code>a</code></td>
+    <td>&nbsp;</td>
     <td>&nbsp;</td>
     <td>&nbsp;</td>
     <td>Jump program to <code>a</code>.</td>
@@ -205,12 +286,14 @@ class ICInstructionSet extends Component {
     <td><code>s</code></td>
     <td><code>a</code></td>
     <td>&nbsp;</td>
+    <td>&nbsp;</td>
     <td>Jump program to <code>a</code>, if <code>s</code> is &lt; 0.</td>
   </tr>
   <tr>
     <td>blez</td>
     <td><code>s</code></td>
     <td><code>a</code></td>
+    <td>&nbsp;</td>
     <td>&nbsp;</td>
     <td>Jump program to <code>a</code>, if <code>s</code> is &lt;= 0.</td>
   </tr>
@@ -219,12 +302,14 @@ class ICInstructionSet extends Component {
     <td><code>s</code></td>
     <td><code>a</code></td>
     <td>&nbsp;</td>
+    <td>&nbsp;</td>
     <td>Jump program to <code>a</code>, if <code>s</code> is &gt;= 0.</td>
   </tr>
   <tr>
     <td>bgtz</td>
     <td><code>s</code></td>
     <td><code>a</code></td>
+    <td>&nbsp;</td>
     <td>&nbsp;</td>
     <td>Jump program to <code>a</code>, if <code>s</code> is &gt; 0.</td>
   </tr>
@@ -233,6 +318,7 @@ class ICInstructionSet extends Component {
     <td><code>s</code></td>
     <td><code>t</code></td>
     <td><code>a</code></td>
+    <td>&nbsp;</td>
     <td>Jump program to <code>a</code>, if <code>s</code> == <code>t</code>.</td>
   </tr>
   <tr>
@@ -240,11 +326,29 @@ class ICInstructionSet extends Component {
     <td><code>s</code></td>
     <td><code>t</code></td>
     <td><code>a</code></td>
+    <td>&nbsp;</td>
     <td>Jump program to <code>a</code>, if <code>s</code> != <code>t</code>.</td>
   </tr>
   <tr>
+    <td>bap</td>
+    <td><code>s</code></td>
+    <td><code>t</code></td>
+    <td><code>c</code></td>
+    <td><code>a</code></td>
+    <td>Jump program to <code>a</code>, if <code>abs(s - t) &lt;= c * max(abs(s), abs(t))</code>.</td>
+  </tr>  
+  <tr>
+    <td>bna</td>
+    <td><code>s</code></td>
+    <td><code>t</code></td>
+    <td><code>c</code></td>
+    <td><code>a</code></td>
+    <td>Jump program to <code>a</code>, if <code>abs(s - t) &gt; c * max(abs(s), abs(t))</code>.</td>
+  </tr>  
+  <tr>
     <td>jr</td>
     <td><code>a</code></td>
+    <td>&nbsp;</td>
     <td>&nbsp;</td>
     <td>&nbsp;</td>
     <td>Jump program relative to the <code>a + pc</code>.</td>
@@ -254,12 +358,14 @@ class ICInstructionSet extends Component {
     <td><code>s</code></td>
     <td><code>a</code></td>
     <td>&nbsp;</td>
+    <td>&nbsp;</td>
     <td>Jump program relative to <code>a + pc</code>, if <code>s</code> is &lt; 0.</td>
   </tr>
   <tr>
     <td>brlez</td>
     <td><code>s</code></td>
     <td><code>a</code></td>
+    <td>&nbsp;</td>
     <td>&nbsp;</td>
     <td>Jump program relative to <code>a + pc</code>, if <code>s</code> is &lt;= 0.</td>
   </tr>
@@ -268,12 +374,14 @@ class ICInstructionSet extends Component {
     <td><code>s</code></td>
     <td><code>a</code></td>
     <td>&nbsp;</td>
+    <td>&nbsp;</td>
     <td>Jump program relative to <code>a + pc</code>, if <code>s</code> is &gt;= 0.</td>
   </tr>
   <tr>
     <td>brgtz</td>
     <td><code>s</code></td>
     <td><code>a</code></td>
+    <td>&nbsp;</td>
     <td>&nbsp;</td>
     <td>Jump program relative to <code>a + pc</code>, if <code>s</code> is &gt; 0.</td>
   </tr>
@@ -282,6 +390,7 @@ class ICInstructionSet extends Component {
     <td><code>s</code></td>
     <td><code>t</code></td>
     <td><code>a</code></td>
+    <td>&nbsp;</td>
     <td>Jump program relative to <code>a + pc</code>, if <code>s</code> == <code>t</code>.</td>
   </tr>
   <tr>
@@ -289,10 +398,36 @@ class ICInstructionSet extends Component {
     <td><code>s</code></td>
     <td><code>t</code></td>
     <td><code>a</code></td>
+    <td>&nbsp;</td>
     <td>Jump program relative to <code>a + pc</code>, if <code>s</code> != <code>t</code>.</td>
   </tr>  
   <tr>
+    <td>brap</td>
+    <td><code>s</code></td>
+    <td><code>t</code></td>
+    <td><code>c</code></td>
+    <td><code>a</code></td>
+    <td>Jump program relative to <code>a + pc</code>, if <code>abs(s - t) &lt;= c * max(abs(s), abs(t))</code>.</td>
+  </tr>  
+  <tr>
+    <td>brna</td>
+    <td><code>s</code></td>
+    <td><code>t</code></td>
+    <td><code>c</code></td>
+    <td><code>a</code></td>
+    <td>Jump program relative to <code>a + pc</code>, if <code>abs(s - t) &gt; c * max(abs(s), abs(t))</code>.</td>
+  </tr>  
+  <tr>
+    <td>jal</td>
+    <td><code>a</code></td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>Jump program to <code>a</code>, update <code>ra</code> to contain next program address.</td>
+  </tr>
+  <tr>
     <td>yield</td>
+    <td>&nbsp;</td>
     <td>&nbsp;</td>
     <td>&nbsp;</td>
     <td>&nbsp;</td>
@@ -303,6 +438,7 @@ class ICInstructionSet extends Component {
     <td><code>i</code></td>
     <td><code>f</code></td>
     <td><code>s</code></td>
+    <td>&nbsp;</td>
     <td>Save <code>s</code> into IO port <code>i</code>, variable <code>f</code> (from device).</td>
   </tr>
   <tr>
@@ -310,6 +446,7 @@ class ICInstructionSet extends Component {
     <td><code>d</code></td>
     <td><code>i</code></td>
     <td><code>f</code></td>
+    <td>&nbsp;</td>
     <td>Load IO port <code>i</code>, variable <code>f</code> into <code>d</code>.</td>
   </tr>
   <tr>
@@ -317,11 +454,13 @@ class ICInstructionSet extends Component {
     <td><code>f</code></td>
     <td><code>s</code></td>
     <td>&nbsp;</td>
+    <td>&nbsp;</td>
     <td>Define a register alias so that <code>f</code> can be used in place of <code>s</code>.</td>
   </tr>
   <tr>
     <td>push</td>
     <td><code>s</code></td>
+    <td>&nbsp;</td>
     <td>&nbsp;</td>
     <td>&nbsp;</td>
     <td>Push <code>s</code> onto the stack, increasing <code>sp</code>.</td>
@@ -331,11 +470,13 @@ class ICInstructionSet extends Component {
     <td><code>d</code></td>
     <td>&nbsp;</td>
     <td>&nbsp;</td>
+    <td>&nbsp;</td>
     <td>Pop the top stack value into <code>d</code>, decreasing <code>sp</code>.</td>
   </tr>
   <tr>
     <td>peek</td>
     <td><code>d</code></td>
+    <td>&nbsp;</td>
     <td>&nbsp;</td>
     <td>&nbsp;</td>
     <td>Copy the current top stack value into <code>d</code>, does not alter <code>sp</code>.</td>

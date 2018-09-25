@@ -296,6 +296,8 @@ class ICSocket extends Component {
       return "IC has attempted to push data into the stack beyond the limit.";
     case "STACK_UNDERFLOW":
       return "IC has attempted to pop or peek data from an empty stack.";
+    case "INTERNAL_ERROR":
+      return "An error has occured in the simulator, please contact Melair with a permalink.";
     case "YIELD":
       return "IC has yielded control, execution will resume on next tick.";
     default:
