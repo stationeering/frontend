@@ -480,7 +480,15 @@ class ICInstructionSet extends Component {
     <td>&nbsp;</td>
     <td>&nbsp;</td>
     <td>Copy the current top stack value into <code>d</code>, does not alter <code>sp</code>.</td>
-  </tr>  
+  </tr>
+  <tr>
+    <td>hcf</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>Halt and catch fire.</td>
+  </tr> 
 </tbody>
             </Table>
                 <h4>Key</h4>

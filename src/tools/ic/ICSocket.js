@@ -248,7 +248,7 @@ class ICSocket extends Component {
                 </ButtonToolbar>
               </Panel.Body>
             </Panel>
-            <Panel>
+            <Panel bsStyle={this.state.lastStepState === "HALT_AND_CATCH_FIRE" ? "danger" : "default"}>
               <Panel.Heading>
                 <Panel.Title componentClass="h3"><FontAwesomeIcon icon="list-ul" /> Status</Panel.Title>
               </Panel.Heading>
@@ -298,6 +298,8 @@ class ICSocket extends Component {
       return "IC has attempted to pop or peek data from an empty stack.";
     case "INTERNAL_ERROR":
       return "An error has occured in the simulator, please contact Melair with a permalink.";
+    case "HALT_AND_CATCH_FIRE":
+      return "IC has executed the halt and catch fire instruction.";
     case "YIELD":
       return "IC has yielded control, execution will resume on next tick.";
     default:
