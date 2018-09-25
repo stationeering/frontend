@@ -3,11 +3,22 @@ import { Panel, Table } from 'react-bootstrap';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { library } from '@fortawesome/fontawesome-svg-core';
-import { faBars } from '@fortawesome/free-solid-svg-icons';
+import { faBars, faArrowDown, faArrowUp } from '@fortawesome/free-solid-svg-icons';
 
-library.add(faBars);
+library.add(faBars, faArrowDown, faArrowUp);
 
 class ICStack extends Component {
+    constructor(props) {
+        super(props);
+
+        this.state = { truncated: true };
+        this.toggleTruncated = this.toggleTruncated.bind(this);
+    }
+
+    toggleTruncated() {
+        this.setState({ truncated: !this.state.truncated });
+    }
+
     chunk(arr, len) {
         var chunks = [],
             i = 0,
@@ -24,14 +35,14 @@ class ICStack extends Component {
         return (
             <Panel>
                 <Panel.Heading>
-                    <Panel.Title componentClass="h3"><FontAwesomeIcon icon="bars" /> Stack</Panel.Title>
-                </Panel.Heading>            
+                    <Panel.Title componentClass="h3"><FontAwesomeIcon icon="bars" /> Stack <FontAwesomeIcon onClick={this.toggleTruncated} icon={this.state.truncated ? "arrow-down" : "arrow-up"} className="pull-right" /></Panel.Title>
+                </Panel.Heading>
                 <Table condensed>
                     <tbody>
                         {this.renderStackValues()}
                     </tbody>
                 </Table>
-                <Panel.Footer><small>Stack displayed here is truncated to 16 entries until it is used, maximum is still 512.</small></Panel.Footer>
+                <Panel.Footer><small>Stack displayed here is truncated to 16 entries until it is used, maximum is still 512. Click the top right arrow to toggle truncation.</small></Panel.Footer>
             </Panel>
         );
     }
@@ -43,16 +54,20 @@ class ICStack extends Component {
 
         var maxValue = 0;
 
-        for (var i = 0; i < this.props.stack.length; i++) {
-            if (this.props.stack[i] !== 0) {
-                maxValue = i;
+        if (this.state.truncated) {
+            for (var i = 0; i < this.props.stack.length; i++) {
+                if (this.props.stack[i] !== 0) {
+                    maxValue = i;
+                }
             }
-        }
 
-        if (maxValue === 0) {
-            maxValue = 16;
+            if (maxValue === 0) {
+                maxValue = 16;
+            } else {
+                maxValue += (8 - (maxValue % 8));
+            }
         } else {
-            maxValue += (8 - (maxValue % 8));
+            maxValue = this.props.stack.length;
         }
 
         var entries = this.props.stack.map((value, i) => <ICStackEntry key={i} i={i} value={value} current={(i === this.props.ptr)} />);
