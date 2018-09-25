@@ -423,7 +423,7 @@ class ICInstructionSet extends Component {
     <td>&nbsp;</td>
     <td>&nbsp;</td>
     <td>&nbsp;</td>
-    <td>Jump program to <code>a</code>, update <code>ra</code> to contain next program address.</td>
+    <td>Jump program to <code>a</code>, update <code>ra</code> to contain <code>pc + 1</code>.</td>
   </tr>
   <tr>
     <td>yield</td>
