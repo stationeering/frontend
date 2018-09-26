@@ -19,9 +19,7 @@ class ICInstructionSet extends Component {
                         Please note the simulator does not currently support, though will soon:
                     </p>
                     <ul>
-                        <li><code>ls</code> instruction - load data from slot.</li>
-                        <li><code>select</code> instruction - more select options.</li>
-                        <li><code>bltzal bgezal blezal bgtzal beqal bneal</code> instructions - branch, jump and link.</li>
+                        <li><code>ls, lr</code> instruction - load data from slot.</li>
                     </ul>
                 </Alert>
                 <p>
@@ -135,7 +133,6 @@ class ICInstructionSet extends Component {
     <td>&nbsp;</td>
     <td>Store <code>1</code> in <code>d</code> if <code>s</code> != <code>d</code>, if not store <code>0</code> in <code>d</code>.</td>
   </tr>  
-
   <tr>
     <td>sap</td>
     <td><code>d</code></td>
@@ -152,7 +149,14 @@ class ICInstructionSet extends Component {
     <td><code>c</code></td>
     <td>Store <code>1</code> in <code>d</code> if <code>abs(s - t) &gt; c * max(abs(s), abs(t))</code>.</td>
   </tr>  
-
+  <tr>
+    <td>select</td>
+    <td><code>d</code></td>
+    <td><code>s</code></td>
+    <td><code>t</code></td>
+    <td><code>c</code></td>
+    <td>Store <code>t</code> in <code>d</code> if <code>s</code> is non zero, otherwise <code>c</code>.</td>
+  </tr>  
   <tr>
     <td>sqrt</td>
     <td><code>d</code></td>
@@ -424,6 +428,54 @@ class ICInstructionSet extends Component {
     <td>&nbsp;</td>
     <td>&nbsp;</td>
     <td>Jump program to <code>a</code>, update <code>ra</code> to contain <code>pc + 1</code>.</td>
+  </tr>
+  <tr>
+    <td>bltzal</td>
+    <td><code>s</code></td>
+    <td><code>a</code></td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>Jump program to <code>a</code>, if <code>s</code> is &lt; 0, update <code>ra</code> to contain <code>pc + 1</code>.</td>
+  </tr>
+  <tr>
+    <td>blezal</td>
+    <td><code>s</code></td>
+    <td><code>a</code></td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>Jump program to <code>a</code>, if <code>s</code> is &lt;= 0, update <code>ra</code> to contain <code>pc + 1</code>.</td>
+  </tr>
+  <tr>
+    <td>bgezal</td>
+    <td><code>s</code></td>
+    <td><code>a</code></td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>Jump program to <code>a</code>, if <code>s</code> is &gt;= 0, update <code>ra</code> to contain <code>pc + 1</code>.</td>
+  </tr>
+  <tr>
+    <td>bgtzal</td>
+    <td><code>s</code></td>
+    <td><code>a</code></td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>Jump program to <code>a</code>, if <code>s</code> is &gt; 0, update <code>ra</code> to contain <code>pc + 1</code>.</td>
+  </tr>
+  <tr>
+    <td>beqal</td>
+    <td><code>s</code></td>
+    <td><code>t</code></td>
+    <td><code>a</code></td>
+    <td>&nbsp;</td>
+    <td>Jump program to <code>a</code>, if <code>s</code> == <code>t</code>, update <code>ra</code> to contain <code>pc + 1</code>.</td>
+  </tr>
+  <tr>
+    <td>bneal</td>
+    <td><code>s</code></td>
+    <td><code>t</code></td>
+    <td><code>a</code></td>
+    <td>&nbsp;</td>
+    <td>Jump program to <code>a</code>, if <code>s</code> != <code>t</code>, update <code>ra</code> to contain <code>pc + 1</code>.</td>
   </tr>
   <tr>
     <td>yield</td>
