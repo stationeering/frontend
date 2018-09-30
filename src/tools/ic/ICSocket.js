@@ -7,8 +7,6 @@ import ICPermalinkGenerator from './ICPermalinkGenerator';
 import ICInternalRegisters from './ICInternalRegisters';
 import ICIORegisters from './ICIORegisters';
 import ICStack from './ICStack';
-import ICInstructions from './ICInstructions';
-import ICInstructionSet from './ICInstructionSet';
 import ICProgramErrors from './ICProgramErrors';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -242,7 +240,7 @@ class ICSocket extends Component {
                 <ButtonToolbar>
                   <Button className={inactive} onClick={this.runSingle} ><FontAwesomeIcon icon="step-forward" /> Step</Button>
                   <Button className={inactive} onClick={this.run} ><FontAwesomeIcon icon="play" /> Run</Button>
-                  <Button className="interactive" onClick={this.restart} ><FontAwesomeIcon icon="redo" /> Reset PC</Button>
+                  <Button className="interactive" onClick={this.restart} ><FontAwesomeIcon icon="redo" /> Reset IC</Button>
                   <Button className={"interactive" + (this.state.runAfterRegisterChange ? "" : " inactive") } onClick={this.toggleRunAfterRegisterChange} ><FontAwesomeIcon icon="eye" /> Watch Registers</Button>                               
                   <Button className={"interactive" + (this.state.runWithErrors ? "" : " inactive") } onClick={this.toggleRunWithErrors} ><FontAwesomeIcon icon="bug" /> Run With Errors</Button>                               
                 </ButtonToolbar>
@@ -267,14 +265,6 @@ class ICSocket extends Component {
               </Table>
             </Panel>            
           </Col>
-        </Row>
-        <Row>
-          <Col md={5}>          
-            <ICInstructions />
-          </Col>
-          <Col md={7}>          
-            <ICInstructionSet />
-          </Col>  
         </Row>
       </div>
     );

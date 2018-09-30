@@ -45,7 +45,7 @@ class ICInternalRegisters extends Component {
     }
   
     roundTo(value, decimals) {
-      return Number(Math.round(value+'e'+decimals)+'e-'+decimals);
+      return Number(value.toFixed(decimals));
     }
   
     render() {

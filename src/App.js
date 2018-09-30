@@ -4,7 +4,7 @@ import { Grid, Navbar, Nav, NavItem, NavDropdown, MenuItem } from 'react-bootstr
 
 import Scenarios from './info/scenarios/Scenarios';
 import Items from './info/items/Items';
-import ICSocket from './tools/ic/ICSocket';
+import ICSimulator from './tools/ic/ICSimulator';
 import ICPermalink from './tools/ic/ICPermalink';
 import UpdateManager from './UpdateManager';
 
@@ -128,22 +128,19 @@ class Navigation extends Component {
       <div>
       <Nav>
         <NavItem componentClass={NavLink} eventKey={1} to="/versions/recent" href="/versions/recent">
-          Change Log
+          <FontAwesomeIcon icon="code-branch"/> Change Log
         </NavItem>
-        <NavDropdown eventKey={2} title="Info" id="basic-nav-dropdown">
-          <MenuItem componentClass={NavLink} eventKey={2.1} to="/info/items" href="/info/items">Items and Manufactory</MenuItem>
-          <MenuItem componentClass={NavLink} eventKey={2.2} to="/info/scenarios" href="/info/scenarios">Scenarios (Worlds)</MenuItem>
+        <NavItem componentClass={NavLink} eventKey={2} to="/tools/ic" href="/tools/ic">
+        <FontAwesomeIcon icon="microchip" /> IC Simulator
+        </NavItem>
+    <NavDropdown eventKey={3} title={[<FontAwesomeIcon icon="gamepad" />," Game Info"]} id="basic-nav-dropdown">
+          <MenuItem componentClass={NavLink} eventKey={3.1} to="/info/items" href="/info/items">Items and Manufactory</MenuItem>
+          <MenuItem componentClass={NavLink} eventKey={3.2} to="/info/scenarios" href="/info/scenarios">Scenarios (Worlds)</MenuItem>
         </NavDropdown>
-        <NavDropdown eventKey={3} title="Tools" id="basic-nav-dropdown">
-          <MenuItem componentClass={NavLink} eventKey={3.1} to="/tools/ic" href="/tools/ic">IC Simulator</MenuItem>
-          <MenuItem divider />
-          <MenuItem componentClass={NavLink} eventKey={3.2} to="/tools/discord" href="/tools/discord">Discord Bot</MenuItem>
-          <MenuItem componentClass={NavLink} eventKey={3.3} to="/tools/data" href="/tools/data">Data and Webhooks</MenuItem>
+        <NavDropdown eventKey={4} title={[<FontAwesomeIcon icon="wrench" />," Tools"]} id="basic-nav-dropdown">
+          <MenuItem componentClass={NavLink} eventKey={4.2} to="/tools/discord" href="/tools/discord">Discord Bot</MenuItem>
+          <MenuItem componentClass={NavLink} eventKey={4.3} to="/tools/data" href="/tools/data">Data and Webhooks</MenuItem>
         </NavDropdown>
-        <Navbar.Text>
-            Show Beta Branch?{' '}
-            <input type="checkbox" checked={this.props.betaBranch} onChange={this.props.onChange} />
-        </Navbar.Text>
       </Nav>
       <Nav pullRight>
         <Navbar.Text>
@@ -180,7 +177,7 @@ class Main extends Component {
           <Route path="/info/scenarios" render={() => <Scenarios branch={branch} />} />
           <Route path="/versions/:section" component={VersionList} />
           <Route path="/tools/ic/:permalink" component={ICPermalink} />
-          <Route path="/tools/ic" component={ICSocket} />          
+          <Route path="/tools/ic" component={ICSimulator} />          
           <Route path="/tools/data" component={Data} />
           <Route path="/tools/discord" component={Discord} />
           <Route path="/" component={Home} />
