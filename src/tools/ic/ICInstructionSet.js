@@ -91,7 +91,7 @@ class ICInstructionSet extends Component {
     <td><code>s</code></td>
     <td><code>t</code></td>
     <td>&nbsp;</td>
-    <td>Store <code>1</code> in <code>d</code> if <code>s</code> &lt; <code>d</code>, if not store <code>0</code> in <code>d</code>.</td>
+    <td>Store <code>1</code> in <code>d</code> if <code>s</code> &lt; <code>t</code>, if not store <code>0</code> in <code>d</code>.</td>
   </tr>
   <tr>
     <td>sgt</td>
@@ -99,7 +99,7 @@ class ICInstructionSet extends Component {
     <td><code>s</code></td>
     <td><code>t</code></td>
     <td>&nbsp;</td>
-    <td>Store <code>1</code> in <code>d</code> if <code>s</code> &gt; <code>d</code>, if not store <code>0</code> in <code>d</code>.</td>
+    <td>Store <code>1</code> in <code>d</code> if <code>s</code> &gt; <code>t</code>, if not store <code>0</code> in <code>d</code>.</td>
   </tr>
   <tr>
     <td>sle</td>
@@ -107,7 +107,7 @@ class ICInstructionSet extends Component {
     <td><code>s</code></td>
     <td><code>t</code></td>
     <td>&nbsp;</td>
-    <td>Store <code>1</code> in <code>d</code> if <code>s</code> &lt;= <code>d</code>, if not store <code>0</code> in <code>d</code>.</td>
+    <td>Store <code>1</code> in <code>d</code> if <code>s</code> &lt;= <code>t</code>, if not store <code>0</code> in <code>d</code>.</td>
   </tr>
   <tr>
     <td>sge</td>
@@ -115,7 +115,7 @@ class ICInstructionSet extends Component {
     <td><code>s</code></td>
     <td><code>t</code></td>
     <td>&nbsp;</td>
-    <td>Store <code>1</code> in <code>d</code> if <code>s</code> &gt;= <code>d</code>, if not store <code>0</code> in <code>d</code>.</td>
+    <td>Store <code>1</code> in <code>d</code> if <code>s</code> &gt;= <code>t</code>, if not store <code>0</code> in <code>d</code>.</td>
   </tr>
   <tr>
     <td>seq</td>
@@ -123,7 +123,7 @@ class ICInstructionSet extends Component {
     <td><code>s</code></td>
     <td><code>t</code></td>
     <td>&nbsp;</td>
-    <td>Store <code>1</code> in <code>d</code> if <code>s</code> == <code>d</code>, if not store <code>0</code> in <code>d</code>.</td>
+    <td>Store <code>1</code> in <code>d</code> if <code>s</code> == <code>t</code>, if not store <code>0</code> in <code>d</code>.</td>
   </tr>
   <tr>
     <td>sne</td>
@@ -131,7 +131,7 @@ class ICInstructionSet extends Component {
     <td><code>s</code></td>
     <td><code>t</code></td>
     <td>&nbsp;</td>
-    <td>Store <code>1</code> in <code>d</code> if <code>s</code> != <code>d</code>, if not store <code>0</code> in <code>d</code>.</td>
+    <td>Store <code>1</code> in <code>d</code> if <code>s</code> != <code>t</code>, if not store <code>0</code> in <code>d</code>.</td>
   </tr>  
   <tr>
     <td>sap</td>
