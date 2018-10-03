@@ -3,9 +3,9 @@ import { Panel, Table, Col, Clearfix } from 'react-bootstrap';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { library } from '@fortawesome/fontawesome-svg-core';
-import { faArrowsAltH, faTrashAlt, faPlus, faWrench } from '@fortawesome/free-solid-svg-icons';
+import { faArrowsAltH, faTrashAlt, faPlus, faWrench, faLink, faUnlink } from '@fortawesome/free-solid-svg-icons';
 
-library.add(faArrowsAltH, faTrashAlt, faPlus, faWrench);
+library.add(faArrowsAltH, faTrashAlt, faPlus, faWrench, faLink, faUnlink);
 
 class ICIORegisters extends Component {
   chunk(arr, len) {
@@ -35,7 +35,7 @@ class ICIORegisters extends Component {
 
   renderRegisters() {
     if (this.props.registers) {
-      var registers = this.props.registers.map((register, i) => <ICIORegister key={i} index={i} name={this.props.names[i]} values={register} label={this.props.labels[i]} setRegister={this.props.setRegister} />);
+      var registers = this.props.registers.map((register, i) => <ICIORegister key={i} index={i} name={this.props.names[i]} values={register} label={this.props.labels[i]} connected={this.props.connected[i]} setRegister={this.props.setRegister} toggleLink={this.props.toggleLink} />);
 
       var chunkedRegisters = this.chunk(registers, 2);
       
@@ -47,6 +47,16 @@ class ICIORegisters extends Component {
 }
 
 class ICIORegister extends Component {
+  constructor(props) {
+    super(props);
+
+    this.toggleLink = this.toggleLink.bind(this);
+  }
+
+  toggleLink() {
+    this.props.toggleLink(this.props.index);
+  }
+
   render() {
     var labelWithSeperator = (this.props.label ? "(" + this.props.label + ")" : "");
 
@@ -54,7 +64,7 @@ class ICIORegister extends Component {
       <Col md={6}>
         <Panel>
           <Panel.Heading>
-            <Panel.Title componentClass="h5">{this.props.name} {labelWithSeperator}</Panel.Title>
+            <Panel.Title componentClass="h5">{this.props.name} {labelWithSeperator} <FontAwesomeIcon onClick={this.toggleLink} className="pull-right" icon={this.props.connected ? "link" : "unlink"} /></Panel.Title>
           </Panel.Heading>
           <Table condensed>
             <thead>

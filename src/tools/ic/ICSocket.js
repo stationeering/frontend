@@ -38,6 +38,7 @@ class ICSocket extends Component {
     this.toggleRunAfterRegisterChange = this.toggleRunAfterRegisterChange.bind(this);
     this.toggleRunWithErrors = this.toggleRunWithErrors.bind(this);
     this.hashChanged = this.hashChanged.bind(this);  
+    this.toggleLink = this.toggleLink.bind(this);
 
     let defaultCode = "start:\nadd r0 r0 1 # Increment r0.\nyield\nj start";
 
@@ -109,7 +110,10 @@ class ICSocket extends Component {
             case "internal":
               this.state.ic.setInternalRegister(i, value);
               break;
-            default:
+            case "ioConnected": 
+              this.state.ic.setIOConnected(i, value);
+              break;
+            default:            
           }
         });
       });
@@ -119,7 +123,7 @@ class ICSocket extends Component {
   }
 
   saveStateToHash() {
-    let data = { program: this.state.program, registers: { io: this.state.ioRegisters, internal: this.state.internalRegisters }, runAfterRegisterChange: this.state.runAfterRegisterChange, runWithErrors: this.state.runWithErrors };
+    let data = { program: this.state.program, registers: { io: this.state.ioRegisters, ioConnected: this.state.ioConnected, internal: this.state.internalRegisters }, runAfterRegisterChange: this.state.runAfterRegisterChange, runWithErrors: this.state.runWithErrors };
     let json = JSON.stringify(data);
     let base64 = btoa(json);
 
@@ -136,6 +140,7 @@ class ICSocket extends Component {
       ioNames: ic.getIONames(),
       ioLabels: ic.getIOLabels(),
       ioRegisters: ic.getIORegisters(),
+      ioConnected: ic.getIOConnected(),
       internalLabels: ic.getInternalLabels(),
       internalRegisters: ic.getInternalRegisters(),
       programCounter: ic.programCounter(),
@@ -159,6 +164,11 @@ class ICSocket extends Component {
     return this.state.program.trim().split("\n").map((line) => "    " + line).join("\n");
   }
 
+  toggleLink(index) {
+    this.state.ic.setIOConnected(index, !this.state.ioConnected[index]);
+    this.transferICState();
+  }
+
   render() {
     var inactive = !this.canRun() ? "interactive inactive" : "interactive";    
 
@@ -169,7 +179,7 @@ class ICSocket extends Component {
       <div className="ICSocket">
         <Row>
           <Col md={8}>         
-            <ICIORegisters registers={this.state.ioRegisters} setRegister={this.setRegister} labels={this.state.ioLabels} names={this.state.ioNames} /> 
+            <ICIORegisters registers={this.state.ioRegisters} setRegister={this.setRegister} labels={this.state.ioLabels} names={this.state.ioNames} connected={this.state.ioConnected} toggleLink={this.toggleLink} /> 
             <ICStack stack={this.state.stack} ptr={(this.state.internalRegisters ? this.state.internalRegisters[16] : 0)} />
           </Col>
           <Col md={4}>

@@ -43,6 +43,10 @@ class ICInstructions extends Component {
 move o 1
 yield
 j start`}</pre>
+              <h4>Set/Unset Devices</h4>
+              <p>
+                You can toggle if the IC would see the emulated device as connected by toggling with the <FontAwesomeIcon icon="link" /> icon.
+              </p>
               <h4>Labelling Devices</h4>
               <p>
                 To label a device (in simulator and in game), use the follow instruction:
