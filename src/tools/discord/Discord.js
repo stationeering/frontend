@@ -62,7 +62,7 @@ class Discord extends Component {
               </Panel.Heading>
               <Panel.Body>
                 <p>
-                  If you've got questions, come just us in our own Discord.                
+                  If you've got questions, come join us in Stationeerings Discord.                
                 </p>
                 <p>
                   <a href="https://discord.gg/5WynpfX">Stationeering Discord</a>
