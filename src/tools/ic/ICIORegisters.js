@@ -62,7 +62,7 @@ class ICIORegister extends Component {
 
     return (
       <Col md={6}>
-        <Panel>
+        <Panel bsStyle={this.props.connected ? "default" : "danger"}>
           <Panel.Heading>
             <Panel.Title componentClass="h5">{this.props.name} {labelWithSeperator} <FontAwesomeIcon onClick={this.toggleLink} className="pull-right" icon={this.props.connected ? "link" : "unlink"} /></Panel.Title>
           </Panel.Heading>
