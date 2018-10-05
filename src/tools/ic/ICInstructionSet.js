@@ -550,7 +550,7 @@ class ICInstructionSet extends Component {
               <td>Set <code>d</code> to <code>1</code>, if device <code>i</code> is set/connected.</td>
             </tr>
             <tr>
-              <td>sdne</td>
+              <td>sdns</td>
               <td><code>d</code></td>
               <td><code>i</code></td>
               <td>&nbsp;</td>
@@ -566,7 +566,7 @@ class ICInstructionSet extends Component {
               <td>Jump program to <code>a</code>, if device <code>i</code> is set/connected.</td>
             </tr>
             <tr>
-              <td>bdne</td>
+              <td>bdns</td>
               <td><code>i</code></td>
               <td><code>a</code></td>
               <td>&nbsp;</td>
@@ -582,7 +582,7 @@ class ICInstructionSet extends Component {
               <td>Jump program relative to <code>pc + a</code>, if device <code>i</code> is set/connected.</td>
             </tr>
             <tr>
-              <td>brdne</td>
+              <td>brdns</td>
               <td><code>i</code></td>
               <td><code>a</code></td>
               <td>&nbsp;</td>
@@ -598,7 +598,7 @@ class ICInstructionSet extends Component {
               <td>Jump program to <code>a</code>, if device <code>i</code> is set/connected, update <code>ra</code> to contain <code>pc + 1</code>.</td>
             </tr>
             <tr>
-              <td>bdneal</td>
+              <td>bdnsal</td>
               <td><code>i</code></td>
               <td><code>a</code></td>
               <td>&nbsp;</td>
