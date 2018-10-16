@@ -7,7 +7,7 @@ import { faArrowsAltH, faTrashAlt, faPlus, faWrench, faLink, faUnlink } from '@f
 
 library.add(faArrowsAltH, faTrashAlt, faPlus, faWrench, faLink, faUnlink);
 
-class ICIORegisters extends Component {
+class ICIODevices extends Component {
   chunk(arr, len) {
     var chunks = [],
         i = 0,
@@ -35,7 +35,7 @@ class ICIORegisters extends Component {
 
   renderRegisters() {
     if (this.props.registers) {
-      var registers = this.props.registers.map((register, i) => <ICIORegister key={i} index={i} name={this.props.names[i]} values={register} label={this.props.labels[i]} connected={this.props.connected[i]} setRegister={this.props.setRegister} toggleLink={this.props.toggleLink} />);
+      var registers = this.props.registers.map((register, i) => <ICIODevice key={i} index={i} name={this.props.names[i]} values={register} label={this.props.labels[i]} connected={this.props.connected[i]} setRegister={this.props.setRegister} toggleLink={this.props.toggleLink} />);
 
       var chunkedRegisters = this.chunk(registers, 2);
       
@@ -46,7 +46,7 @@ class ICIORegisters extends Component {
   }
 }
 
-class ICIORegister extends Component {
+class ICIODevice extends Component {
   constructor(props) {
     super(props);
 
@@ -66,17 +66,27 @@ class ICIORegister extends Component {
           <Panel.Heading>
             <Panel.Title componentClass="h5">{this.props.name} {labelWithSeperator} <FontAwesomeIcon onClick={this.toggleLink} className="pull-right" icon={this.props.connected ? "link" : "unlink"} /></Panel.Title>
           </Panel.Heading>
-          <Table condensed>
-            <thead>
-              <tr><th>Field</th><th>Set</th><th>Value</th></tr>
-            </thead>
-            <tbody>
-              {this.renderFields()}
-              <ICNewIOField registerIndex={this.props.index} setRegister={this.props.setRegister} />
-            </tbody>
-          </Table>
+          <ICIORegisters index={this.props.index} setRegister={this.props.setRegister} values={this.props.values} />
+          <ICIOSlots index={this.props.index} />
+          <ICIOReagents index={this.props.index} />
         </Panel>
       </Col>
+    );
+  }
+}
+
+class ICIORegisters extends Component {
+  render() {
+    return (
+      <Table condensed>
+      <thead>
+        <tr><th>Field</th><th>Set</th><th>Value</th></tr>
+      </thead>
+      <tbody>
+        {this.renderFields()}
+        <ICNewIOField registerIndex={this.props.index} setRegister={this.props.setRegister} />
+      </tbody>
+    </Table>
     );
   }
 
@@ -85,48 +95,33 @@ class ICIORegister extends Component {
   }
 }
 
-class ICNewIOField extends Component {
-  constructor(props) {
-    super(props);
-
-    this.state = { inputField: "", inputValue: "" };
-
-    this.onClick = this.onClick.bind(this);
-    this.onChangeField = this.onChangeField.bind(this);
-    this.onChangeValue = this.onChangeValue.bind(this);
-    this.onKeyPress = this.onKeyPress.bind(this);
-  }  
-  
+class ICIOSlots extends Component {
   render() {
-    return (<tr>
-      <td><input type="text" size="10" onChange={this.onChangeField} value={this.state.inputField} /></td>
-      <td><input type="text" size="6" onChange={this.onChangeValue} onKeyPress={this.onKeyPress} value={this.state.inputValue} /> <button onClick={this.onClick}><FontAwesomeIcon icon="plus" /></button></td>
-      <td />
-    </tr>
+    return (
+      <Table condensed>
+      <thead>
+        <tr><th>Slot</th><th>Logic Type</th><th>Set</th><th>Value</th></tr>
+      </thead>
+      <tbody>
+
+      </tbody>
+    </Table>
     );
   }
+}
 
-  onChangeField(event) {
-    this.setState({ inputField: event.target.value });
-  }
+class ICIOReagents extends Component {
+  render() {
+    return (
+      <Table condensed>
+      <thead>
+        <tr><th>Reagent</th><th>Mode</th><th>Set</th><th>Value</th></tr>
+      </thead>
+      <tbody>
 
-  onChangeValue(event) {
-    this.setState({ inputValue: event.target.value });
-  }
-
-  onClick() {
-    var newVal = Number.parseFloat(this.state.inputValue);
-
-    if (!Number.isNaN(newVal) && this.state.inputField !== "") {
-      this.props.setRegister("io", this.props.registerIndex, Number.parseFloat(this.state.inputValue), this.state.inputField );
-      this.setState({ inputValue: "", inputField: "" });
-    }
-  }
-
-  onKeyPress(event) {
-    if (event.key === "Enter") {
-      this.onClick();
-    }
+      </tbody>
+    </Table>
+    );
   }
 }
 
@@ -180,4 +175,49 @@ class ICIOField extends Component {
   }
 }
 
-export default ICIORegisters;
+class ICNewIOField extends Component {
+  constructor(props) {
+    super(props);
+
+    this.state = { inputField: "", inputValue: "" };
+
+    this.onClick = this.onClick.bind(this);
+    this.onChangeField = this.onChangeField.bind(this);
+    this.onChangeValue = this.onChangeValue.bind(this);
+    this.onKeyPress = this.onKeyPress.bind(this);
+  }  
+  
+  render() {
+    return (<tr>
+      <td><input type="text" size="10" onChange={this.onChangeField} value={this.state.inputField} /></td>
+      <td><input type="text" size="6" onChange={this.onChangeValue} onKeyPress={this.onKeyPress} value={this.state.inputValue} /> <button onClick={this.onClick}><FontAwesomeIcon icon="plus" /></button></td>
+      <td />
+    </tr>
+    );
+  }
+
+  onChangeField(event) {
+    this.setState({ inputField: event.target.value });
+  }
+
+  onChangeValue(event) {
+    this.setState({ inputValue: event.target.value });
+  }
+
+  onClick() {
+    var newVal = Number.parseFloat(this.state.inputValue);
+
+    if (!Number.isNaN(newVal) && this.state.inputField !== "") {
+      this.props.setRegister("io", this.props.registerIndex, Number.parseFloat(this.state.inputValue), this.state.inputField );
+      this.setState({ inputValue: "", inputField: "" });
+    }
+  }
+
+  onKeyPress(event) {
+    if (event.key === "Enter") {
+      this.onClick();
+    }
+  }
+}
+
+export default ICIODevices;

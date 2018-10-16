@@ -5,7 +5,7 @@ import {CopyToClipboard} from 'react-copy-to-clipboard';
 
 import ICPermalinkGenerator from './ICPermalinkGenerator';
 import ICInternalRegisters from './ICInternalRegisters';
-import ICIORegisters from './ICIORegisters';
+import ICIODevices from './ICIODevices';
 import ICStack from './ICStack';
 import ICProgramErrors from './ICProgramErrors';
 
@@ -179,7 +179,7 @@ class ICSocket extends Component {
       <div className="ICSocket">
         <Row>
           <Col md={8}>         
-            <ICIORegisters registers={this.state.ioRegisters} setRegister={this.setRegister} labels={this.state.ioLabels} names={this.state.ioNames} connected={this.state.ioConnected} toggleLink={this.toggleLink} /> 
+            <ICIODevices registers={this.state.ioRegisters} setRegister={this.setRegister} labels={this.state.ioLabels} names={this.state.ioNames} connected={this.state.ioConnected} toggleLink={this.toggleLink} /> 
             <ICStack stack={this.state.stack} ptr={(this.state.internalRegisters ? this.state.internalRegisters[16] : 0)} />
           </Col>
           <Col md={4}>
