@@ -39,6 +39,8 @@ class ICSocket extends Component {
     this.toggleRunWithErrors = this.toggleRunWithErrors.bind(this);
     this.hashChanged = this.hashChanged.bind(this);  
     this.toggleLink = this.toggleLink.bind(this);
+    this.setIOSlot = this.setIOSlot.bind(this);
+    this.setIOReagent = this.setIOReagent.bind(this);
 
     let defaultCode = "start:\nadd r0 r0 1 # Increment r0.\nyield\nj start";
 
@@ -113,6 +115,20 @@ class ICSocket extends Component {
             case "ioConnected": 
               this.state.ic.setIOConnected(i, value);
               break;
+            case "ioSlot":
+              for (var slot of Object.keys(value)) {
+                for (var logicType of Object.keys(value[slot])) {
+                  this.state.ic.setIOSlot(i, slot, logicType, value[slot][logicType]);
+                }
+              }              
+              break;
+            case "ioReagent":
+              for (var reagent of Object.keys(value)) {
+                for (var mode of Object.keys(value[reagent])) {
+                  this.state.ic.setIOReagent(i, reagent, mode, value[reagent][mode]);
+                }
+              }
+              break;
             default:            
           }
         });
@@ -123,7 +139,7 @@ class ICSocket extends Component {
   }
 
   saveStateToHash() {
-    let data = { program: this.state.program, registers: { io: this.state.ioRegisters, ioConnected: this.state.ioConnected, internal: this.state.internalRegisters }, runAfterRegisterChange: this.state.runAfterRegisterChange, runWithErrors: this.state.runWithErrors };
+    let data = { program: this.state.program, registers: { io: this.state.ioRegisters, ioConnected: this.state.ioConnected, internal: this.state.internalRegisters, ioSlot: this.state.ioSlots, ioReagent: this.state.ioReagents }, runAfterRegisterChange: this.state.runAfterRegisterChange, runWithErrors: this.state.runWithErrors };
     let json = JSON.stringify(data);
     let base64 = btoa(json);
 
@@ -140,6 +156,8 @@ class ICSocket extends Component {
       ioNames: ic.getIONames(),
       ioLabels: ic.getIOLabels(),
       ioRegisters: ic.getIORegisters(),
+      ioSlots: ic.getIOSlots(),
+      ioReagents: ic.getIOReagents(),
       ioConnected: ic.getIOConnected(),
       internalLabels: ic.getInternalLabels(),
       internalRegisters: ic.getInternalRegisters(),
@@ -179,7 +197,7 @@ class ICSocket extends Component {
       <div className="ICSocket">
         <Row>
           <Col md={8}>         
-            <ICIODevices registers={this.state.ioRegisters} setRegister={this.setRegister} labels={this.state.ioLabels} names={this.state.ioNames} connected={this.state.ioConnected} toggleLink={this.toggleLink} /> 
+            <ICIODevices registers={this.state.ioRegisters} slots={this.state.ioSlots} reagents={this.state.ioReagents} setRegister={this.setRegister} setIOSlot={this.setIOSlot} setIOReagent={this.setIOReagent} labels={this.state.ioLabels} names={this.state.ioNames} connected={this.state.ioConnected} toggleLink={this.toggleLink} /> 
             <ICStack stack={this.state.stack} ptr={(this.state.internalRegisters ? this.state.internalRegisters[16] : 0)} />
           </Col>
           <Col md={4}>
@@ -377,6 +395,26 @@ class ICSocket extends Component {
 
     this.transferICState();
 
+    if (this.state.runAfterRegisterChange) {
+      this.run();
+    }
+  }
+
+  setIOSlot(index, slot, logicType, value) {
+    this.state.ic.setIOSlot(index, slot, logicType, value);
+    
+    this.transferICState();
+    
+    if (this.state.runAfterRegisterChange) {
+      this.run();
+    }
+  }
+
+  setIOReagent(index, reagent, reagentMode, value) {
+    this.state.ic.setIOReagent(index, reagent, reagentMode, value);
+
+    this.transferICState();
+    
     if (this.state.runAfterRegisterChange) {
       this.run();
     }

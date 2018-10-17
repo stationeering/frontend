@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Panel, Table, Alert } from 'react-bootstrap';
+import { Panel, Table } from 'react-bootstrap';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { library } from '@fortawesome/fontawesome-svg-core';
@@ -14,14 +14,6 @@ class ICInstructionSet extends Component {
         <Panel.Title componentClass="h3"><FontAwesomeIcon icon="book" /> Stationeers Instruction Set</Panel.Title>
       </Panel.Heading>
       <Panel.Body>
-        <Alert bsStyle="warning">
-          <p>
-            Please note the simulator does not currently support, though will soon:
-                    </p>
-          <ul>
-            <li><code>ls, lr</code> instruction - load data from slot.</li>
-          </ul>
-        </Alert>
         <p>
           Comments are made by using the <code>#</code> symbol, either at the start of a line or after an instruction.
                 </p>
@@ -500,6 +492,22 @@ class ICInstructionSet extends Component {
               <td><code>f</code></td>
               <td>&nbsp;</td>
               <td>Load IO port <code>i</code>, variable <code>f</code> into <code>d</code>.</td>
+            </tr>
+            <tr>
+              <td>ls</td>
+              <td><code>d</code></td>
+              <td><code>i</code></td>
+              <td><code>s</code></td>
+              <td><code>f</code></td>
+              <td>Load the logic value <code>f</code> from slot <code>s</code> from device <code>i</code> into <code>d</code>.</td>
+            </tr>
+            <tr>
+              <td>lr</td>
+              <td><code>d</code></td>
+              <td><code>i</code></td>
+              <td><code>f1</code></td>
+              <td><code>f2</code></td>
+              <td>Load the reagent mode <code>f1</code> from the reagent <code>f2</code> from device <code>i</code> into <code>d</code>.</td>
             </tr>
             <tr>
               <td>alias</td>
