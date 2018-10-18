@@ -19,6 +19,7 @@ import AceEditor from 'react-ace';
 
 import 'brace/mode/mips_assembler';
 import 'brace/theme/github';
+import 'brace/ext/searchbox';
 
 import './ICSocket.css';
 
