@@ -176,7 +176,7 @@ class ICIORegister extends Component {
   render() {
     return (<tr>
       <td>{this.props.field}</td>
-      <td><input type="text" size="6" onChange={this.onChange} onKeyPress={this.onKeyPress} value={this.state.inputValue} /> <button onClick={this.onClickUpdate}><FontAwesomeIcon icon="wrench" /></button> <button onClick={this.onClickRemove}><FontAwesomeIcon icon="trash-alt" /></button></td>
+      <td><input type="text" size="4" onChange={this.onChange} onKeyPress={this.onKeyPress} value={this.state.inputValue} /> <button onClick={this.onClickUpdate}><FontAwesomeIcon icon="wrench" /></button> <button onClick={this.onClickRemove}><FontAwesomeIcon icon="trash-alt" /></button></td>
       <td>{this.roundTo(this.props.value, 5)}</td>
     </tr>
     );
@@ -220,8 +220,8 @@ class ICNewIORegister extends Component {
   
   render() {
     return (<tr>
-      <td><input type="text" size="8" onChange={this.onChangeField} value={this.state.inputField} /></td>
-      <td><input type="text" size="6" onChange={this.onChangeValue} onKeyPress={this.onKeyPress} value={this.state.inputValue} /> <button onClick={this.onClick}><FontAwesomeIcon icon="plus" /></button></td>
+      <td><input type="text" size="6" onChange={this.onChangeField} value={this.state.inputField} /></td>
+      <td><input type="text" size="4" onChange={this.onChangeValue} onKeyPress={this.onKeyPress} value={this.state.inputValue} /> <button onClick={this.onClick}><FontAwesomeIcon icon="plus" size="sm" /></button></td>
       <td />
     </tr>
     );
@@ -272,7 +272,7 @@ class ICIOSlot extends Component {
     return (<tr>
       <td>{this.props.slot}</td>
       <td>{this.props.logicType}</td>
-      <td><input type="text" size="6" onChange={this.onChange} onKeyPress={this.onKeyPress} value={this.state.inputValue} /> <button onClick={this.onClickUpdate}><FontAwesomeIcon icon="wrench" /></button> <button onClick={this.onClickRemove}><FontAwesomeIcon icon="trash-alt" /></button></td>
+      <td><input type="text" size="4" onChange={this.onChange} onKeyPress={this.onKeyPress} value={this.state.inputValue} /> <button onClick={this.onClickUpdate}><FontAwesomeIcon icon="wrench" size="sm" /></button> <button onClick={this.onClickRemove}><FontAwesomeIcon icon="trash-alt" /></button></td>
       <td>{this.roundTo(this.props.value, 5)}</td>
     </tr>
     );
@@ -318,8 +318,8 @@ class ICNewIOSlot extends Component {
   render() {
     return (<tr>
       <td><input type="text" size="6" onChange={this.onChangeSlot} onKeyPress={this.onKeyPress} value={this.state.inputSlot} /></td>
-      <td><input type="text" size="8" onChange={this.onChangeLogicType} value={this.state.inputLogicType} /></td>
-      <td><input type="text" size="6" onChange={this.onChangeValue} onKeyPress={this.onKeyPress} value={this.state.inputValue} /> <button onClick={this.onClick}><FontAwesomeIcon icon="plus" /></button></td>
+      <td><input type="text" size="6" onChange={this.onChangeLogicType} value={this.state.inputLogicType} /></td>
+      <td><input type="text" size="4" onChange={this.onChangeValue} onKeyPress={this.onKeyPress} value={this.state.inputValue} /> <button onClick={this.onClick}><FontAwesomeIcon icon="plus" size="sm" /></button></td>
       <td />
     </tr>
     );
@@ -375,7 +375,7 @@ class ICIOReagent extends Component {
     return (<tr>
       <td>{this.props.reagent}</td>
       <td>{this.props.reagentMode}</td>
-      <td><input type="text" size="6" onChange={this.onChange} onKeyPress={this.onKeyPress} value={this.state.inputValue} /> <button onClick={this.onClickUpdate}><FontAwesomeIcon icon="wrench" /></button> <button onClick={this.onClickRemove}><FontAwesomeIcon icon="trash-alt" /></button></td>
+      <td><input type="text" size="4" onChange={this.onChange} onKeyPress={this.onKeyPress} value={this.state.inputValue} /> <button onClick={this.onClickUpdate}><FontAwesomeIcon icon="wrench" size="sm" /></button> <button onClick={this.onClickRemove}><FontAwesomeIcon icon="trash-alt" /></button></td>
       <td>{this.roundTo(this.props.value, 5)}</td>
     </tr>
     );
@@ -420,9 +420,9 @@ class ICNewIOReagent extends Component {
   
   render() {
     return (<tr>
-      <td><input type="text" size="8" onChange={this.onChangeReagent} onKeyPress={this.onKeyPress} value={this.state.inputReagent} /></td>
-      <td><input type="text" size="8" onChange={this.onChangeReagentMode} value={this.state.inputReagentMode} /></td>
-      <td><input type="text" size="6" onChange={this.onChangeValue} onKeyPress={this.onKeyPress} value={this.state.inputValue} /> <button onClick={this.onClick}><FontAwesomeIcon icon="plus" /></button></td>
+      <td><input type="text" size="6" onChange={this.onChangeReagent} onKeyPress={this.onKeyPress} value={this.state.inputReagent} /></td>
+      <td><input type="text" size="6" onChange={this.onChangeReagentMode} value={this.state.inputReagentMode} /></td>
+      <td><input type="text" size="4" onChange={this.onChangeValue} onKeyPress={this.onKeyPress} value={this.state.inputValue} /> <button onClick={this.onClick}><FontAwesomeIcon icon="plus" size="sm" /></button></td>
       <td />
     </tr>
     );
