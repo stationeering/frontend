@@ -220,10 +220,16 @@ class Version extends Component {
                     </div>
                 </Panel.Body>
                 <Panel.Footer className="text-muted">
-                    <DateLabel icon="wrench" name="Build Time" value={this.props.version.built_date} />
-                    <DateLabel icon="flask" name="Beta Branch" value={this.props.version.beta_date} />
-                    <DateLabel icon="users" name="Public Branch" value={this.props.version.public_date} />
-                    <SteamLabel value={this.props.version.build_id} />
+                    <DateLabel bsStyle="info" icon="wrench" name="Client Build Time" value={this.props.version.built_date} />
+                    <DateLabel bsStyle="info" icon="flask" name="Client Beta Release" value={this.props.version.beta_date} />
+                    <DateLabel bsStyle="info" icon="users" name="Client Public Release" value={this.props.version.public_date} />
+                    <SteamLabel bsStyle="info" value={this.props.version.build_id} />
+
+                    <div className="pull-right">
+                        <DateLabel bsStyle="warning" icon="flask" name="Dedicated Server Beta Release" value={this.props.version.server_beta_date} />
+                        <DateLabel bsStyle="warning" icon="users" name="Dedicated Server Public Release" value={this.props.version.server_public_date} />
+                        <SteamLabel bsStyle="warning" value={this.props.version.server_build_id} />
+                    </div>
                 </Panel.Footer>
             </Panel>
         );
@@ -245,7 +251,7 @@ class SteamLabel extends Component {
             return null;
         }
 
-        return (<Label><FontAwesomeIcon icon={["fab", "steam"]} /> <abbr title="Steam Build ID">{this.props.value}</abbr></Label>);        
+        return (<Label bsStyle={this.props.bsStyle}><FontAwesomeIcon icon={["fab", "steam"]} /> <abbr title="Steam Build ID">{this.props.value}</abbr></Label>);        
     }
 }
 
@@ -256,9 +262,9 @@ class DateLabel extends Component {
         }
 
         if (this.props.value < 1) {
-            return (<Label><FontAwesomeIcon icon={this.props.icon} /> <abbr title={this.props.name}>Unknown</abbr></Label>);        
+            return (<Label bsStyle={this.props.bsStyle}><FontAwesomeIcon icon={this.props.icon} /> <abbr title={this.props.name}>Unknown</abbr></Label>);        
         } else {
-            return (<Label><FontAwesomeIcon icon={this.props.icon} /> <abbr title={this.props.name}><Timestamp time={this.props.value / 1000} format='full' twentyFourHour /></abbr></Label>);        
+            return (<Label bsStyle={this.props.bsStyle}><FontAwesomeIcon icon={this.props.icon} /> <abbr title={this.props.name}><Timestamp time={this.props.value / 1000} format='full' twentyFourHour /></abbr></Label>);        
         }
     }
 }
