@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { NavLink, Switch, Route } from 'react-router-dom';
 import { Grid, Navbar, Nav, NavItem, NavDropdown, MenuItem } from 'react-bootstrap';
 
+import Guide from './guide/Guide';
 import Scenarios from './info/scenarios/Scenarios';
 import Items from './info/items/Items';
 import ICSimulator from './tools/ic/ICSimulator';
@@ -173,6 +174,7 @@ class Main extends Component {
       <Grid>
         <UpdateManager updateProxy={this.props.updateProxy} />
         <Switch>
+          <Route path="/guide" component={Guide} />
           <Route path="/info/items" render={() => <Items branch={branch} languageMap={this.props.languageMap} />} />
           <Route path="/info/scenarios" render={() => <Scenarios branch={branch} />} />
           <Route path="/versions/:section" component={VersionList} />
