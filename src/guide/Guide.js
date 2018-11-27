@@ -1,14 +1,14 @@
 import React, { Component } from 'react';
 import { Route, NavLink } from 'react-router-dom';
-import { Row, Col, Label, Panel, Table } from 'react-bootstrap';
+import { Row, Col, Label, Panel, Table, ListGroup, ListGroupItem } from 'react-bootstrap';
 
 import axios from 'axios';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { library } from '@fortawesome/fontawesome-svg-core';
-import { faSpinner, faTimesCircle, faHandHolding, faWrench, faMicrochip, faSprayCan, faUtensils, faLeaf, faUserAstronaut, faBug, faIndustry, faChessBoard, faBoxOpen } from '@fortawesome/free-solid-svg-icons';
+import { faSpinner, faTimesCircle, faHandHolding, faWrench, faMicrochip, faSprayCan, faUtensils, faLeaf, faUserAstronaut, faBug, faIndustry, faChessBoard, faBoxOpen, faLongArrowAltLeft } from '@fortawesome/free-solid-svg-icons';
 
-library.add(faSpinner, faTimesCircle, faHandHolding, faWrench, faMicrochip, faLeaf, faSprayCan, faUtensils, faUserAstronaut, faBug, faIndustry, faChessBoard, faBoxOpen);
+library.add(faSpinner, faTimesCircle, faHandHolding, faWrench, faMicrochip, faLeaf, faSprayCan, faUtensils, faUserAstronaut, faBug, faIndustry, faChessBoard, faBoxOpen, faLongArrowAltLeft);
 
 const MANUFACTORY_TO_THING = {
   "FabricatorRecipes": "StructureFabricator",
@@ -182,57 +182,119 @@ class LoadState extends Component {
   }
 }
 
+const GuideContext = React.createContext({});
+
 class GuideContent extends Component {
   render() {
     return(
-      <div>
-        <Route path="/guide" render={() => <ThingList things={this.props.states.data.things} recipes={this.props.states.data.recipes} language={this.props.states.language.mapping.sections.Things} />} exact />
-        <Route path="/guide/thing/:prefab" render={(props) => <Thing {...props} things={this.props.states.data.things} recipes={this.props.states.data.recipes} language={this.props.states.language.mapping.sections.Things} />} />
-      </div>
+      <GuideContext.Provider value={{
+        things: this.props.states.data.things,
+        recipes: this.props.states.data.recipes,
+        scenarios: this.props.states.data.scenarios,
+        language: this.props.states.language.mapping.sections
+      }}>
+        <Route path="/guide" component={ThingIndex} exact />
+        <Route path="/guide/thing/:prefab" component={Thing} />
+      </GuideContext.Provider>
     );
   }
 }
 
-class ThingList extends Component {
+class ThingIndex extends Component {
   render() {
-    var thingKeys = Object.keys(this.props.things);
-
     return (
       <Row>
         <Col md={12}>        
-          <h4>Things</h4>        
-          <Table condensed>
-            <thead>
-              <tr>
-                <th>Name</th>
-                <th>Prefab (Hash)</th>
-                <th colSpan={11}>Attributes</th>
-                <th>Made/Constructed By</th>
-              </tr>
-            </thead>
-            <tbody>
-              {thingKeys.map((key) => <ThingListItem key={key} prefab={key} thing={this.props.things[key]} recipes={this.props.recipes[key]} language={this.props.language} />)}
-            </tbody>
-          </Table>
+          <h4>Things</h4>    
+          <ThingList />
         </Col>
       </Row>
     );
   }
 }
 
-class ThingLink extends Component {
+class ThingList extends Component {
+  static contextType = GuideContext;
+
   render() {
-    let destination = `/guide/thing/${this.props.prefab}`;
+    var thingKeys = Object.keys(this.context.things);
+
+    if (this.props.filter) {
+      thingKeys = thingKeys.filter((key) => this.props.filter(this.context, key));
+    }
+
+    return (    
+      <Table condensed>
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Prefab (Hash)</th>
+            <th colSpan={11}>Attributes</th>
+            <th>Made/Constructed By</th>
+          </tr>
+        </thead>
+        <tbody>
+          {thingKeys.map((key) => <ThingListItem key={key} prefab={key} />)}
+        </tbody>
+      </Table>
+    );
+  }
+}
+
+class ThingListItem extends Component {
+  static contextType = GuideContext;
+
+  render() {    
+    var prefab = this.props.prefab;
+    var thing = this.context.things[prefab];
+
+    var madeBy = Object.keys(this.context.recipes[prefab] || {}).sort();
+    var constructedBy = (thing.constructedBy || []).sort();
+
+    var creationOptions = [].concat(madeBy);
+    creationOptions = creationOptions.concat(constructedBy);
 
     return (
-      <NavLink to={destination} href={destination}>{this.props.title}</NavLink>
+      <tr>
+        <td><ThingLink prefab={prefab} /></td>
+        <td><small className="text-info">{prefab} ({thing.prefabHash})</small></td>
+        <ThingFlag flag="item" icon="hand-holding" flags={thing.flags} title='Item' />
+        <ThingFlag flag="tool" icon="wrench" flags={thing.flags} title='Tool' />
+        <ThingFlag flag="constructor" icon="box-open" flags={thing.flags} title='Constructs A Structure' />
+        <ThingFlag flag="structure" icon="industry" flags={thing.flags} title='Grid Structure'/>
+        <ThingFlag flag="smallGrid" icon="chess-board" flags={thing.flags} title='Small Grid Structure' />
+        <ThingFlag flag="logicable" icon="microchip" flags={thing.flags} title='Has Logic Data'/>
+        <ThingFlag flag="plant" icon="leaf" flags={thing.flags} title='Plant' />
+        <ThingFlag flag="edible" icon="utensils" flags={thing.flags} title='Edible' />
+        <ThingFlag flag="paintable" icon="spray-can" flags={thing.flags} title='Paintable' />
+        <ThingFlag flag="entity" icon="bug" flags={thing.flags} title='Entity' />
+        <ThingFlag flag="npc" icon="user-astronaut" flags={thing.flags} title='NPC Entity with AI' />
+        <td>{creationOptions.map((thing) => <ThingLink prefab={thing} />).reduce((accu, elem) => {
+            return accu === null ? [elem] : [...accu, ', ', elem]
+        }, null)}</td>
+      </tr>
+    );
+  }
+}
+
+class ThingLink extends Component {
+  static contextType = GuideContext;
+
+  render() {
+    let destination = `/guide/thing/${this.props.prefab}`;
+    let title = this.context.language.Things[this.props.prefab] || this.props.prefab;
+
+    return (
+      <NavLink to={destination} href={destination}>{title}</NavLink>
     );
   }
 }
 
 class Thing extends Component {
+  static contextType = GuideContext;
+
   render() {
-    if (!Object.keys(this.props.things).includes(this.props.match.params.prefab)) {
+    if (!Object.keys(this.context.things).includes(this.props.match.params.prefab)) {
       return (
         <Row>
           <Col md={12}>    
@@ -244,132 +306,145 @@ class Thing extends Component {
     
     let key = this.props.match.params.prefab;
 
-    let title = this.props.language[key] || key;
-    let thing = this.props.things[key];
-    let recipes = this.props.recipes[key] || [];
+    let title = this.context.language.Things[key] || key;
+    let thing = this.context.things[key];
+
+    let makes = Object.keys(this.context.recipes).filter((made) => Object.keys(this.context.recipes[made]).includes(key));
+    let constructs = Object.keys(this.context.things).filter((rkey) => (this.context.things[rkey].constructedBy || []).includes(key));
 
     return (
       <Row>
         <Col md={12}>    
           <h4>{title}</h4>
+          <p>
+            <NavLink to='/guide' href='/guide'><FontAwesomeIcon icon='long-arrow-alt-left' /> Return to index</NavLink>
+          </p>
         </Col>
 
-        <Col md={4}>
-          <Panel>
-            <Panel.Heading>Made By</Panel.Heading>
-            {Object.keys(recipes).map((manufactory) => {
-              return (<div>
-                <Panel.Body><h4>{manufactory}</h4></Panel.Body>
-                <Table condensed>
-                  <thead>
-                    <tr>
-                      <th>Item</th>
-                      <th>Quantity</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {Object.keys(recipes[manufactory]).map((ingredient) => {
-                      return (
-                        <tr>
-                          <td>{ingredient}</td>
-                          <td>{recipes[manufactory][ingredient]}</td>
-                        </tr>
-                      )
-                    })}
-                  </tbody>
-                </Table>
-              </div>);
-            })}
-          </Panel>
-        </Col>
+        {thing.logicTypes && <Col md={4}>
+          <ThingLogicTypes logicTypes={thing.logicTypes} />
+        </Col>}
+
+        {Object.keys(this.context.recipes[key] || {}).length > 0 && <Col md={4}>
+          <ThingMadeBy prefab={key} />
+        </Col>}
 
         <Col md={4}>
-          <Panel>
-            <Panel.Heading>Makes</Panel.Heading>
-            <ul>
-            {Object.keys(this.props.recipes).filter((made) => Object.keys(this.props.recipes[made]).includes(key)).map((manu) => <li>{manu}</li>)}
-            </ul>
-          </Panel>
+          {(thing.constructedBy || []).length > 0 && <ThingConstructedBy constructedBy={thing.constructedBy} />}
+
+          {constructs.length > 0 && <ThingConstructs constructs={constructs} />}
         </Col>
 
-        <Col md={4}>
-          <Panel>
-            <Panel.Heading>Logic Types</Panel.Heading>
-            <Table condensed>
-            <thead>
-              <tr>
-                <th>Type</th>
-                <th>Read</th>
-                <th>Write</th>
-              </tr>
-            </thead>
-            <tbody>
-              {Object.keys(thing.logicTypes || {}).map((logicType) => {
-                return (
-                  <tr>
-                    <td>{logicType}</td>
-                    <td>{thing.logicTypes[logicType].read ? "Yes" : "No"}</td>
-                    <td>{thing.logicTypes[logicType].write ? "Yes" : "No"}</td>
-                  </tr>
-                )
-              })}
-            </tbody>
-            </Table>
-          </Panel>
-        </Col>
-
-        <Col md={4}>
-          <Panel>
-            <Panel.Heading>Constructed By</Panel.Heading>
-            <ul>
-              {(thing.constructedBy || []).map((thing) => {
-                return (<li>{thing}</li>);
-              })}
-            </ul>            
-          </Panel>
-        </Col>
-
-        <Col md={4}>
-          <Panel>
-            <Panel.Heading>Constructs</Panel.Heading>
-            <ul>
-              {(Object.keys(this.props.things).filter((rkey) => (this.props.things[rkey].constructedBy || []).includes(key)).map((thing) => {
-                return (<li>{thing}</li>);
-              }))}
-            </ul>            
-          </Panel>
-        </Col>
+        {makes.length > 0 && <Col md={12}>
+          <ThingMakes makes={makes} />
+        </Col>}
       </Row>
       );
   }
 }
 
-class ThingListItem extends Component {
-  render() {    
-    var madeBy = Object.keys(this.props.recipes || {}).sort().map((manufactory) => this.props.language[manufactory]);
-    var constructedBy = (this.props.thing.constructedBy || []).sort().map((kit) => this.props.language[kit]);
+class ThingMakes extends Component {
+  render() {
+    return (<Panel>
+      <Panel.Heading>Makes</Panel.Heading>
+      <ThingList filter={(context, key) => this.props.makes.includes(key)} />         
+    </Panel>);
+  }
+}
 
-    var creationOptions = [].concat(madeBy);
-    creationOptions = creationOptions.concat(constructedBy);
+class ThingConstructedBy extends Component {
+  render() {
+    return (<Panel>
+      <Panel.Heading>Constructed By</Panel.Heading>
+      <ListGroup>
+        {(this.props.constructedBy || []).map((thing) => {
+          return (<ListGroupItem><ThingLink prefab={thing} /></ListGroupItem>);
+        })}
+      </ListGroup>            
+    </Panel>);
+  }
+}
 
-    return (
-      <tr>
-        <td><ThingLink prefab={this.props.prefab} title={this.props.language[this.props.prefab] || this.props.prefab} /></td>
-        <td><small className="text-info">{this.props.prefab} ({this.props.thing.prefabHash})</small></td>
-        <ThingFlag flag="item" icon="hand-holding" flags={this.props.thing.flags} title='Item' />
-        <ThingFlag flag="tool" icon="wrench" flags={this.props.thing.flags} title='Tool' />
-        <ThingFlag flag="constructor" icon="box-open" flags={this.props.thing.flags} title='Constructs A Structure' />
-        <ThingFlag flag="structure" icon="industry" flags={this.props.thing.flags} title='Grid Structure'/>
-        <ThingFlag flag="smallGrid" icon="chess-board" flags={this.props.thing.flags} title='Small Grid Structure' />
-        <ThingFlag flag="logicable" icon="microchip" flags={this.props.thing.flags} title='Has Logic Data'/>
-        <ThingFlag flag="plant" icon="leaf" flags={this.props.thing.flags} title='Plant' />
-        <ThingFlag flag="edible" icon="utensils" flags={this.props.thing.flags} title='Edible' />
-        <ThingFlag flag="paintable" icon="spray-can" flags={this.props.thing.flags} title='Paintable' />
-        <ThingFlag flag="entity" icon="bug" flags={this.props.thing.flags} title='Entity' />
-        <ThingFlag flag="npc" icon="user-astronaut" flags={this.props.thing.flags} title='NPC Entity with AI' />
-        <td>{creationOptions.join(", ")}</td>
-      </tr>
-    );
+class ThingConstructs extends Component {
+  render() {
+    return (<Panel>
+      <Panel.Heading>Constructs</Panel.Heading>
+      <ListGroup>
+        {this.props.constructs.map((thing) => {
+          return (<ListGroupItem><ThingLink prefab={thing} /></ListGroupItem>);
+        })}
+      </ListGroup>            
+    </Panel>);
+  }
+}
+
+class ThingLogicTypes extends Component {
+  render() {
+    return (<Panel>
+      <Panel.Heading>Logic Types</Panel.Heading>
+      <Table condensed>
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Read</th>
+          <th>Write</th>
+        </tr>
+      </thead>
+      <tbody>
+        {Object.keys(this.props.logicTypes || {}).map((logicType) => {
+          return (
+            <tr>
+              <td>{logicType}</td>
+              <td>{this.props.logicTypes[logicType].read ? "Yes" : "No"}</td>
+              <td>{this.props.logicTypes[logicType].write ? "Yes" : "No"}</td>
+            </tr>
+          )
+        })}
+      </tbody>
+      </Table>
+    </Panel>);
+  }
+}
+
+class ThingMadeBy extends Component {
+  static contextType = GuideContext;
+
+  render() {
+    let recipes = this.context.recipes[this.props.prefab] || [];
+
+    return (<Panel>
+      <Panel.Heading>Made By</Panel.Heading>
+      <Panel.Body>
+
+      {Object.keys(recipes).map((manufactory) => {
+        return (
+          <div>
+            <h5><ThingLink prefab={manufactory} /></h5>
+            <Table condensed>
+              <thead>
+                <tr>
+                  <th>Reagent</th>
+                  <th>Quantity</th>
+                </tr>
+              </thead>
+              <tbody>
+                {Object.keys(recipes[manufactory]).sort().map((ingredient) => {
+                  var name = this.context.language.Reagents[ingredient] ? this.context.language.Reagents[ingredient].name : ingredient;
+                  var unit = this.context.language.Reagents[ingredient] ? this.context.language.Reagents[ingredient].unit : "";
+                  return (
+                    <tr>
+                      <td>{name}</td>
+                      <td>{recipes[manufactory][ingredient]}{unit}</td>
+                    </tr>
+                  )
+                })}
+              </tbody>
+            </Table>
+            </div>
+        );
+      })}
+      </Panel.Body>
+    </Panel>);
   }
 }
 
