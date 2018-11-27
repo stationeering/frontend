@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { Route, NavLink } from 'react-router-dom';
 import { Row, Col, Label, Panel, Table } from 'react-bootstrap';
 
 import axios from 'axios';
@@ -184,12 +185,10 @@ class LoadState extends Component {
 class GuideContent extends Component {
   render() {
     return(
-      <Row>
-        <Col md={12}>
-          <h4>Things</h4>
-          <ThingList things={this.props.states.data.things} recipes={this.props.states.data.recipes} language={this.props.states.language.mapping.sections.Things} />
-        </Col>
-      </Row>
+      <div>
+        <Route path="/guide" render={() => <ThingList things={this.props.states.data.things} recipes={this.props.states.data.recipes} language={this.props.states.language.mapping.sections.Things} />} exact />
+        <Route path="/guide/thing/:prefab" render={(props) => <Thing {...props} things={this.props.states.data.things} recipes={this.props.states.data.recipes} language={this.props.states.language.mapping.sections.Things} />} />
+      </div>
     );
   }
 }
@@ -199,20 +198,149 @@ class ThingList extends Component {
     var thingKeys = Object.keys(this.props.things);
 
     return (
-      <Table condensed>
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>Prefab (Hash)</th>
-            <th colSpan={11}>Attributes</th>
-            <th>Made/Constructed By</th>
-          </tr>
-        </thead>
-        <tbody>
-          {thingKeys.map((key) => <ThingListItem key={key} prefab={key} thing={this.props.things[key]} recipes={this.props.recipes[key]} language={this.props.language} />)}
-        </tbody>
-      </Table>
+      <Row>
+        <Col md={12}>        
+          <h4>Things</h4>        
+          <Table condensed>
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Prefab (Hash)</th>
+                <th colSpan={11}>Attributes</th>
+                <th>Made/Constructed By</th>
+              </tr>
+            </thead>
+            <tbody>
+              {thingKeys.map((key) => <ThingListItem key={key} prefab={key} thing={this.props.things[key]} recipes={this.props.recipes[key]} language={this.props.language} />)}
+            </tbody>
+          </Table>
+        </Col>
+      </Row>
     );
+  }
+}
+
+class ThingLink extends Component {
+  render() {
+    let destination = `/guide/thing/${this.props.prefab}`;
+
+    return (
+      <NavLink to={destination} href={destination}>{this.props.title}</NavLink>
+    );
+  }
+}
+
+class Thing extends Component {
+  render() {
+    if (!Object.keys(this.props.things).includes(this.props.match.params.prefab)) {
+      return (
+        <Row>
+          <Col md={12}>    
+            Not Found
+          </Col>
+        </Row>
+        );
+    }
+    
+    let key = this.props.match.params.prefab;
+
+    let title = this.props.language[key] || key;
+    let thing = this.props.things[key];
+    let recipes = this.props.recipes[key] || [];
+
+    return (
+      <Row>
+        <Col md={12}>    
+          <h4>{title}</h4>
+        </Col>
+
+        <Col md={4}>
+          <Panel>
+            <Panel.Heading>Made By</Panel.Heading>
+            {Object.keys(recipes).map((manufactory) => {
+              return (<div>
+                <Panel.Body><h4>{manufactory}</h4></Panel.Body>
+                <Table condensed>
+                  <thead>
+                    <tr>
+                      <th>Item</th>
+                      <th>Quantity</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {Object.keys(recipes[manufactory]).map((ingredient) => {
+                      return (
+                        <tr>
+                          <td>{ingredient}</td>
+                          <td>{recipes[manufactory][ingredient]}</td>
+                        </tr>
+                      )
+                    })}
+                  </tbody>
+                </Table>
+              </div>);
+            })}
+          </Panel>
+        </Col>
+
+        <Col md={4}>
+          <Panel>
+            <Panel.Heading>Makes</Panel.Heading>
+            <ul>
+            {Object.keys(this.props.recipes).filter((made) => Object.keys(this.props.recipes[made]).includes(key)).map((manu) => <li>{manu}</li>)}
+            </ul>
+          </Panel>
+        </Col>
+
+        <Col md={4}>
+          <Panel>
+            <Panel.Heading>Logic Types</Panel.Heading>
+            <Table condensed>
+            <thead>
+              <tr>
+                <th>Type</th>
+                <th>Read</th>
+                <th>Write</th>
+              </tr>
+            </thead>
+            <tbody>
+              {Object.keys(thing.logicTypes || {}).map((logicType) => {
+                return (
+                  <tr>
+                    <td>{logicType}</td>
+                    <td>{thing.logicTypes[logicType].read ? "Yes" : "No"}</td>
+                    <td>{thing.logicTypes[logicType].write ? "Yes" : "No"}</td>
+                  </tr>
+                )
+              })}
+            </tbody>
+            </Table>
+          </Panel>
+        </Col>
+
+        <Col md={4}>
+          <Panel>
+            <Panel.Heading>Constructed By</Panel.Heading>
+            <ul>
+              {(thing.constructedBy || []).map((thing) => {
+                return (<li>{thing}</li>);
+              })}
+            </ul>            
+          </Panel>
+        </Col>
+
+        <Col md={4}>
+          <Panel>
+            <Panel.Heading>Constructs</Panel.Heading>
+            <ul>
+              {(Object.keys(this.props.things).filter((rkey) => (this.props.things[rkey].constructedBy || []).includes(key)).map((thing) => {
+                return (<li>{thing}</li>);
+              }))}
+            </ul>            
+          </Panel>
+        </Col>
+      </Row>
+      );
   }
 }
 
@@ -221,12 +349,12 @@ class ThingListItem extends Component {
     var madeBy = Object.keys(this.props.recipes || {}).sort().map((manufactory) => this.props.language[manufactory]);
     var constructedBy = (this.props.thing.constructedBy || []).sort().map((kit) => this.props.language[kit]);
 
-    var output = [].concat(madeBy);
-    output = output.concat(constructedBy);
+    var creationOptions = [].concat(madeBy);
+    creationOptions = creationOptions.concat(constructedBy);
 
     return (
       <tr>
-        <td>{this.props.language[this.props.prefab] || this.props.prefab}</td>
+        <td><ThingLink prefab={this.props.prefab} title={this.props.language[this.props.prefab] || this.props.prefab} /></td>
         <td><small className="text-info">{this.props.prefab} ({this.props.thing.prefabHash})</small></td>
         <ThingFlag flag="item" icon="hand-holding" flags={this.props.thing.flags} title='Item' />
         <ThingFlag flag="tool" icon="wrench" flags={this.props.thing.flags} title='Tool' />
@@ -239,7 +367,7 @@ class ThingListItem extends Component {
         <ThingFlag flag="paintable" icon="spray-can" flags={this.props.thing.flags} title='Paintable' />
         <ThingFlag flag="entity" icon="bug" flags={this.props.thing.flags} title='Entity' />
         <ThingFlag flag="npc" icon="user-astronaut" flags={this.props.thing.flags} title='NPC Entity with AI' />
-        <td>{output.join(", ")}</td>
+        <td>{creationOptions.join(", ")}</td>
       </tr>
     );
   }
@@ -256,6 +384,5 @@ class ThingFlag extends Component {
     </td>)
   }
 }
-
 
 export default Guide;

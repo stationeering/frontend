@@ -14,6 +14,7 @@ import { library } from '@fortawesome/fontawesome-svg-core';
 import { faTerminal, faGamepad, faCogs, faMemory, faLongArrowAltLeft, faLongArrowAltRight, faTimes, faStepForward, faPlay, faRedo, faEye, faAngleDoubleRight, faBook, faLightbulb, faListUl, faPen, faFile, faMicrochip, faArrowsAltH, faBug } from '@fortawesome/free-solid-svg-icons';
 import { faReddit } from '@fortawesome/free-brands-svg-icons';
 
+// eslint-disable-next-line
 import brace from 'brace';
 import AceEditor from 'react-ace';
 
