@@ -205,7 +205,7 @@ class GuideContent extends Component {
 const FLAGS = [
   { flag: "item", icon: "hand-holding", title: "Item" },
   { flag: "tool", icon: "wrench", title: "Tool" },
-  { flag: "constructor", icon: "box-open", title: "Constructs A Structure" },
+  { flag: "constructor", icon: "box-open", title: "Places Structure" },
   { flag: "structure", icon: "industry", title: "Grid Structure" },
   { flag: "smallGrid", icon: "chess-board", title: "Small Grid Structure" },
   { flag: "logicable", icon: "microchip", title: "Has Logic Data" },
@@ -610,7 +610,7 @@ class ThingObjectHeirachy extends Component {
   constructor(props) {
     super(props);
 
-    this.state = { show: false };
+    this.state = { show: (sessionStorage.getItem('showCSharpHeirachy') || false) };
   }
 
   render() {
@@ -625,7 +625,9 @@ class ThingObjectHeirachy extends Component {
   }
 
   onClick(e) {
-    this.setState({ show: !this.state.show });
+    this.setState({ show: !this.state.show }, () => {
+      sessionStorage.setItem('showCSharpHeirachy', this.state.show);
+    });
   }
 }
 
