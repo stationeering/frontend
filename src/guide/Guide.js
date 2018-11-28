@@ -209,7 +209,7 @@ class ThingIndex extends Component {
 
   render() {
     let limit = 25;
-    
+
     return (
       <Row>
         <Col md={12}>        
@@ -221,7 +221,7 @@ class ThingIndex extends Component {
             <Panel.Body>
               <FormGroup controlId="searchForm">
                 <ControlLabel>Type a few letters that is in the items name:</ControlLabel>
-                <FormControl type="text" placeholder="Enter text" onChange={this.changeSearchTerm.bind(this)} />
+                <FormControl type="text" placeholder="Enter text" onChange={(e) => this.changeSearchTerm(e.target.value)} />
                 <HelpBlock><small>You will need to type three or more characters, list limited to {limit} results.</small></HelpBlock>
               </FormGroup>
             </Panel.Body>
@@ -242,10 +242,11 @@ class ThingIndex extends Component {
     }
   }
 
-  changeSearchTerm(event) {
-    var searchTerm = event.target.value;
+  changeSearchTerm = this.debounce(searchTerm => {
     this.setState({ search: { ...this.state.search, term: searchTerm }})
-  }
+  }, 500)
+
+  debounce(a,b,c){var d,e;return function(){function h(){d=null,c||(e=a.apply(f,g))}var f=this,g=arguments;return clearTimeout(d),d=setTimeout(h,b),c&&!d&&(e=a.apply(f,g)),e}}
 }
 
 class ThingList extends Component {
