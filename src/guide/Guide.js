@@ -6,11 +6,11 @@ import axios from 'axios';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { library } from '@fortawesome/fontawesome-svg-core';
-import { faSpinner, faTimesCircle, faHandHolding, faWrench, faMicrochip, faSprayCan, faUtensils, faLeaf, faUserAstronaut, faBug, faIndustry, faChessBoard, faBoxOpen, faLongArrowAltLeft, faHashtag, faSearch} from '@fortawesome/free-solid-svg-icons';
+import { faSpinner, faTimesCircle, faHandHolding, faWrench, faMicrochip, faSprayCan, faUtensils, faLeaf, faUserAstronaut, faBug, faIndustry, faChessBoard, faBoxOpen, faLongArrowAltLeft, faHashtag, faSearch, faWind, faTerminal, faEye, faEyeSlash} from '@fortawesome/free-solid-svg-icons';
 
 import './Guide.css';
 
-library.add(faSpinner, faTimesCircle, faHandHolding, faWrench, faMicrochip, faLeaf, faSprayCan, faUtensils, faUserAstronaut, faBug, faIndustry, faChessBoard, faBoxOpen, faLongArrowAltLeft, faHashtag, faSearch);
+library.add(faSpinner, faTimesCircle, faHandHolding, faWrench, faMicrochip, faLeaf, faSprayCan, faUtensils, faUserAstronaut, faBug, faIndustry, faChessBoard, faBoxOpen, faLongArrowAltLeft, faHashtag, faSearch, faWind, faTerminal, faEye, faEyeSlash);
 
 const MANUFACTORY_TO_THING = {
   "FabricatorRecipes": "StructureFabricator",
@@ -209,11 +209,12 @@ const FLAGS = [
   { flag: "structure", icon: "industry", title: "Grid Structure" },
   { flag: "smallGrid", icon: "chess-board", title: "Small Grid Structure" },
   { flag: "logicable", icon: "microchip", title: "Has Logic Data" },
+  { flag: "atmospherics", icon: "wind", title: "Atmospherics" },
   { flag: "plant", icon: "leaf", title: "Plant" },
   { flag: "edible", icon: "utensils", title: "Edible" },
   { flag: "paintable", icon: "spray-can", title: "Paintable" },
   { flag: "entity", icon: "bug", title: "Entity" },
-  { flag: "npc", icon: "user-astronaut", title: "NPC Entity with AI" },
+  { flag: "npc", icon: "user-astronaut", title: "NPC Entity with AI" },  
 ]
 
 class ThingIndex extends Component {
@@ -422,8 +423,8 @@ class Thing extends Component {
         </Col>
 
         <Col md={4}>
+          <ThingProperties thing={thing} name={key} />
           <ThingTemperatures thing={thing} />
-          <ThingProperties thing={thing} />
         </Col>
 
         {thing.logicTypes && <Col md={4}>
@@ -438,6 +439,8 @@ class Thing extends Component {
           {(thing.constructedBy || []).length > 0 && <ThingConstructedBy constructedBy={thing.constructedBy} />}
 
           {constructs.length > 0 && <ThingConstructs constructs={constructs} />}
+
+          <ThingObjectHeirachy objectHeirachy={thing.objectHeirachy} />
         </Col>
 
         {makes.length > 0 && <Col md={12}>
@@ -471,6 +474,7 @@ class ThingProperties extends Component {
       <Panel.Heading>Properties</Panel.Heading>
       <Table>
       <tbody>
+        <tr><th><FontAwesomeIcon icon="terminal" /></th><th>Internal Name</th><td>{this.props.name}</td></tr>
         <tr><th><FontAwesomeIcon icon="hashtag" /></th><th>Hash</th><td>{thing.prefabHash}</td></tr>
         {FLAGS.map(flag => <ThingPropertyFlag flag={flag.flag} icon={flag.icon} flags={thing.flags} title={flag.title} />)}
       </tbody>
@@ -599,6 +603,29 @@ class ThingFlag extends Component {
     return (<td>
       <abbr title={this.props.title}><FontAwesomeIcon icon={this.props.icon} /></abbr>
     </td>)
+  }
+}
+
+class ThingObjectHeirachy extends Component {
+  constructor(props) {
+    super(props);
+
+    this.state = { show: false };
+  }
+
+  render() {
+    return (<Panel>
+      <Panel.Heading>C# Heirachy <FontAwesomeIcon className='pull-right' icon={this.state.show ? 'eye-slash' : 'eye'} onClick={this.onClick.bind(this)} /></Panel.Heading>
+      {this.state.show && <ListGroup>
+        {this.props.objectHeirachy.reverse().filter((el, i, a) => i === a.indexOf(el)).reverse().map((thing) => {
+          return (<ListGroupItem>{thing}</ListGroupItem>);
+        })}
+      </ListGroup>}    
+    </Panel>);
+  }
+
+  onClick(e) {
+    this.setState({ show: !this.state.show });
   }
 }
 
