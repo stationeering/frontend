@@ -8,6 +8,8 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { faSpinner, faTimesCircle, faHandHolding, faWrench, faMicrochip, faSprayCan, faUtensils, faLeaf, faUserAstronaut, faBug, faIndustry, faChessBoard, faBoxOpen, faLongArrowAltLeft, faHashtag, faSearch} from '@fortawesome/free-solid-svg-icons';
 
+import './Guide.css';
+
 library.add(faSpinner, faTimesCircle, faHandHolding, faWrench, faMicrochip, faLeaf, faSprayCan, faUtensils, faUserAstronaut, faBug, faIndustry, faChessBoard, faBoxOpen, faLongArrowAltLeft, faHashtag, faSearch);
 
 const MANUFACTORY_TO_THING = {
@@ -200,6 +202,20 @@ class GuideContent extends Component {
   }
 }
 
+const FLAGS = [
+  { flag: "item", icon: "hand-holding", title: "Item" },
+  { flag: "tool", icon: "wrench", title: "Tool" },
+  { flag: "constructor", icon: "box-open", title: "Constructs A Structure" },
+  { flag: "structure", icon: "industry", title: "Grid Structure" },
+  { flag: "smallGrid", icon: "chess-board", title: "Small Grid Structure" },
+  { flag: "logicable", icon: "microchip", title: "Has Logic Data" },
+  { flag: "plant", icon: "leaf", title: "Plant" },
+  { flag: "edible", icon: "utensils", title: "Edible" },
+  { flag: "paintable", icon: "spray-can", title: "Paintable" },
+  { flag: "entity", icon: "bug", title: "Entity" },
+  { flag: "npc", icon: "user-astronaut", title: "NPC Entity with AI" },
+]
+
 class ThingIndex extends Component {
   constructor(props) {
     super(props);
@@ -219,11 +235,24 @@ class ThingIndex extends Component {
               <Panel.Title componentClass="h3"><FontAwesomeIcon icon="search" /> Search</Panel.Title>
             </Panel.Heading>
             <Panel.Body>
-              <FormGroup controlId="searchForm">
-                <ControlLabel>Type a few letters that is in the items name:</ControlLabel>
-                <FormControl type="text" placeholder="Enter text" onChange={(e) => this.changeSearchTerm(e.target.value)} />
-                <HelpBlock><small>You will need to type three or more characters, list limited to {limit} results.</small></HelpBlock>
-              </FormGroup>
+              <Row>
+                <Col md={6}>
+                  <FormGroup controlId="term">
+                    <ControlLabel>Type a few letters that is in the items name:</ControlLabel>
+                    <FormControl type="text" placeholder="Enter text" onChange={(e) => this.changeSearchTerm(e.target.value)} />
+                    <HelpBlock><small>You will need to type three or more characters, list limited to {limit} results.</small></HelpBlock>
+                  </FormGroup>
+                </Col>
+                <Col md={6}>
+                  <FormGroup controlId="flags">
+                    <ControlLabel>Select any manditory flags to be set on things:</ControlLabel>
+                    <p>
+                      {FLAGS.map(flag => <SearchFlag flag={flag.flag} icon={flag.icon} flags={this.state.search.flags} title={flag.title} onClick={this.changeSearchFlag.bind(this)} />)}
+                    </p>
+                    <HelpBlock><small>Selecting flags requires that things have <strong>all</strong> flags selected.</small></HelpBlock>
+                  </FormGroup>
+                </Col>
+              </Row>
             </Panel.Body>
           </Panel>
           <ThingList filter={this.filter.bind(this)} limit={limit} />
@@ -233,20 +262,55 @@ class ThingIndex extends Component {
   }
 
   filter(context, key) {
+    var result = true;
+    var hasFiltered = false;
+
     if (this.state.search.term.length >= 3) {
       let term = this.state.search.term.toLowerCase();
 
-      return (key.toLowerCase().includes(term) || (context.language.Things[key] || key).toLowerCase().includes(term))
-    } else {
-      return false;
+      result = result && (key.toLowerCase().includes(term) || (context.language.Things[key] || key).toLowerCase().includes(term))
+      hasFiltered = true;
     }
+
+    if (this.state.search.flags.length > 0) {
+      for (var flag of this.state.search.flags) {
+        result = result && context.things[key].flags[flag];
+      }
+
+      hasFiltered = true;
+    }
+
+    return result && hasFiltered;
   }
 
   changeSearchTerm = this.debounce(searchTerm => {
     this.setState({ search: { ...this.state.search, term: searchTerm }})
   }, 500)
 
+  changeSearchFlag(flag, state) {
+    var currentFlags = this.state.search.flags;
+
+    if (state) {
+      currentFlags.push(flag);
+    } else {
+      currentFlags = currentFlags.filter((f) => f !== flag);
+    }
+
+    this.setState({ search: { ...this.state.search, flags: currentFlags }})
+  }
+
   debounce(a,b,c){var d,e;return function(){function h(){d=null,c||(e=a.apply(f,g))}var f=this,g=arguments;return clearTimeout(d),d=setTimeout(h,b),c&&!d&&(e=a.apply(f,g)),e}}
+}
+
+class SearchFlag extends Component {
+  render() {
+    return (<abbr title={this.props.title} className="flag-toggle"><FontAwesomeIcon size='2x' icon={this.props.icon} onClick={this.toggle.bind(this)} className={this.props.flags.includes(this.props.flag) ? "" : "inactive"} /></abbr>)
+  }
+
+  toggle(e) {
+    var newState = !this.props.flags.includes(this.props.flag);
+    this.props.onClick(this.props.flag, newState);
+  }
 }
 
 class ThingList extends Component {
@@ -274,7 +338,7 @@ class ThingList extends Component {
             <tr>
               <th>Name</th>
               <th>Prefab (Hash)</th>
-              <th colSpan={11}>Attributes</th>
+              <th colSpan={FLAGS.length}>Attributes</th>
               <th>Made/Constructed By</th>
             </tr>
           </thead>
@@ -304,17 +368,7 @@ class ThingListItem extends Component {
       <tr>
         <td><ThingLink prefab={prefab} /></td>
         <td><small className="text-info">{prefab} ({thing.prefabHash})</small></td>
-        <ThingFlag flag="item" icon="hand-holding" flags={thing.flags} title='Item' />
-        <ThingFlag flag="tool" icon="wrench" flags={thing.flags} title='Tool' />
-        <ThingFlag flag="constructor" icon="box-open" flags={thing.flags} title='Constructs A Structure' />
-        <ThingFlag flag="structure" icon="industry" flags={thing.flags} title='Grid Structure'/>
-        <ThingFlag flag="smallGrid" icon="chess-board" flags={thing.flags} title='Small Grid Structure' />
-        <ThingFlag flag="logicable" icon="microchip" flags={thing.flags} title='Has Logic Data'/>
-        <ThingFlag flag="plant" icon="leaf" flags={thing.flags} title='Plant' />
-        <ThingFlag flag="edible" icon="utensils" flags={thing.flags} title='Edible' />
-        <ThingFlag flag="paintable" icon="spray-can" flags={thing.flags} title='Paintable' />
-        <ThingFlag flag="entity" icon="bug" flags={thing.flags} title='Entity' />
-        <ThingFlag flag="npc" icon="user-astronaut" flags={thing.flags} title='NPC Entity with AI' />
+        {FLAGS.map(flag => <ThingFlag flag={flag.flag} icon={flag.icon} flags={thing.flags} title={flag.title} />)}
         <td>{creationOptions.map((thing) => <ThingLink prefab={thing} />).reduce((accu, elem) => {
             return accu === null ? [elem] : [...accu, ', ', elem]
         }, null)}</td>
@@ -398,7 +452,7 @@ class ThingTemperatures extends Component {
   render() {
     return (<Panel>
       <Panel.Heading>Temperatures</Panel.Heading>
-      <Table condensed>
+      <Table>
       <tbody>
         {this.props.thing.temperatures.shatter && <tr><th>Shatter</th><td>{this.props.thing.temperatures.shatter}K</td></tr>}
         {this.props.thing.temperatures.flashpoint && <tr><th>Flash Point</th><td>{this.props.thing.temperatures.flashpoint}K</td></tr>}
@@ -415,20 +469,10 @@ class ThingProperties extends Component {
 
     return (<Panel>
       <Panel.Heading>Properties</Panel.Heading>
-      <Table condensed>
+      <Table>
       <tbody>
         <tr><th><FontAwesomeIcon icon="hashtag" /></th><th>Hash</th><td>{thing.prefabHash}</td></tr>
-        <ThingPropertyFlag flag="item" icon="hand-holding" flags={thing.flags} title='Item' />
-        <ThingPropertyFlag flag="tool" icon="wrench" flags={thing.flags} title='Tool' />
-        <ThingPropertyFlag flag="constructor" icon="box-open" flags={thing.flags} title='Constructs A Structure' />
-        <ThingPropertyFlag flag="structure" icon="industry" flags={thing.flags} title='Grid Structure'/>
-        <ThingPropertyFlag flag="smallGrid" icon="chess-board" flags={thing.flags} title='Small Grid Structure' />
-        <ThingPropertyFlag flag="logicable" icon="microchip" flags={thing.flags} title='Has Logic Data'/>
-        <ThingPropertyFlag flag="plant" icon="leaf" flags={thing.flags} title='Plant' />
-        <ThingPropertyFlag flag="edible" icon="utensils" flags={thing.flags} title='Edible' />
-        <ThingPropertyFlag flag="paintable" icon="spray-can" flags={thing.flags} title='Paintable' />
-        <ThingPropertyFlag flag="entity" icon="bug" flags={thing.flags} title='Entity' />
-        <ThingPropertyFlag flag="npc" icon="user-astronaut" flags={thing.flags} title='NPC Entity with AI' />
+        {FLAGS.map(flag => <ThingPropertyFlag flag={flag.flag} icon={flag.icon} flags={thing.flags} title={flag.title} />)}
       </tbody>
       </Table>
     </Panel>)
@@ -480,7 +524,7 @@ class ThingLogicTypes extends Component {
   render() {
     return (<Panel>
       <Panel.Heading>Logic Types</Panel.Heading>
-      <Table condensed>
+      <Table>
       <thead>
         <tr>
           <th>Type</th>
