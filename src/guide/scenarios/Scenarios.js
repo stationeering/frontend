@@ -1,25 +1,9 @@
 import React, { Component } from 'react';
-import axios from 'axios';
 import { Panel, Row, Col, Badge, ListGroup, ListGroupItem } from 'react-bootstrap';
+import {GuideContext} from '../Context';
 
 class Scenarios extends Component {
-  constructor(props) {
-    super(props);
-
-    this.state = { ...this.state, scenarios: { data: null, message: "Please wait loading scenarios!" } };
-  }
-
-  componentDidMount() {
-    var scenarios = this;
-
-    axios({ url: 'https://data.stationeering.com/scenarios/' + this.props.branch + '.json', method: 'get', responseType: 'json' })
-      .then(function (response) {
-        scenarios.setState({ scenarios: { data: response.data, message: null } })
-      })
-      .catch(function (error) {
-        scenarios.setState({ scenarios: { message: "Failed to load scenario list! " + error } })
-      });
-  }
+  static contextType = GuideContext;
 
   render() {
     return (
@@ -37,13 +21,7 @@ class Scenarios extends Component {
   }
 
   renderScenarios() {
-    if (this.state.scenarios.data === null) {
-      return (<Col md={12}>
-        <small>{this.state.scenarios.message}</small>
-      </Col>);
-    } else {
-      return this.state.scenarios.data.map((scenario, i) => <Scenario key={i} scenario={scenario} />);
-    }
+    return this.context.scenarios.map((scenario, i) => <Scenario key={i} scenario={scenario} />);
   }
 }
 
@@ -121,6 +99,8 @@ class AtmosphereProperties extends Component {
 }
 
 class AtmosphereContents extends Component {
+  static contextType = GuideContext;
+
   render() {
     return (<ListGroup>
       {this.renderContents()}
@@ -133,7 +113,7 @@ class AtmosphereContents extends Component {
     return this.props.scenario.atmosphere.composition.map((gas) => {
       var percent = (gas.quantity / totalMoles) * 100;
 
-      return (<ListGroupItem><strong>{gas.type}:</strong> {percent.toFixed(1)}% ({gas.quantity.toFixed(2)} moles)</ListGroupItem>);
+      return (<ListGroupItem><strong>{this.context.language.Gases[gas.type]}:</strong> {percent.toFixed(1)}% ({gas.quantity.toFixed(2)} moles)</ListGroupItem>);
     })
   }
 }

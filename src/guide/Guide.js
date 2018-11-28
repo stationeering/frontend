@@ -1,12 +1,16 @@
 import React, { Component } from 'react';
 import { Route, NavLink } from 'react-router-dom';
-import { Row, Col, Label, Panel, Table, Alert, ListGroup, ListGroupItem, FormGroup, HelpBlock, FormControl, ControlLabel } from 'react-bootstrap';
+import { Row, Col, Label, Panel, Table, Alert, ListGroup, ListGroupItem, FormGroup, HelpBlock, FormControl, ControlLabel, Tabs, Tab } from 'react-bootstrap';
 
 import axios from 'axios';
+
+import Scenarios from './scenarios/Scenarios';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { faSpinner, faTimesCircle, faHandHolding, faWrench, faMicrochip, faSprayCan, faUtensils, faLeaf, faUserAstronaut, faBug, faIndustry, faChessBoard, faBoxOpen, faLongArrowAltLeft, faHashtag, faSearch, faWind, faTerminal, faEye, faEyeSlash} from '@fortawesome/free-solid-svg-icons';
+
+import { GuideContext } from './Context';
 
 import './Guide.css';
 
@@ -184,8 +188,6 @@ class LoadState extends Component {
   }
 }
 
-const GuideContext = React.createContext({});
-
 class GuideContent extends Component {
   render() {
     return(
@@ -197,6 +199,7 @@ class GuideContent extends Component {
       }}>
         <Route path="/guide" component={ThingIndex} exact />
         <Route path="/guide/thing/:prefab" component={Thing} />
+        <Route path="/guide/scenarios" component={Scenarios} />
       </GuideContext.Provider>
     );
   }
@@ -230,7 +233,7 @@ class ThingIndex extends Component {
     return (
       <Row>
         <Col md={12}>        
-          <h4>Things</h4>    
+          <p />    
           <Panel bsStyle="info">
             <Panel.Heading>
               <Panel.Title componentClass="h3"><FontAwesomeIcon icon="search" /> Search</Panel.Title>

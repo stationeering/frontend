@@ -14,8 +14,6 @@ import Discord from './tools/discord/Discord';
 import VersionList from './versions/VersionList';
 import Home from './home/Home';
 
-import axios from 'axios';
-
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { faSteam, faTwitter, faDiscord } from '@fortawesome/free-brands-svg-icons';
@@ -26,76 +24,14 @@ import './App.css';
 library.add(faSteam, faTwitter, faGlobe, faDiscord);
 
 class App extends Component {
-  constructor(props) {
-    super(props);
-
-    this.toggleBeta = this.toggleBeta.bind(this);
-    this.languageMap = this.languageMap.bind(this);
-
-    this.state = { beta: false, language: { mapping: {}, message: "" } };
-  }
-
-  componentDidMount() {
-      var recent = this;
-
-      recent.setState( { language: { mapping: {}, message: "Loading language..." } } );
-
-      axios({ url: 'https://data.stationeering.com/languages/en/' + (this.state.beta ? "beta" : "public") + '.json', method: 'get', responseType: 'json' })
-          .then(function (response) {
-              recent.setState({ language: { mapping: recent.languageMapToLower(response.data), message: null } })
-          })
-          .catch(function (error) {
-              recent.setState({ language: { mapping: {}, message: "Failed to load language file! " + error } })
-          });
-  }
-
-  componentDidUpdate(prevProps, prevState) {
-    if (prevState.beta !== this.state.beta) {
-      this.componentDidMount();
-    }
-  }
-
-  languageMapToLower(data) {
-    data.sections = Object.keys(data.sections).reduce((acc, type) => {
-      acc[type.toLowerCase()] = Object.keys(data.sections[type]).reduce((acc2, key) => {
-        acc2[key.toLowerCase()] = data.sections[type][key];
-        return acc2;
-      }, {});
-      return acc;
-    }, {});
-
-    return data;
-  }
-
-  languageMap(type, key) {
-    var lowerType = type.toLowerCase();
-    var lowerKey = key.toLowerCase();
-
-    if (this.state.language.mapping.sections && this.state.language.mapping.sections.hasOwnProperty(lowerType) && this.state.language.mapping.sections[lowerType].hasOwnProperty(lowerKey)) {
-      var mapping = this.state.language.mapping.sections[lowerType][lowerKey];
-
-      if (typeof mapping === 'object') {
-        return mapping.name;
-      } else {
-        return mapping;
-      }
-    }
-
-    return key;
-  }
-
-  toggleBeta(event) {
-    this.setState({ beta: !this.state.beta })
-  }
-
   render() {
     return (
       <div className="App">
         <Navbar>
           <Header />
-          <Navigation betaBranch={this.state.beta} onChange={this.toggleBeta} languageLoadState={this.state.language.message} />
+          <Navigation />
         </Navbar>
-        <Main beta={this.state.beta} languageMap={this.languageMap} updateProxy={this.props.updateProxy} />
+        <Main updateProxy={this.props.updateProxy} />
         <footer className="footer">
           <small>
               stationeering.com is a fan website about <a href="https://store.steampowered.com/app/544550/Stationeers/">Stationeers</a> run by Melair.
@@ -132,16 +68,8 @@ class Navigation extends Component {
           <FontAwesomeIcon icon="code-branch"/> Change Log
         </NavItem>
         <NavItem componentClass={NavLink} eventKey={2} to="/tools/ic" href="/tools/ic">
-        <FontAwesomeIcon icon="microchip" /> IC Simulator
+          <FontAwesomeIcon icon="microchip" /> IC Simulator
         </NavItem>
-    <NavDropdown eventKey={3} title={[<FontAwesomeIcon icon="gamepad" />," Game Info"]} id="basic-nav-dropdown">
-          <MenuItem componentClass={NavLink} eventKey={3.1} to="/info/items" href="/info/items">Items and Manufactory</MenuItem>
-          <MenuItem componentClass={NavLink} eventKey={3.2} to="/info/scenarios" href="/info/scenarios">Scenarios (Worlds)</MenuItem>
-        </NavDropdown>
-        <NavDropdown eventKey={4} title={[<FontAwesomeIcon icon="wrench" />," Tools"]} id="basic-nav-dropdown">
-          <MenuItem componentClass={NavLink} eventKey={4.2} to="/tools/discord" href="/tools/discord">Discord Bot</MenuItem>
-          <MenuItem componentClass={NavLink} eventKey={4.3} to="/tools/data" href="/tools/data">Data and Webhooks</MenuItem>
-        </NavDropdown>
       </Nav>
       <Nav pullRight>
         <Navbar.Text>
