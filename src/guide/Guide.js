@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import { Route, NavLink } from 'react-router-dom';
-import { Row, Col, Label, Panel, Table, Alert, ListGroup, ListGroupItem, FormGroup, HelpBlock, FormControl, ControlLabel, Tabs, Tab } from 'react-bootstrap';
+import { Route, NavLink, Redirect } from 'react-router-dom';
+import { Row, Col, Label, Panel, Table, Alert, ListGroup, ListGroupItem, FormGroup, HelpBlock, FormControl, ControlLabel, Nav, NavItem } from 'react-bootstrap';
 
 import axios from 'axios';
 
@@ -143,11 +143,12 @@ class Guide extends Component {
       <div>
         <Row>
           <Col md={12}>
-            <h3>Stationeering's Guide to Stationeers ({this.state.data.desired} branch)</h3>
-            {isLoading && <LoadingNotice states={this.state.loading} />}
-            {!isLoading && <GuideContent states={this.state} />}
+            <h3>Stationeers Reference ({this.state.data.desired} branch)</h3>
           </Col>
         </Row>
+
+        {isLoading && <LoadingNotice states={this.state.loading} />}
+        {!isLoading && <GuideContent states={this.state} />}
       </div>
     );
   }
@@ -156,17 +157,21 @@ class Guide extends Component {
 class LoadingNotice extends Component {
   render() {
     return (
-      <Panel>
-        <Panel.Heading>
-            <Panel.Title componentClass="h3">Loading resources for guide...</Panel.Title>
-        </Panel.Heading>
-        <Panel.Body>
-          <LoadState state={this.props.states.language} title="Language" />
-          <LoadState state={this.props.states.things} title="Things" />
-          <LoadState state={this.props.states.recipes} title="Recipes" />
-          <LoadState state={this.props.states.scenarios} title="Scenarios" />
-        </Panel.Body>
-      </Panel>
+      <Row>
+        <Col md={12}>
+          <Panel>
+            <Panel.Heading>
+                <Panel.Title componentClass="h3">Loading resources for guide...</Panel.Title>
+            </Panel.Heading>
+            <Panel.Body>
+              <LoadState state={this.props.states.language} title="Language" />
+              <LoadState state={this.props.states.things} title="Things" />
+              <LoadState state={this.props.states.recipes} title="Recipes" />
+              <LoadState state={this.props.states.scenarios} title="Scenarios" />
+            </Panel.Body>
+          </Panel>
+        </Col>
+      </Row>
     )
   }
 }
@@ -190,14 +195,36 @@ class LoadState extends Component {
 
 class GuideContent extends Component {
   render() {
+    var currentKey;
+
+    if (window.location.pathname.startsWith('/guide/thing')) {
+      currentKey = 'things';
+    } else if (window.location.pathname.startsWith('/guide/scenarios')) {
+      currentKey = 'scenarios';
+    }
+
     return(
       <GuideContext.Provider value={{
         things: this.props.states.data.things,
         recipes: this.props.states.data.recipes,
         scenarios: this.props.states.data.scenarios,
         language: this.props.states.language.mapping.sections
-      }}>
-        <Route path="/guide" component={ThingIndex} exact />
+      }}>      
+        <Row>
+            <Col md={12}>
+                <Nav bsStyle="pills" activeKey={currentKey}>
+                    <NavItem eventKey="things" componentClass={NavLink} to="/guide/thing" href="/guide/thing">
+                        Things
+                    </NavItem>
+                    <NavItem eventKey="scenarios" componentClass={NavLink} to="/guide/scenarios" href="/guide/scenarios">
+                        Scenarios
+                    </NavItem>
+                </Nav>
+            </Col>
+        </Row>
+
+        <Route path="/guide" render={() => <Redirect to='/guide/thing' />} exact />
+        <Route path="/guide/thing" component={ThingIndex} exact />
         <Route path="/guide/thing/:prefab" component={Thing} />
         <Route path="/guide/scenarios" component={Scenarios} />
       </GuideContext.Provider>
@@ -249,11 +276,11 @@ class ThingIndex extends Component {
                 </Col>
                 <Col md={6}>
                   <FormGroup controlId="flags">
-                    <ControlLabel>Select any manditory flags to be set on things:</ControlLabel>
+                    <ControlLabel>Select categories to list:</ControlLabel>
                     <p>
                       {FLAGS.map(flag => <SearchFlag flag={flag.flag} icon={flag.icon} flags={this.state.search.flags} title={flag.title} onClick={this.changeSearchFlag.bind(this)} />)}
                     </p>
-                    <HelpBlock><small>Selecting flags requires that things have <strong>all</strong> flags selected.</small></HelpBlock>
+                    <HelpBlock><small>Selecting categories requires that things have <strong>all</strong> categories selected.</small></HelpBlock>
                   </FormGroup>
                 </Col>
               </Row>
@@ -303,6 +330,7 @@ class ThingIndex extends Component {
     this.setState({ search: { ...this.state.search, flags: currentFlags }})
   }
 
+  // eslint-disable-next-line
   debounce(a,b,c){var d,e;return function(){function h(){d=null,c||(e=a.apply(f,g))}var f=this,g=arguments;return clearTimeout(d),d=setTimeout(h,b),c&&!d&&(e=a.apply(f,g)),e}}
 }
 

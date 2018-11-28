@@ -4,13 +4,13 @@ import { Panel, Row, Col } from 'react-bootstrap';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { library } from '@fortawesome/fontawesome-svg-core';
-import { faNewspaper, faHandSpock, faSitemap, faMicrochip, faCodeBranch, faGlobeAsia } from '@fortawesome/free-solid-svg-icons';
+import { faNewspaper, faHandSpock, faSitemap, faMicrochip, faCodeBranch, faGlobeAsia, faBookOpen } from '@fortawesome/free-solid-svg-icons';
 
 import SteamNews from './SteamNews';
 
 import './Home.css';
 
-library.add(faNewspaper, faHandSpock, faSitemap, faMicrochip, faCodeBranch, faGlobeAsia );
+library.add(faNewspaper, faHandSpock, faSitemap, faMicrochip, faCodeBranch, faGlobeAsia, faBookOpen );
 
 class Home extends Component { 
     render() {
@@ -30,7 +30,22 @@ class Home extends Component {
             </Col>
           </Row>
           <Row>
-          <Col md={3}>
+            <Col md={3}>
+              <Panel bsStyle="success">
+                <Panel.Heading>
+                  <Panel.Title componentClass="h3"><FontAwesomeIcon icon="book-open" /> Guide</Panel.Title>
+                </Panel.Heading>
+                <Panel.Body>
+                  <p>
+                    Similar to the in game Stationpedia, but with some more information in places. 
+                  </p>
+                  <p>
+                  <NavLink to='/guide'>Check out the guide!</NavLink>
+                  </p>
+                </Panel.Body>
+              </Panel>
+            </Col>
+            <Col md={3}>
               <Panel bsStyle="success">
                 <Panel.Heading>
                   <Panel.Title componentClass="h3"><FontAwesomeIcon icon="microchip" /> <NavLink to='/tools/ic'>IC Simulator</NavLink></Panel.Title>
@@ -59,22 +74,7 @@ class Home extends Component {
                   </p>
                 </Panel.Body>
               </Panel>
-            </Col>
-            <Col md={3}>
-              <Panel bsStyle="success">
-                <Panel.Heading>
-                  <Panel.Title componentClass="h3"><FontAwesomeIcon icon="globe-asia" /> Scenario Info</Panel.Title>
-                </Panel.Heading>
-                <Panel.Body>
-                  <p>
-                    A display of all scenarios you can start a play in, including information on their planets and atmospheres.
-                  </p>
-                  <p>
-                  <NavLink to='/info/scenarios'>Check out the environments!</NavLink>
-                  </p>
-                </Panel.Body>
-              </Panel>
-            </Col>
+            </Col>           
           </Row>
           <Row>
             <Col md={12}>

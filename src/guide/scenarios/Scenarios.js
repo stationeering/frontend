@@ -8,15 +8,10 @@ class Scenarios extends Component {
   render() {
     return (
       <div>
+        <p />
         <Row>
-          <Col md={12}>
-            <h3>Scenarios</h3>
-            <p>
-              These are the current starting scenarios which you can start a new game on.
-            </p>
-          </Col>
+          {this.renderScenarios()}
         </Row>
-        {this.renderScenarios()}
       </div>);
   }
 
