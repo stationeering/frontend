@@ -32,7 +32,7 @@ class App extends Component {
         <Main updateProxy={this.props.updateProxy} />
         <footer className="footer">
           <small>
-              stationeering.com is a fan website about <a href="https://store.steampowered.com/app/544550/Stationeers/">Stationeers</a> run by Melair.
+              stationeering.com is a fan website about <a href="https://store.steampowered.com/app/544550/Stationeers/">Stationeers</a> run by <a href="https://twitter.com/MelairCraft">Melair</a>.
               The source code and infrastructure configuration is available for this website at <a href="https://github.com/stationeering">GitHub</a>.
               <br />
               Stationeers content and materials are trademarks and copyrights of RocketWerkz Ltd and its licensors.
