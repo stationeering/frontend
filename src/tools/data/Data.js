@@ -114,6 +114,9 @@ class Data extends Component {
     "beta_date": "1532755962000", // Date the version appeared on the beta branch. Number of milliseconds since unix epoch.
     "public_date": "1532757857000", // Date the version appeared on the public branch, missing if not yet on public. Number of milliseconds since unix epoch.
     "updated_date": "1532758092378", // Date the last time Stationeering updated this record. Number of milliseconds since unix epoch.
+    "server_build_id": "2985053", // Dedicated server Steam build ID, may be missing.
+    "server_beta_date": "1532755962000", // Date the dedicated server version appeared on the beta branch. Number of milliseconds since unix epoch.
+    "server_public_date": "1532757857000", // Date the version dedicated server appeared on the public branch, missing if not yet on public. Number of milliseconds since unix epoch.    
     "notes": [
       "A change log." // One entry per change log line for this version.
     ]
@@ -165,6 +168,9 @@ class Data extends Component {
     "beta_date": "1532755962000", // Date the version appeared on the beta branch. Number of milliseconds since unix epoch.
     "public_date": "1532757857000", // Date the version appeared on the public branch, missing if not yet on public. Number of milliseconds since unix epoch.
     "updated_date": "1532758092378", // Date the last time Stationeering updated this record. Number of milliseconds since unix epoch.
+    "server_build_id": "2985053", // Dedicated server Steam build ID, may be missing.
+    "server_beta_date": "1532755962000", // Date the dedicated server version appeared on the beta branch. Number of milliseconds since unix epoch.
+    "server_public_date": "1532757857000", // Date the version dedicated server appeared on the public branch, missing if not yet on public. Number of milliseconds since unix epoch.    
     "notes": [
       "A change log." // One entry per change log line for this version.
     ]
