@@ -79,15 +79,17 @@ class VersionFilter extends Component {
 
         var earliestDate = Date.now() - (14*24*60*60*1000); 
 
-        this.state = { versions: { data: [], message: "Please wait loading version data!", nextFile: "head.json", flattenedVersions: [] }, earliestDate, network: false, abort: false };
+        this.state = { versions: { data: [], message: "Please wait loading version data!", nextFile: "head.json", flattenedVersions: [] }, earliestDate, network: false };
+        this.mounted = false;
     }
 
     componentDidMount() {
+        this.mounted = true;
         this.checkDataHasEnough();
     }
 
     componentWillUnmount() {
-        this.setState({ abort: true });
+        this.mounted = false;
     }
 
     checkDataHasEnough() {
@@ -110,7 +112,7 @@ class VersionFilter extends Component {
     }
 
     fetchNextPage() {
-        if (!this.state.versions.nextFile || this.state.abort) {
+        if (!this.state.versions.nextFile || !this.mounted) {
             return false;
         }
 
