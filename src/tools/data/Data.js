@@ -208,7 +208,7 @@ https://data.stationeering.com/scenarios/public.json`}
                 {`[
   {
     "name": "Mars", // Name of scenario.
-    "description": "A desolate dusty red ball, Mars features more varied terrain that can reach into the sky, and a chilly atmosphere that's no good for breathing, but maybe it can be used for something...", // Description of scenario, as appears in menu.
+    "description": "NewWorldMoonShortDesc", // Localisation key found in language file. 
     "game_mode": "Survival", // Gamemode the player is in, survival or creative.
     "planet": { // Information about the planetary body.
       "gravity": -3.7, // Acceleration of a player, meters per second per second. Negative is towards the ground.
