@@ -33,7 +33,7 @@ class Home extends Component {
             <Col md={3}>
               <Panel bsStyle="success">
                 <Panel.Heading>
-                  <Panel.Title componentClass="h3"><FontAwesomeIcon icon="book-open" /> Guide</Panel.Title>
+                  <Panel.Title componentClass="h3"><FontAwesomeIcon icon="book-open" /> <NavLink to='/guide'>Guide</NavLink></Panel.Title>
                 </Panel.Heading>
                 <Panel.Body>
                   <p>
@@ -63,7 +63,7 @@ class Home extends Component {
             <Col md={3}>
               <Panel bsStyle="success">
                 <Panel.Heading>
-                  <Panel.Title componentClass="h3"><FontAwesomeIcon icon="code-branch" /> Version History</Panel.Title>
+                  <Panel.Title componentClass="h3"><FontAwesomeIcon icon="code-branch" /> <NavLink to='/versions/recent'>Version History</NavLink></Panel.Title>
                 </Panel.Heading>
                 <Panel.Body>
                   <p>
