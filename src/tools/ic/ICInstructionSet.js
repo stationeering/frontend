@@ -4,9 +4,13 @@ import { Panel, Table } from 'react-bootstrap';
 import IC from 'stationeers-ic';
 import axios from 'axios';
 
+import sanitize from 'sanitize-html';
+
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { faBook } from '@fortawesome/free-solid-svg-icons';
+
+import './ICInstructionSet.css';
 
 library.add(faBook);
 
@@ -62,57 +66,38 @@ class ICInstructionSet extends Component {
   }
 }
 
+const SECTIONS = {
+  "device": "Device IO",
+  "flow": "Flow Control, Branches and Jumps",
+  "select": "Variable Selection",
+  "math": "Mathematical Operations",
+  "logic": "Logic",
+  "stack": "Stack",
+  "misc": "Misc"
+};
+
 class ICInstructionSetCategory extends Component {
   render() {
-    let instructions = Object.keys(this.props.instructions).map((instruction) => <ICInstruction key={instruction} opcode={instruction} fields={this.props.instructions[instruction]} description={this.props.extractedInstructions[instruction]} />)
+    let instructions = Object.keys(this.props.instructions).sort().map((instruction) => {
+      let data = this.props.extractedInstructions[instruction] || { description: "", example: "" };
 
-    let categoryName = this.props.category;
+      return <ICInstruction key={instruction} opcode={instruction} fields={this.props.instructions[instruction]} description={data.description} example={data.example} />;
+    });
 
-    switch(this.props.category) {
-      case "device":
-        categoryName = "Device IO";
-        break;
-
-      case "flow":
-        categoryName = "Flow Control, Branches and Jumps";
-        break;
-
-      case "select":
-        categoryName = "Variable Selection";
-        break;
-
-      case "math":
-        categoryName = "Mathematical Operations";
-        break;
-
-      case "logic":
-        categoryName = "Logic";
-        break;
-
-      case "stack":
-        categoryName = "Stack";
-        break;
-
-      case "misc":
-        categoryName = "Misc";
-        break;
-    }
+    let categoryName = SECTIONS[this.props.category] || this.props.category;
 
     return (<div>
       <h4>{categoryName}</h4>
       <Table condensed>
-          <thead>
-            <tr>
-              <th>Instruction</th>
-              <th>a</th>
-              <th>b</th>
-              <th>c</th>
-              <th>d</th>
-            </tr>
-          </thead>
-          <tbody>
-            {instructions}
-          </tbody>
+        <thead>
+          <tr>
+            <th>Instruction</th>
+            <th colSpan={4}>Fields</th>
+          </tr>
+        </thead>
+        <tbody>
+          {instructions}
+        </tbody>
       </Table>
     </div>)
   }
@@ -120,7 +105,11 @@ class ICInstructionSetCategory extends Component {
 
 class ICInstruction extends Component {
   render() {
-    let fields = this.props.fields.map((field) => <td>{field.join(" ")}</td>);
+    let fields = this.props.example.split(" ").splice(1).map((field, i) => <ICField field={field} key={i} />);
+
+    for (let i = fields.length; i <= 3; i++) {
+      fields.push(<td className="field">&nbsp;</td>)
+    }
 
     return (<React.Fragment>
         <tr>
@@ -128,9 +117,15 @@ class ICInstruction extends Component {
           {fields}
         </tr>
         <tr>
-          <td colspan={5}>{this.props.description}</td>
+          <td colSpan={5}>» {this.props.description}</td>
         </tr> 
       </React.Fragment>)
+  }
+}
+
+class ICField extends Component {
+  render() {
+    return <td className="field"><code>{sanitize(this.props.field)}</code></td>;
   }
 }
 
