@@ -5,6 +5,8 @@ import IC from 'stationeers-ic';
 import axios from 'axios';
 
 import sanitize from 'sanitize-html';
+import ReactHtmlParser from 'react-html-parser';
+
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { library } from '@fortawesome/fontawesome-svg-core';
@@ -117,7 +119,7 @@ class ICInstruction extends Component {
           {fields}
         </tr>
         <tr>
-          <td colSpan={5}>» {this.props.description}</td>
+          <td colSpan={5}>» {ReactHtmlParser(sanitize(this.props.description))}</td>
         </tr> 
       </React.Fragment>)
   }

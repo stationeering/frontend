@@ -84,7 +84,6 @@ class Home extends Component {
               </p>
             </Col>
           </Row>
-          <SteamNews />
         </div>
       );
     }
