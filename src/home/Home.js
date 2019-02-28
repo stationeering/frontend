@@ -6,7 +6,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { faNewspaper, faHandSpock, faSitemap, faMicrochip, faCodeBranch, faGlobeAsia, faBookOpen } from '@fortawesome/free-solid-svg-icons';
 
-import SteamNews from './SteamNews';
+// import SteamNews from './SteamNews';
 
 import './Home.css';
 

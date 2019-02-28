@@ -322,6 +322,8 @@ class ICSocket extends Component {
       return "IC has executed the halt and catch fire instruction.";
     case "YIELD":
       return "IC has yielded control, execution will resume on next tick.";
+    case "SLEEP":
+      return "IC is sleeping, execution will resume after sleep has expired (0.5 seconds/tick).";
     default:
       return "";
     }
