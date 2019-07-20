@@ -6,7 +6,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { faNewspaper, faHandSpock, faSitemap, faMicrochip, faCodeBranch, faGlobeAsia, faBookOpen } from '@fortawesome/free-solid-svg-icons';
 
-// import SteamNews from './SteamNews';
+import News from './News';
 
 import './Home.css';
 
@@ -78,9 +78,19 @@ class Home extends Component {
           </Row>
           <Row>
             <Col md={12}>
-              <h3><FontAwesomeIcon icon="newspaper" /> Latest news from Stationeers!</h3>
+              <h3><FontAwesomeIcon icon="newspaper" /> Latest news from Steam!</h3>
+              <News source="steam" count={3} />
               <p>
                 <small>News is retrieved from Steam, stationeering.com is not responsible for the content.</small>
+              </p>
+            </Col>
+          </Row>
+          <Row>
+            <Col md={12}>
+              <h3><FontAwesomeIcon icon="newspaper" /> Latest posts from reddit!</h3>
+              <News source="reddit" count={3} />
+              <p>
+                <small>News is retrieved from reddit, stationeering.com is not responsible for the content.</small>
               </p>
             </Col>
           </Row>

@@ -8,22 +8,22 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { faFileAlt } from '@fortawesome/free-solid-svg-icons';
 
-import './SteamNews.css';
+import './News.css';
 library.add(faFileAlt);
 
-class SteamNews extends Component {
+class News extends Component {
     constructor(props) {
         super(props);
 
-        this.state = { news: { data: null, message: "Please wait loading news from Steam!" } };
+        this.state = { news: { data: null, message: "Please wait loading news!" } };
     }
 
     componentDidMount() {
         var versionList = this;
 
-        axios({ url: 'https://api.steampowered.com/ISteamNews/GetNewsForApp/v0002/?appid=544550&count=3&maxlength=400&format=json', method: 'get', responseType: 'json' })
+        axios({ url: 'https://data.stationeering.com/news/' + this.props.source + '.json', method: 'get', responseType: 'json' })
             .then(function (response) {
-                versionList.setState({ news: { data: response.data.appnews.newsitems, message: null } })
+                versionList.setState({ news: { data: response.data, message: null } })
             })
             .catch(function (error) {
                 versionList.setState({ news: { message: "Failed to load news list! " + error } })
@@ -43,21 +43,18 @@ class SteamNews extends Component {
                 <small>{this.state.news.message}</small>
             </Col>);
         } else {
-            return this.state.news.data.map((news) => <SteamNewsItem news={news} />);
+            return this.state.news.data.slice(0, this.props.count).map((news) => <NewsItem news={news} />);
         }
     }
 }
 
-class SteamNewsItem extends Component {
+class NewsItem extends Component {
     render() {
-        var image = "";
-        var text = this.props.news.contents;
+        let image = undefined;
 
-        if (this.props.news.contents.startsWith("http")) {
-            var imageURL = this.props.news.contents.split(" ", 1);
+        if (this.props.news.has_image) {
             // eslint-disable-next-line 
-            image = <img src={imageURL} width="100%" />;
-            text = this.props.news.contents.replace(imageURL + " ", "");
+            image = <img src={"https://data.stationeering.com/news/steam/" + this.props.news.id + ".webp"} width="100%" />;
         }
 
         return (
@@ -72,7 +69,10 @@ class SteamNewsItem extends Component {
                             <small><Timestamp time={this.props.news.date} /> by {this.props.news.author}</small>
                         </p>
                         <p>
-                            {text} <small><a href={this.props.news.url}>(read more)</a></small>
+                            {this.props.news.contents.slice(0, 300)}…
+                        </p>
+                        <p>
+                            <small><a href={this.props.news.url}>(read more)</a></small>
                         </p>
                     </Panel.Body>
                 </Panel>
@@ -81,4 +81,4 @@ class SteamNewsItem extends Component {
     }
 }
 
-export default SteamNews;
+export default News;
