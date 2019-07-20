@@ -18,7 +18,7 @@ import { faReddit } from '@fortawesome/free-brands-svg-icons';
 import brace from 'brace';
 import AceEditor from 'react-ace';
 
-import 'brace/mode/mips_assembler';
+import './SISAssembler';
 import 'brace/theme/github';
 import 'brace/ext/searchbox';
 
@@ -215,7 +215,7 @@ class ICSocket extends Component {
               <Panel.Body>
                 <p>
                 <AceEditor
-                  mode="mips_assembler"
+                  mode="sis_assembler"
                   theme="github"
                   onChange={this.programChange}
                   value={this.state.program}
