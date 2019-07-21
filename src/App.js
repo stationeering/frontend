@@ -4,6 +4,7 @@ import { Grid, Navbar, Nav, NavItem, NavDropdown, MenuItem } from 'react-bootstr
 
 import Guide from './guide/Guide';
 import ICSimulator from './tools/ic/ICSimulator';
+import ICSimulatorPopout from './tools/ic/ICSimulatorPopout';
 import ICPermalink from './tools/ic/ICPermalink';
 import UpdateManager from './UpdateManager';
 
@@ -25,11 +26,13 @@ class App extends Component {
   render() {
     return (
       <div className="App">
-        <Navbar>
-          <Header />
-          <Navigation />
-        </Navbar>
-        <Main updateProxy={this.props.updateProxy} />
+        <Switch>
+          <Route path="/tools/ic/popout/:channel" component={ICSimulatorPopout} exact />          
+          <Route path="/" render={() => (
+            <Main updateProxy={this.props.updateProxy} />
+          )} />
+        </Switch>
+
         <footer className="footer">
           <small>
               stationeering.com is a fan website about <a href="https://store.steampowered.com/app/544550/Stationeers/">Stationeers</a> run by <a href="https://twitter.com/MelairCraft">Melair</a>.
@@ -99,18 +102,24 @@ class Navigation extends Component {
 class Main extends Component {
   render() {
     return (
-      <Grid>
-        <UpdateManager updateProxy={this.props.updateProxy} />
-        <Switch>
-          <Route path="/guide" component={Guide} />
-          <Route path="/versions/:section" component={VersionList} />
-          <Route path="/tools/ic/:permalink" component={ICPermalink} />
-          <Route path="/tools/ic" component={ICSimulator} />          
-          <Route path="/tools/data" component={Data} />
-          <Route path="/tools/discord" component={Discord} />
-          <Route path="/" component={Home} />
-        </Switch>
-      </Grid>
+      <React.Fragment>
+        <Navbar>
+          <Header />
+          <Navigation />
+        </Navbar>
+        <Grid>
+          <UpdateManager updateProxy={this.props.updateProxy} />
+          <Switch>
+            <Route path="/guide" component={Guide} />
+            <Route path="/versions/:section" component={VersionList} />
+            <Route path="/tools/ic/:permalink" component={ICPermalink} />
+            <Route path="/tools/ic" component={ICSimulator} />          
+            <Route path="/tools/data" component={Data} />
+            <Route path="/tools/discord" component={Discord} />
+            <Route path="/" component={Home} />
+          </Switch>
+        </Grid>
+      </React.Fragment>
     );
   }
 }

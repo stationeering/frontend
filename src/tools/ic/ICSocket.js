@@ -46,8 +46,33 @@ class ICSocket extends Component {
 
     let defaultCode = "start:\nadd r0 r0 1 # Increment r0.\nyield\nj start";
 
-    this.state = { ic: new IC(), program: defaultCode, errors: [], labels: { internal: [] }, runAfterRegisterChange: false, runWithErrors: false, currentHash: "" };
+    this.state = { ic: new IC(), program: defaultCode, errors: [], labels: { internal: [] }, runAfterRegisterChange: false, runWithErrors: false, currentHash: "", channel: null, channelName: null };
     this.loadProgram(defaultCode);    
+  }
+
+  getRandomChannel(length) {
+    var text = "";
+
+    while (text.length < length) {
+      text = text + Math.random().toString(36);
+    }
+
+    return text.substring(0, length);
+  }
+
+  receiveMessage(message) {
+    console.log(message);
+
+    switch(message.data.command) {
+      case "content-request":
+        this.state.channel.postMessage({ command: "content-update", content: this.state.program })
+        break;
+      case "content-update":
+          this.programChange(message.data.content);
+        break;
+      default:
+        break;
+    }
   }
 
   componentDidMount() {
@@ -55,10 +80,22 @@ class ICSocket extends Component {
     this.transferICState();
     
     window.addEventListener("hashchange", this.hashChanged, false);
+
+    let channelName = "stationeering-editor-" + this.getRandomChannel(16);
+    let channel = new BroadcastChannel(channelName);
+
+    channel.onmessage = this.receiveMessage.bind(this);
+
+    this.setState({ channel, channelName });
   }
 
   componentWillUnmount() {
     window.removeEventListener("hashchange", this.hashChanged, false);
+
+    if (this.state.channel !== null) {
+      this.state.channel.close();
+      this.setState({ channel: null });
+    }
   }
 
   componentDidUpdate() {
@@ -204,10 +241,42 @@ class ICSocket extends Component {
           </Col>
           <Col md={4}>
             <ICInternalRegisters registers={this.state.internalRegisters} setRegister={this.setRegister} clearInternalRegisters={this.clearInternalRegisters} labels={this.state.labels.internal} aliases={this.state.internalLabels} />
+            <Panel>
+              <Panel.Heading>
+                <Panel.Title componentClass="h3"><FontAwesomeIcon icon="gamepad" /> Control {this.state.channelName}</Panel.Title>
+              </Panel.Heading>
+              <Panel.Body>
+                <ButtonToolbar>
+                  <Button className={inactive} onClick={this.runSingle} ><FontAwesomeIcon icon="step-forward" /> Step</Button>
+                  <Button className={inactive} onClick={this.run} ><FontAwesomeIcon icon="play" /> Run</Button>
+                  <Button className="interactive" onClick={this.restart} ><FontAwesomeIcon icon="redo" /> Reset IC</Button>
+                  <Button className={"interactive" + (this.state.runAfterRegisterChange ? "" : " inactive") } onClick={this.toggleRunAfterRegisterChange} ><FontAwesomeIcon icon="eye" /> Watch Registers</Button>                               
+                  <Button className={"interactive" + (this.state.runWithErrors ? "" : " inactive") } onClick={this.toggleRunWithErrors} ><FontAwesomeIcon icon="bug" /> Run With Errors</Button>                               
+                </ButtonToolbar>
+              </Panel.Body>
+            </Panel>
+            <Panel bsStyle={this.state.lastStepState === "HALT_AND_CATCH_FIRE" ? "danger" : "default"}>
+              <Panel.Heading>
+                <Panel.Title componentClass="h3"><FontAwesomeIcon icon="list-ul" /> Status</Panel.Title>
+              </Panel.Heading>
+              <Table>
+                <tbody>
+                  <tr>
+                    <th>Program Counter</th><td>{this.state.programCounter}</td>
+                  </tr>                    
+                  <tr>
+                    <th>Last Run Operations</th><td>{this.state.lastRunCount} ({this.state.lastExecuteTime})</td>
+                  </tr>                
+                  <tr>
+                    <th>Last State</th><td>{this.decodeStepState(this.state.lastStepState)}</td>
+                  </tr>
+                </tbody>
+              </Table>
+            </Panel>            
           </Col>
         </Row>      
         <Row>
-          <Col md={8}>
+          <Col md={12}>
             <Panel>
               <Panel.Heading>
                 <Panel.Title componentClass="h3"><FontAwesomeIcon icon="terminal" /> Program</Panel.Title>
@@ -260,40 +329,6 @@ class ICSocket extends Component {
                   </Row>
                 </Panel.Footer>             
             </Panel>
-          </Col>
-          <Col md={4}>
-            <Panel>
-              <Panel.Heading>
-                <Panel.Title componentClass="h3"><FontAwesomeIcon icon="gamepad" /> Control</Panel.Title>
-              </Panel.Heading>
-              <Panel.Body>
-                <ButtonToolbar>
-                  <Button className={inactive} onClick={this.runSingle} ><FontAwesomeIcon icon="step-forward" /> Step</Button>
-                  <Button className={inactive} onClick={this.run} ><FontAwesomeIcon icon="play" /> Run</Button>
-                  <Button className="interactive" onClick={this.restart} ><FontAwesomeIcon icon="redo" /> Reset IC</Button>
-                  <Button className={"interactive" + (this.state.runAfterRegisterChange ? "" : " inactive") } onClick={this.toggleRunAfterRegisterChange} ><FontAwesomeIcon icon="eye" /> Watch Registers</Button>                               
-                  <Button className={"interactive" + (this.state.runWithErrors ? "" : " inactive") } onClick={this.toggleRunWithErrors} ><FontAwesomeIcon icon="bug" /> Run With Errors</Button>                               
-                </ButtonToolbar>
-              </Panel.Body>
-            </Panel>
-            <Panel bsStyle={this.state.lastStepState === "HALT_AND_CATCH_FIRE" ? "danger" : "default"}>
-              <Panel.Heading>
-                <Panel.Title componentClass="h3"><FontAwesomeIcon icon="list-ul" /> Status</Panel.Title>
-              </Panel.Heading>
-              <Table>
-                <tbody>
-                  <tr>
-                    <th>Program Counter</th><td>{this.state.programCounter}</td>
-                  </tr>                    
-                  <tr>
-                    <th>Last Run Operations</th><td>{this.state.lastRunCount} ({this.state.lastExecuteTime})</td>
-                  </tr>                
-                  <tr>
-                    <th>Last State</th><td>{this.decodeStepState(this.state.lastStepState)}</td>
-                  </tr>
-                </tbody>
-              </Table>
-            </Panel>            
           </Col>
         </Row>
       </div>
@@ -428,6 +463,7 @@ class ICSocket extends Component {
     var filteredText = text.split('').filter((c) => c.charCodeAt(0) < 128).join('');
     this.setState({ program: filteredText });
     this.loadProgram(text);
+    this.state.channel.postMessage({ command: "content-update", content: this.state.program })
   }
 
   loadProgram(program) {
