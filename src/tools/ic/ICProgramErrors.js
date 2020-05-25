@@ -48,7 +48,7 @@ class ProgramError extends Component {
             case "UNKNOWN_INSTRUCTION":
                 return "The instruction you have specified does not exist, check the spelling.";
             case "LINE_TOO_LONG":
-                return "The line is more than 64 characters, reduce the length.";
+                return "The line is more than 52 characters, reduce the length.";
             case "PROGRAM_TOO_LONG":
                 return "The program is too long, only 128 instructions/lines are permitted.";
             case "INVALID_JUMP_TAG_DUPLICATE":
