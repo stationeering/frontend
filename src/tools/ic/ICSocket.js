@@ -331,8 +331,13 @@ class ICSocket extends Component {
 
   step() {
     if(this.canRun()) {
-      var result = this.state.ic.step();    
-      this.transferICState(this.state.ic.programCounter());      
+      var result = this.state.ic.step();
+      if (result === "SLEEP") {
+        // eslint-disable-next-line
+        this.state.ic._sleepPeriod = 0.5;
+      }
+
+      this.transferICState(this.state.ic.programCounter());
       return result;
     } else {
       if (this.state.ic.programCounter() >= this.state.ic.getInstructionCount()) {
