@@ -21,7 +21,7 @@
     "react-router-dom": "^4.3.1",
     "react-scripts": "^3.4.1",
     "react-timestamp": "^4.4.0",
-    "sanitize-html": "^1.27.2",
+    "sanitize-html": "^2.3.2",
     "stationeers-ic": "github:stationeering/stationeers-ic"
   },
   "scripts": {
